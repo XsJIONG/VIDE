@@ -33,7 +33,6 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.view.ActionMode;
-import com.jxs.vide.*;
 
 public class JsVActivityCompat extends VActivity {
 	private JsProgram program;
@@ -71,7 +70,11 @@ public class JsVActivityCompat extends VActivity {
 						program=new JsProgram(c.getName());
 						program.setJsApp(JsApp.INSTANCE);
 						program.setCode(c.getCode());
-					} else return false;
+					} else {
+						JsApp.INSTANCE.getMainJs().run();
+						finish();
+						return false;
+					}
 				} catch (Exception e) {
 					//Mark
 					//FIXME

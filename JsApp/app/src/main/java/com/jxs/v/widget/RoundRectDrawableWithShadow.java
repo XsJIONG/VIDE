@@ -70,14 +70,14 @@ class RoundRectDrawableWithShadow extends Drawable {
     private final int mShadowEndColor;
 
     private boolean mAddPaddingForCorners = true;
-
+	
     /**
      * If shadow size is set to a value above max shadow, we print a warning
      */
     private boolean mPrintedShadowClipWarning = false;
 
     public RoundRectDrawableWithShadow(Resources resources, int backgroundColor, float radius,
-								float shadowSize, float maxShadowSize) {
+									   float shadowSize, float maxShadowSize) {
         mShadowStartColor = resources.getColor(R.color.cardview_shadow_start_color);
         mShadowEndColor = resources.getColor(R.color.cardview_shadow_end_color);
         mInsetShadow = resources.getDimensionPixelSize(R.dimen.cardview_compat_inset_shadow);

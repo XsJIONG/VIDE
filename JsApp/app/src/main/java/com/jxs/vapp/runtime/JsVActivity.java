@@ -60,7 +60,11 @@ public class JsVActivity extends VActivity {
 					program=new JsProgram(c.getName());
 					program.setJsApp(JsApp.INSTANCE);
 					program.setCode(c.getCode());
-				} else return false;
+				} else {
+					JsApp.INSTANCE.getMainJs().run();
+					finish();
+					return false;
+				}
 			} catch (Exception e) {
 				//Mark
 				//FIXME

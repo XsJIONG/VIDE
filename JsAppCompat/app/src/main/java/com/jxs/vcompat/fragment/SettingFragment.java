@@ -12,7 +12,6 @@ import com.jxs.vcompat.ui.*;
 import com.jxs.vcompat.widget.*;
 
 public class SettingFragment extends VFragment implements UI.OnThemeChangeListener {
-	private static Drawable Back;
 	private LinearLayout Layout;
 	private DivideDrawable Divider;
 	private VScrollView Scroll;
@@ -216,14 +215,11 @@ public class SettingFragment extends VFragment implements UI.OnThemeChangeListen
 		private LinearLayout _DesLayout;
 		private OnClickListener listener=null;
 		private void init() {
-			if (Back == null) {
-				TypedValue value=new TypedValue();
-				getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, value, true);
-				TypedArray arr=getContext().getTheme().obtainStyledAttributes(value.resourceId, new int[] {android.R.attr.selectableItemBackground});
-				Back = arr.getDrawable(0);
-				arr.recycle();
-			}
-			setBackground(Back);
+			TypedValue value=new TypedValue();
+			getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, value, true);
+			TypedArray arr=getContext().getTheme().obtainStyledAttributes(value.resourceId, new int[] {android.R.attr.selectableItemBackground});
+			setBackground(arr.getDrawable(0));
+			arr.recycle();
 			setOrientation(HORIZONTAL);
 			int p=UI.dp2px(15);
 			setPadding(p, p, p, p);

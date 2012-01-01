@@ -2,6 +2,7 @@ package com.jxs.vcompat.fragment;
 
 import android.content.*;
 import android.graphics.*;
+import android.support.v7.widget.*;
 import android.text.*;
 import android.view.*;
 import android.widget.*;
@@ -24,14 +25,14 @@ public class ConsoleFragment extends VFragment {
 		return "VConsole";
 	}
 	private VScrollView scroll;
-	private EditText scr;
+	private AppCompatEditText scr;
 	private int AcceptLength;
 	private UI ui;
 	private boolean TextChanging=false,reading=true;
 	@Override
 	public View getView() {
 		ui = new UI(getContext());
-		scr = new VEditText(getContext());
+		scr = new AppCompatEditText(getContext());
 		scr.setGravity(Gravity.TOP | Gravity.LEFT);
 		scroll = new VScrollView(getContext());
 		scroll.addView(scr, new ScrollView.LayoutParams(ScrollView.LayoutParams.FILL_PARENT, ScrollView.LayoutParams.FILL_PARENT));
@@ -39,55 +40,55 @@ public class ConsoleFragment extends VFragment {
 		scr.setTypeface(Typeface.MONOSPACE);
 		AcceptLength = 0;
 		scr.addTextChangedListener(new TextWatcher() {
-			private CharSequence last;
-			@Override
-			public void beforeTextChanged(CharSequence p1, int p2, int p3, int p4) {
-				if (TextChanging) return;
-				last = scr.getText().subSequence(0, scr.length());
-			}
-			@Override
-			public void onTextChanged(CharSequence p1, int p2, int p3, int p4) {
-				if (TextChanging) return;
-				if (scr.getSelectionStart() <= AcceptLength || (!reading)) {
-					TextChanging = true;
-					scr.setText(last);
-					scr.setSelection(scr.length());
-					TextChanging = false;
-					last = null;
-					return;
+				private CharSequence last;
+				@Override
+				public void beforeTextChanged(CharSequence p1, int p2, int p3, int p4) {
+					if (TextChanging) return;
+					last = scr.getText().subSequence(0, scr.length());
 				}
-				last = scr.getText();
-				if (last.toString().endsWith("\n")) {
-					int i=scr.length() - 1;
-					while (i > 0) {
-						i--;
-						if (last.toString().charAt(i) == '\n') break;
+				@Override
+				public void onTextChanged(CharSequence p1, int p2, int p3, int p4) {
+					if (TextChanging) return;
+					if (scr.getSelectionStart() <= AcceptLength || (!reading)) {
+						TextChanging = true;
+						scr.setText(last);
+						scr.setSelection(scr.length());
+						TextChanging = false;
+						last = null;
+						return;
 					}
-					String h=last.toString().substring(AcceptLength + 1);
-					last = null;
-					AcceptLength = scr.length() - 1;
-					if (reading)
-						onRead(h);
+					last = scr.getText();
+					if (last.toString().endsWith("\n")) {
+						int i=scr.length() - 1;
+						while (i > 0) {
+							i--;
+							if (last.toString().charAt(i) == '\n') break;
+						}
+						String h=last.toString().substring(AcceptLength + 1);
+						last = null;
+						AcceptLength = scr.length() - 1;
+						if (reading)
+							onRead(h);
+					}
 				}
-			}
-			@Override
-			public void afterTextChanged(Editable p1) {}
-		});
+				@Override
+				public void afterTextChanged(Editable p1) {}
+			});
 		scr.setText("");
 		//scr.setBackgroundDrawable(null);
 		setBackgroundColor(Color.BLACK);
 		setForegroundColor(Color.WHITE);
 		scroll.post(new Runnable() {
-			@Override
-			public void run() {
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						if (consoleRunnable != null) consoleRunnable.run();
-					}
-				}).start();
-			}
-		});
+				@Override
+				public void run() {
+					new Thread(new Runnable() {
+							@Override
+							public void run() {
+								if (consoleRunnable != null) consoleRunnable.run();
+							}
+						}).start();
+				}
+			});
 		return scroll;
 	}
 	public void injectToSystem() {
@@ -159,48 +160,48 @@ public class ConsoleFragment extends VFragment {
 	};
 	public void setBackgroundColor(final int color) {
 		ui.autoOnUi(new Runnable() {
-			@Override
-			public void run() {
-				scr.setBackgroundColor(color);
-			}
-		});
+				@Override
+				public void run() {
+					scr.setBackgroundColor(color);
+				}
+			});
 	}
 	public void setForegroundColor(final int color) {
 		ui.autoOnUi(new Runnable() {
-			@Override
-			public void run() {
-				scr.setTextColor(color);
-			}
-		});
+				@Override
+				public void run() {
+					scr.setTextColor(color);
+				}
+			});
 	}
 	public PrintStream out=new PrintStream(new OutputStream() {
-		@Override
-		public void write(final byte[] b, final int off, final int len) {
-			ui.autoOnUi(new Runnable() {
-				@Override
-				public void run() {
-					TextChanging = true;
-					scr.getText().append(new String(b, off, len));
-					TextChanging = false;
-					AcceptLength = scr.length() - 1;
-					scr.setSelection(scr.length());
-				}
-			});
-		}
-		@Override
-		public void write(final int ch) {
-			ui.autoOnUi(new Runnable() {
-				@Override
-				public void run() {
-					TextChanging = true;
-					scr.getText().append((char) ch);
-					TextChanging = false;
-					AcceptLength = scr.length() - 1;
-					scr.setSelection(scr.length());
-				}
-			});
-		}
-	}, true);
+			@Override
+			public void write(final byte[] b, final int off, final int len) {
+				ui.autoOnUi(new Runnable() {
+						@Override
+						public void run() {
+							TextChanging = true;
+							scr.getText().append(new String(b, off, len));
+							TextChanging = false;
+							AcceptLength = scr.length() - 1;
+							scr.setSelection(scr.length());
+						}
+					});
+			}
+			@Override
+			public void write(final int ch) {
+				ui.autoOnUi(new Runnable() {
+						@Override
+						public void run() {
+							TextChanging = true;
+							scr.getText().append((char) ch);
+							TextChanging = false;
+							AcceptLength = scr.length() - 1;
+							scr.setSelection(scr.length());
+						}
+					});
+			}
+		}, true);
 	public void clearScreen() {
 		ui.autoOnUi(clearScreenAction);
 	}

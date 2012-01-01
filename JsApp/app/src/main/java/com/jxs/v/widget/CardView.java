@@ -446,11 +446,11 @@ public class CardView extends FrameLayout implements CardViewDelegate {
 			animator.setInterpolator(new DecelerateInterpolator());
 			animator.setDuration(300);
 			animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-				@Override
-				public void onAnimationUpdate(ValueAnimator ani) {
-					getView().setRealElevation((float) ani.getAnimatedValue());
-				}
-			});
+					@Override
+					public void onAnimationUpdate(ValueAnimator ani) {
+						getView().setRealElevation((float) ani.getAnimatedValue());
+					}
+				});
 		}
 		ValueAnimator animator=null;
 		@Override

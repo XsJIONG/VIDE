@@ -113,11 +113,6 @@
 				<data android:scheme="file" />
 				<data android:mimeType="*/*" />
 				<data android:host="*" />
-				<data android:pathPattern=".*\.jsc" />
-				<data android:pathPattern=".*\.jsc.*" />
-				<data android:pathPattern=".*\..*\.jsc.*" />
-				<data android:pathPattern=".*\..*\..*\.jsc.*" />
-				<data android:pathPattern=".*\..*\..*\..*\.jsc.*" />
 			</intent-filter>
 		</activity>
 		<activity
