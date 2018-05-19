@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.jxs.jsapp" >
+	
+    <application
+        android:allowBackup="false"
+		android:debuggable="false"
+        android:icon="@drawable/icon"
+        android:label="JsApp"
+		android:name="com.jxs.vcompat.addon.VApplication"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.jxs.vapp.runtime.JsVActivityCompat"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="JsApp" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+		<activity
+			android:name="com.jxs.vapp.runtime.JsConsoleActivityCompat"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="JsConsole" />
+    </application>
+
+</manifest>

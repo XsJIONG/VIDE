@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+    package="com.jxs.vide" >
+
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+	<uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+	<uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <application
+		tools:replace="android:allowBackup"
+        android:allowBackup="false"
+		android:debuggable="false"
+		android:icon="@drawable/icon"
+        android:label="@string/app_name"
+		android:name="com.jxs.vide.MyApplication" >
+        <activity
+            android:name="com.jxs.vide.SplashActivity"
+			android:theme="@style/AppThemeNoTitle"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+		<activity
+			android:name=".AboutActivity"
+			android:theme="@style/AppTheme"
+			android:label="关于" />
+		<activity
+			android:name=".MainActivity"
+			android:theme="@style/AppThemeNoTitle"
+			android:launchMode="singleTask"
+			android:label="@string/app_name" />
+		<activity
+			android:name="com.jxs.vide.EditorActivity"
+			android:launchMode="singleTask"
+			android:theme="@style/AppThemeNoTitle"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:windowSoftInputMode="adjustResize"
+			android:label="编辑" />
+		<activity
+			android:name="com.jxs.vapp.runtime.JsVActivity"
+			android:theme="@style/AppThemeNormal"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:label="JsVActivity" />
+		<activity
+			android:theme="@style/AppTheme"
+			android:name="com.jxs.vapp.runtime.JsVActivityCompat"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:label="JsVActivity" />
+		<activity
+			android:theme="@style/AppThemeNormal"
+			android:name="com.jxs.vapp.runtime.JsConsoleActivity"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:label="JsConsole" />
+		<activity
+			android:theme="@style/AppTheme"
+			android:name="com.jxs.vapp.runtime.JsConsoleActivityCompat"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:label="JsConsole" />
+		<activity
+			android:theme="@style/AppTheme"
+			android:name=".ProjectActivity"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:label="项目" />
+		<activity
+			android:theme="@style/AppTheme"
+			android:name=".SettingActivity"
+			android:launchMode="singleTask"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:label="设置" />
+		<activity
+			android:theme="@style/AppTheme"
+			android:name=".MessageActivity"
+			android:configChanges="orientation|keyboardHidden|screenSize" />
+		<activity
+			android:theme="@style/AppThemeNoTitle"
+			android:name=".LearnActivity"
+			android:label="学习"
+			android:configChanges="orientation|keyboardHidden|screenSize" />
+		<activity
+			android:theme="@style/AppTheme"
+			android:name=".LearnListActivity"
+			android:label="学习"
+			android:configChanges="orientation|keyboardHidden|screenSize" />
+		<service
+			android:name=".VButtonService" />
+		<activity
+			android:label="用VIDE运行"
+			android:icon="@drawable/icon"
+			android:name=".NoDisplayActivity"
+			android:theme="@android:style/Theme.NoDisplay" >
+			<intent-filter>
+				<action
+					android:name="android.intent.action.VIEW" />
+				<action
+                    android:name="android.intent.action.INSERT_OR_EDIT" />
+				<category
+					android:name="android.intent.category.DEFAULT" />
+				<category
+					android:name="android.intent.category.BROWSABLE" />
+				<data android:scheme="file" />
+				<data android:mimeType="*/*" />
+				<data android:host="*" />
+				<data android:pathPattern=".*\.jsc" />
+				<data android:pathPattern=".*\.jsc.*" />
+				<data android:pathPattern=".*\..*\.jsc.*" />
+				<data android:pathPattern=".*\..*\..*\.jsc.*" />
+				<data android:pathPattern=".*\..*\..*\..*\.jsc.*" />
+			</intent-filter>
+		</activity>
+		<activity
+			android:name=".VAppActivity"
+			android:label="VApp"
+			android:theme="@style/AppTheme"
+			android:launchMode="singleTask"
+			android:configChanges="orientation|keyboardHidden|screenSize" />
+		<activity
+			android:name=".LoginActivity"
+			android:label="登录"
+			android:theme="@style/AppThemeNoTitle"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:launchMode="singleTask" />
+		<activity
+			android:name=".UploadVAppActivity"
+			android:label="上传VApp"
+			android:theme="@style/AppThemeNoTitle"
+			android:configChanges="orientation|keyboardHidden|screenSize" />
+    </application>
+</manifest>
