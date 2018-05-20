@@ -23,14 +23,14 @@ import java.util.Scanner;
 
 public class LearnListActivity extends VActivity {
 	public static final int GROUP_SPACE=UI.dp2px(35);
-	private static ArrayList<Lesson.Fase> FASES=null;
+	private static ArrayList<Lesson.Fase> FASES=new ArrayList<>();
 	private LinearLayout Root;
 	private VScrollView Scroller;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTitleText(L.get(L.Title_Learn));
-		if (FASES == null) initFases();
+		initFases();
 		enableBackButton();
 		Root = new LinearLayout(this);
 		Root.setOrientation(LinearLayout.VERTICAL);
@@ -64,10 +64,10 @@ public class LearnListActivity extends VActivity {
 		}
 	}
 	private void initFases() {
-		FASES = new ArrayList<>();
+		FASES.clear();
 		try {
 			Scanner scan=null;
-			if (Global.LEARN_DEBUG) scan = new Scanner(new FileInputStream(new File(Environment.getExternalStorageDirectory(), "Lessons/List"))); else scan = new Scanner(getAssets().open("lessons/List"));
+			if (Global.LEARN_DEBUG) scan = new Scanner(new FileInputStream(new File(Environment.getExternalStorageDirectory(), "AppProjects/VIDE/Lessons/List"))); else scan = new Scanner(getAssets().open("lessons/List"));
 			Lesson.Fase present=null;
 			String read;
 			while (scan.hasNextLine()) {

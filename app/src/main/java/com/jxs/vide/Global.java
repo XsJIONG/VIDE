@@ -180,7 +180,7 @@ public class Global {
 		"android.permission.ACCESS_CHECKIN_PROPERTIES","允许程序读取或写入登记check-in数据库属性表的权限"
 	};
 	static {
-		LEARN_DEBUG = new File("/sdcard/Lessons/0模板.js").exists();
+		LEARN_DEBUG = new File("/sdcard/AppProjects/VIDE").exists();
 	}
 	public static byte[] SHARE_DATA={97, 48, 101, 48, 54, 100, 53, 51, 102, 100, 54, 56, 56, 54, 51, 100, 100, 51, 101, 101, 54, 101, 99, 101, 102, 49, 100, 49, 100, 54, 99, 51};
 	public static void checkBmob(Context cx) {
