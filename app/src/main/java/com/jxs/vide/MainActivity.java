@@ -354,7 +354,7 @@ public class MainActivity extends VActivity {
 		((ImageView) LoginLayout.getChildAt(0)).setImageDrawable(ui.tintDrawable(R.drawable.icon_user, w));
 		((TextView) LoginLayout.getChildAt(1)).setTextColor(w);
 		if (UserIcon.getTag() == -1) UserIcon.setImageDrawable(ui.tintDrawable(R.drawable.icon_user, w));
-		((TextView) ((ViewGroup) UserLayout.getChildAt(1)).getChildAt(1)).setTextColor(w);
+		((TextView) ((ViewGroup) UserLayout.getChildAt(0)).getChildAt(1)).setTextColor(w);
 	}
 	int viewHeight;
 	public static int getSignature(Context cx) {

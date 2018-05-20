@@ -1,63 +1,37 @@
 package com.jxs.vide;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v4.view.ViewCompat;
+import android.app.*;
+import android.content.*;
+import android.graphics.*;
+import android.net.*;
+import android.os.*;
+import android.support.v4.view.*;
+import android.support.v7.view.*;
+import android.support.v7.widget.*;
+import android.util.*;
+import android.view.*;
+import android.view.View.*;
+import android.view.animation.*;
+import android.widget.*;
+import android.widget.AdapterView.*;
+import com.jxs.vapp.program.*;
+import com.jxs.vapp.runtime.*;
+import com.jxs.vcompat.activity.*;
+import com.jxs.vcompat.drawable.*;
+import com.jxs.vcompat.io.*;
+import com.jxs.vcompat.ui.*;
+import com.jxs.vcompat.widget.*;
+import com.jxs.vide.*;
+import com.kellinwood.security.zipsigner.*;
+import com.myopicmobile.textwarrior.android.*;
+import dalvik.system.*;
+import java.io.*;
+import java.util.*;
+
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
 import com.jxs.vapp.program.Console;
-import com.jxs.vapp.program.JsApp;
-import com.jxs.vapp.program.JsExtend;
-import com.jxs.vapp.program.Jsc;
-import com.jxs.vapp.runtime.JsVActivity;
-import com.jxs.vapp.runtime.JsVActivityCompat;
-import com.jxs.vcompat.activity.VActivity;
-import com.jxs.vcompat.drawable.ArrowShape;
-import com.jxs.vcompat.drawable.QuestionMarkShape;
-import com.jxs.vcompat.io.IOUtil;
-import com.jxs.vcompat.ui.BDrawable;
-import com.jxs.vcompat.ui.ColorUtil;
-import com.jxs.vcompat.ui.FileChooserDialog;
-import com.jxs.vcompat.ui.UI;
-import com.jxs.vcompat.ui.VAlertDialog;
-import com.jxs.vcompat.ui.VProgressDialog;
-import com.jxs.vcompat.widget.ExpandableLinearLayout;
-import com.jxs.vcompat.widget.VEditText;
-import com.jxs.vide.R;
-import com.kellinwood.security.zipsigner.ZipSigner;
-import com.myopicmobile.textwarrior.android.AutoCompletePanel;
-import dalvik.system.DexClassLoader;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.util.ArrayList;
 
 import static com.jxs.vide.L.get;
 
@@ -85,11 +59,11 @@ public class EditorActivity extends VActivity {
 		editor = new TextEditor(this);
 		editor.setTypeface(Typeface.MONOSPACE);
 		editor.setOnEditAction(new Runnable() {
-			@Override
-			public void run() {
-				if (FileAction_Save != null) FileAction_Save.setIcon(ui.tintDrawable(R.drawable.v_unsave, UI.getThemeColor()));
-			}
-		});
+				@Override
+				public void run() {
+					if (FileAction_Save != null) FileAction_Save.setIcon(ui.tintDrawable(R.drawable.v_unsave, UI.getThemeColor()));
+				}
+			});
 		initSymbolLayout();
 		initRootView();
 		initToolbar();
@@ -102,11 +76,11 @@ public class EditorActivity extends VActivity {
 	}
 	private void initDexAutoComplete() {
 		File[] fs=pro.getLibDir().listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File f) {
-				return f.getName().endsWith(".dex") && f.isFile();
-			}
-		});
+				@Override
+				public boolean accept(File f) {
+					return f.getName().endsWith(".dex") && f.isFile();
+				}
+			});
 		StringBuffer path=new StringBuffer();
 		CTree c=null;
 		File cf;
@@ -149,11 +123,11 @@ public class EditorActivity extends VActivity {
 		super.onDestroy();
 		Global.ClassLoader = null;
 		File[] fs=pro.getLibDir().listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File f) {
-				return f.getName().endsWith(".dex") && f.isFile();
-			}
-		});
+				@Override
+				public boolean accept(File f) {
+					return f.getName().endsWith(".dex") && f.isFile();
+				}
+			});
 		if (fs.length != 0) {
 			Global.Q = null;
 			Global.load(this);
@@ -188,33 +162,33 @@ public class EditorActivity extends VActivity {
 		_BarLayout.addView(_ToolLayout);
 		ViewCompat.setElevation(_BarLayout, 10);
 		_ToolLayout.addView(createImageView(R.drawable.v_run,
-							new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									runUi();
-								}
-							}, get(L.Editor_Run)));
+								new OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										runUi();
+									}
+								}, get(L.Editor_Run)));
 		_ToolLayout.addView(createImageView(R.drawable.v_android,
-							new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									outputUi();
-								}
-							}, get(L.Editor_Output)));
+								new OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										outputUi();
+									}
+								}, get(L.Editor_Output)));
 		_ToolLayout.addView(createImageView(R.drawable.icon_config,
-							new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									settingUi();
-								}
-							}, get(L.Editor_Setting)));
+								new OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										settingUi();
+									}
+								}, get(L.Editor_Setting)));
 		_ToolLayout.addView(createImageView(R.drawable.icon_import,
-							new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									importUi();
-								}
-							}, get(L.Editor_Import)));
+								new OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										importUi();
+									}
+								}, get(L.Editor_Import)));
 		getSupportActionBar().setElevation(0);
 	}
 	private int _IMWidth=-1, _IMPadding=-1;
@@ -239,21 +213,21 @@ public class EditorActivity extends VActivity {
 		getSupportActionBar().setDisplayShowCustomEnabled(true);
 		getSupportActionBar().setCustomView(OpenedSpinner);
 		OpenedSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View v, int pos, long id) {
-				if (add) {
-					add = false;
-					return;
+				@Override
+				public void onItemSelected(AdapterView<?> parent, View v, int pos, long id) {
+					if (add) {
+						add = false;
+						return;
+					}
+					if (pos == nowOpen) {
+						closeFile(pos);
+					} else {
+						openJs(Opened.get(pos));
+					}
 				}
-				if (pos == nowOpen) {
-					closeFile(pos);
-				} else {
-					openJs(Opened.get(pos));
-				}
-			}
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {}
-		});
+				@Override
+				public void onNothingSelected(AdapterView<?> parent) {}
+			});
 	}
 	private boolean add=false;
 	private void rCloseFile(int pos) {
@@ -268,22 +242,22 @@ public class EditorActivity extends VActivity {
 			rCloseFile(pos);
 		else {
 			ui.newAlertDialog().setTitle(get(L.Remind)).setMessage(get(L.Editor_DidntSave))
-			.setPositiveButton(get(L.Editor_SaveAndExit), new VAlertDialog.OnClickListener() {
-				@Override
-				public void onClick(VAlertDialog dialog, int ppos) {
-					try {
-						IOUtil.write(pro.getFile(getNowOpen()), editor.getText().toString());
-						rCloseFile(pos);
-					} catch (IOException e) {
-						err(e);
+				.setPositiveButton(get(L.Editor_SaveAndExit), new VAlertDialog.OnClickListener() {
+					@Override
+					public void onClick(VAlertDialog dialog, int ppos) {
+						try {
+							IOUtil.write(pro.getFile(getNowOpen()), editor.getText().toString());
+							rCloseFile(pos);
+						} catch (IOException e) {
+							err(e);
+						}
 					}
-				}
-			}).setNegativeButton(get(L.Editor_DirectlyExit), new VAlertDialog.OnClickListener() {
-				@Override
-				public void onClick(VAlertDialog dialog, int pos) {
-					rCloseFile(pos);
-				}
-			}).setNeutralButton(get(L.Editor_Cancel), null).setCancelable(true).show();
+				}).setNegativeButton(get(L.Editor_DirectlyExit), new VAlertDialog.OnClickListener() {
+					@Override
+					public void onClick(VAlertDialog dialog, int pos) {
+						rCloseFile(pos);
+					}
+				}).setNeutralButton(get(L.Editor_Cancel), null).setCancelable(true).show();
 		}
 	}
 	private LinearLayout RootLayout;
@@ -317,11 +291,11 @@ public class EditorActivity extends VActivity {
 			tv.setGravity(Gravity.CENTER);
 			p = new LinearLayout.LayoutParams(ui.dp2px(38), ui.dp2px(38));
 			tv.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					editor.paste(((TextView) v).getText().toString().equals(TAB) ?"\t": ((TextView) v).getText().toString());
-				}
-			});
+					@Override
+					public void onClick(View v) {
+						editor.paste(((TextView) v).getText().toString().equals(TAB) ?"\t": ((TextView) v).getText().toString());
+					}
+				});
 			ContentLayout.addView(tv, p);
 		}
 		HorizontalScrollView sc=new HorizontalScrollView(this);
@@ -351,40 +325,40 @@ public class EditorActivity extends VActivity {
 		prog.setCancelable(true);
 		prog.show();
 		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					final String s=IOUtil.bytes2String(IOUtil.read(pro.getFile(js)));
-					ui.autoOnUi(new Runnable() {
-						@Override
-						public void run() {
-							editor.setText(s);
-							refreshAutoComplete(js);
-							editor.setSaved(true);
-							prog.dismiss();
-						}
-					});
-				} catch (IOException e) {
-					ui.print(get(L.Editor_ErrorWhileReading));
-					ui.autoOnUi(new Runnable() {
-						@Override
-						public void run() {
-							prog.dismiss();
-							finish();
-						}
-					});
+				@Override
+				public void run() {
+					try {
+						final String s=IOUtil.bytes2String(IOUtil.read(pro.getFile(js)));
+						ui.autoOnUi(new Runnable() {
+								@Override
+								public void run() {
+									editor.setText(s);
+									refreshAutoComplete(js);
+									editor.setSaved(true);
+									prog.dismiss();
+								}
+							});
+					} catch (IOException e) {
+						ui.print(get(L.Editor_ErrorWhileReading));
+						ui.autoOnUi(new Runnable() {
+								@Override
+								public void run() {
+									prog.dismiss();
+									finish();
+								}
+							});
+					}
 				}
-			}
-		}).start();
+			}).start();
 	}
 	VProgressDialog mCompileDialog;
 	public void setCompileText(final String s) {
 		ui.autoOnUi(new Runnable() {
-			@Override
-			public void run() {
-				if (mCompileDialog != null) mCompileDialog.setMessage(s);
-			}
-		});
+				@Override
+				public void run() {
+					if (mCompileDialog != null) mCompileDialog.setMessage(s);
+				}
+			});
 	}
 	@Override
 	public void finish() {
@@ -434,29 +408,29 @@ public class EditorActivity extends VActivity {
 					case 0:{
 							VAlertDialog d=ui.newAlertDialog();
 							d.setTitle(get(L.Editor_CreateFile)).setEditHint(get(L.Editor_FileName)).setPositiveButton(get(L.Editor_OK), false, new VAlertDialog.OnClickListener() {
-								@Override
-								public void onClick(VAlertDialog d, int pos) {
-									String s=d.getInputText();
-									if (s == null || s.length() == 0) {
-										d.getEditText().setError(get(L.NameCantEmpty));
-										return;
+									@Override
+									public void onClick(VAlertDialog d, int pos) {
+										String s=d.getInputText();
+										if (s == null || s.length() == 0) {
+											d.getEditText().setError(get(L.NameCantEmpty));
+											return;
+										}
+										if (s.contains(File.separator)) {
+											d.getEditText().setError(get(L.ContainsIllegalChar));
+											return;
+										}
+										if (!s.endsWith(".js")) s += ".js";
+										if (new File(pro.getDir(), s).exists()) {
+											d.getEditText().setError(get(L.Editor_FileAlreadyExist));
+											return;
+										}
+										Jsc c=pro.addJs(s, JsExtend.JsVActivity);
+										pro.saveManifest();
+										ui.print(get(L.Editor_Added));
+										openJs(c);
+										d.dismiss();
 									}
-									if (s.contains(File.separator)) {
-										d.getEditText().setError(get(L.ContainsIllegalChar));
-										return;
-									}
-									if (!s.endsWith(".js")) s += ".js";
-									if (new File(pro.getDir(), s).exists()) {
-										d.getEditText().setError(get(L.Editor_FileAlreadyExist));
-										return;
-									}
-									Jsc c=pro.addJs(s, JsExtend.JsVActivity);
-									pro.saveManifest();
-									ui.print(get(L.Editor_Added));
-									openJs(c);
-									d.dismiss();
-								}
-							}).setCancelable(true).show();
+								}).setCancelable(true).show();
 							break;
 						}
 					case 1:{
@@ -473,11 +447,11 @@ public class EditorActivity extends VActivity {
 								String[] cs=new String[res.size()];
 								for (int i=0;i < res.size();i++) cs[i] = res.get(i).toString();
 								d.setItems(cs, new VAlertDialog.OnClickListener() {
-									@Override
-									public void onClick(VAlertDialog d, int pos) {
-										openJs(res.get(pos));
-									}
-								});
+										@Override
+										public void onClick(VAlertDialog d, int pos) {
+											openJs(res.get(pos));
+										}
+									});
 							}
 							d.setPositiveButton(get(L.Editor_Close), null).setCancelable(true).show();
 							break;
@@ -485,17 +459,17 @@ public class EditorActivity extends VActivity {
 					case 2:{
 							if (editor.isSaved()) break;
 							new Thread(new Runnable() {
-								@Override
-								public void run() {
-									try {
-										IOUtil.write(pro.getFile(getNowOpen()), editor.getText().toString());
-										ui.print(get(L.Editor_Saved), get(L.IKnow), UI.getThemeColor(), null);
-										ui.autoOnUi(SaveDoneAction);
-									} catch (IOException e) {
-										ui.alert(get(L.Editor_ErrorWhileSaving), Log.getStackTraceString(e));
+									@Override
+									public void run() {
+										try {
+											IOUtil.write(pro.getFile(getNowOpen()), editor.getText().toString());
+											ui.print(get(L.Editor_Saved), get(L.IKnow), UI.getThemeColor(), null);
+											ui.autoOnUi(SaveDoneAction);
+										} catch (IOException e) {
+											ui.alert(get(L.Editor_ErrorWhileSaving), Log.getStackTraceString(e));
+										}
 									}
-								}
-							}).start();
+								}).start();
 							break;
 						}
 				}
@@ -520,22 +494,22 @@ public class EditorActivity extends VActivity {
 	public void runUi() {
 		if (!editor.isSaved()) {
 			ui.newAlertDialog().setTitle(get(L.Remind)).setMessage(get(L.Editor_RunWithoutSave))
-			.setPositiveButton(get(L.Editor_SaveAndRun), new VAlertDialog.OnClickListener() {
-				@Override
-				public void onClick(VAlertDialog dialog, int ppos) {
-					try {
-						IOUtil.write(pro.getFile(getNowOpen()), editor.getText().toString());
-						rRun();
-					} catch (IOException e) {
-						err(e);
+				.setPositiveButton(get(L.Editor_SaveAndRun), new VAlertDialog.OnClickListener() {
+					@Override
+					public void onClick(VAlertDialog dialog, int ppos) {
+						try {
+							IOUtil.write(pro.getFile(getNowOpen()), editor.getText().toString());
+							rRun();
+						} catch (IOException e) {
+							err(e);
+						}
 					}
-				}
-			}).setNegativeButton(get(L.Editor_DirectlyRun), new VAlertDialog.OnClickListener() {
-				@Override
-				public void onClick(VAlertDialog dialog, int pos) {
-					rRun();
-				}
-			}).setNeutralButton(get(L.Editor_Cancel), null).setCancelable(true).show();
+				}).setNegativeButton(get(L.Editor_DirectlyRun), new VAlertDialog.OnClickListener() {
+					@Override
+					public void onClick(VAlertDialog dialog, int pos) {
+						rRun();
+					}
+				}).setNeutralButton(get(L.Editor_Cancel), null).setCancelable(true).show();
 		} else rRun();
 	}
 	private static final File TmpJsc=new File(Environment.getExternalStorageDirectory(), "VIDETmp/Running.jsc");
@@ -564,33 +538,33 @@ public class EditorActivity extends VActivity {
 	public void outputUi() {
 		if (!editor.isSaved()) {
 			ui.newAlertDialog().setTitle(get(L.Remind)).setMessage(get(L.Editor_OutputWithoutSave))
-			.setPositiveButton(get(L.Editor_SaveAndOutput), new VAlertDialog.OnClickListener() {
-				@Override
-				public void onClick(VAlertDialog dialog, int ppos) {
-					try {
-						IOUtil.write(pro.getFile(getNowOpen()), editor.getText().toString());
-						rOutputUi();
-					} catch (IOException e) {
-						err(e);
+				.setPositiveButton(get(L.Editor_SaveAndOutput), new VAlertDialog.OnClickListener() {
+					@Override
+					public void onClick(VAlertDialog dialog, int ppos) {
+						try {
+							IOUtil.write(pro.getFile(getNowOpen()), editor.getText().toString());
+							rOutputUi();
+						} catch (IOException e) {
+							err(e);
+						}
 					}
-				}
-			}).setNegativeButton(get(L.Editor_DirectlyOutput), new VAlertDialog.OnClickListener() {
-				@Override
-				public void onClick(VAlertDialog dialog, int pos) {
-					rOutputUi();
-				}
-			}).setNeutralButton(get(L.Editor_Cancel), null).setCancelable(true).show();
+				}).setNegativeButton(get(L.Editor_DirectlyOutput), new VAlertDialog.OnClickListener() {
+					@Override
+					public void onClick(VAlertDialog dialog, int pos) {
+						rOutputUi();
+					}
+				}).setNeutralButton(get(L.Editor_Cancel), null).setCancelable(true).show();
 			return;
 		}
 		rOutputUi();
 	}
 	private void rOutputUi() {
 		ui.newFileChooserDialog(Environment.getExternalStorageDirectory(), new FileChooserDialog.FileChooserListener() {
-			@Override
-			public void onChoose(File f) {
-				outputReal(f);
-			}
-		}, true).setTitle(get(L.Editor_ChooseOutputDir)).setCancelable(true).show();
+				@Override
+				public void onChoose(File f) {
+					outputReal(f);
+				}
+			}, true).setTitle(get(L.Editor_ChooseOutputDir)).setCancelable(true).show();
 	}
 	Handler uiHandler=new Handler() {
 		@Override
@@ -682,13 +656,13 @@ public class EditorActivity extends VActivity {
 				ui.print(String.format(get(L.Editor_BuildedApk), (System.currentTimeMillis() - st)));
 				sendMessage(1, null);
 				ui.autoOnUi(new Runnable() {
-					@Override
-					public void run() {
-						Intent in=new Intent(Intent.ACTION_VIEW);
-						in.setDataAndType(Uri.fromFile(napk), "application/vnd.android.package-archive");
-						startActivity(in);
-					}
-				});
+						@Override
+						public void run() {
+							Intent in=new Intent(Intent.ACTION_VIEW);
+							in.setDataAndType(Uri.fromFile(napk), "application/vnd.android.package-archive");
+							startActivity(in);
+						}
+					});
 			} catch (Exception e) {
 				err(e);
 				sendMessage(1, null);
@@ -729,32 +703,32 @@ public class EditorActivity extends VActivity {
 	public void onBackPressed() {
 		if (!editor.isSaved()) {
 			ui.newAlertDialog().setTitle(get(L.Remind)).setMessage(get(L.Editor_DidntSave))
-			.setPositiveButton(get(L.Editor_SaveAndExit), new VAlertDialog.OnClickListener() {
-				@Override
-				public void onClick(VAlertDialog dialog, int pos) {
-					try {
-						IOUtil.write(pro.getFile(getNowOpen()), editor.getText().toString());
-						EditorActivity.super.finish();
-					} catch (IOException e) {
-						err(e);
+				.setPositiveButton(get(L.Editor_SaveAndExit), new VAlertDialog.OnClickListener() {
+					@Override
+					public void onClick(VAlertDialog dialog, int pos) {
+						try {
+							IOUtil.write(pro.getFile(getNowOpen()), editor.getText().toString());
+							EditorActivity.super.finish();
+						} catch (IOException e) {
+							err(e);
+						}
 					}
-				}
-			}).setNegativeButton(get(L.Editor_DirectlyExit), new VAlertDialog.OnClickListener() {
-				@Override
-				public void onClick(VAlertDialog dialog, int pos) {
-					EditorActivity.super.finish();
-				}
-			}).setNeutralButton(get(L.Editor_Cancel), new VAlertDialog.OnClickListener() {
-				@Override
-				public void onClick(VAlertDialog dialog, int pos) {
-					((BDrawable) getBackDrawable()).animateTo(((BDrawable) getBackDrawable()).getProgress(), 0, 600, 0, new DecelerateInterpolator(), null);
-				}
-			}).setCancelable(true).setOnCancelListener(new VAlertDialog.OnCancelListener() {
-				@Override
-				public void onCancel(VAlertDialog dialog) {
-					((BDrawable) getBackDrawable()).animateTo(((BDrawable) getBackDrawable()).getProgress(), 0, 600, 0, new DecelerateInterpolator(), null);
-				}
-			}).show();
+				}).setNegativeButton(get(L.Editor_DirectlyExit), new VAlertDialog.OnClickListener() {
+					@Override
+					public void onClick(VAlertDialog dialog, int pos) {
+						EditorActivity.super.finish();
+					}
+				}).setNeutralButton(get(L.Editor_Cancel), new VAlertDialog.OnClickListener() {
+					@Override
+					public void onClick(VAlertDialog dialog, int pos) {
+						((BDrawable) getBackDrawable()).animateTo(((BDrawable) getBackDrawable()).getProgress(), 0, 600, 0, new DecelerateInterpolator(), null);
+					}
+				}).setCancelable(true).setOnCancelListener(new VAlertDialog.OnCancelListener() {
+					@Override
+					public void onCancel(VAlertDialog dialog) {
+						((BDrawable) getBackDrawable()).animateTo(((BDrawable) getBackDrawable()).getProgress(), 0, 600, 0, new DecelerateInterpolator(), null);
+					}
+				}).show();
 			((BDrawable) getBackDrawable()).animateTo(((BDrawable) getBackDrawable()).getProgress(), 1, 600, 0, new DecelerateInterpolator(), null);
 		} else super.finish();
 	}
@@ -799,31 +773,31 @@ public class EditorActivity extends VActivity {
 		sp.setSelection(s.getExtend().ordinal());
 		layout.addView(sp);
 		d.setView(layout).setPositiveButton(get(L.Editor_OK), false, new VAlertDialog.OnClickListener() {
-			@Override
-			public void onClick(VAlertDialog dialog, int pos) {
-				String q=ed.getText().toString();
-				if (q == null || q.length() == 0) {
-					ed.setError(get(L.NameCantEmpty));
-					return;
+				@Override
+				public void onClick(VAlertDialog dialog, int pos) {
+					String q=ed.getText().toString();
+					if (q == null || q.length() == 0) {
+						ed.setError(get(L.NameCantEmpty));
+						return;
+					}
+					if (q.contains(File.separator)) {
+						ed.setError(get(L.ContainsIllegalChar));
+						return;
+					}
+					if (!q.endsWith(".js")) q += ".js";
+					if (new File(pro.getDir(), q).exists()) {
+						ed.setError(get(L.Editor_FileAlreadyExist));
+						return;
+					}
+					pro.getFile(s).renameTo(new File(pro.getDir(), q));
+					OpenedAdapter.notifyDataSetChanged();
+					s.setName(q);
+					s.setExtend(JsExtend.valueOf(sp.getSelectedItem().toString()));
+					pro.saveManifest();
+					refreshAutoComplete(s);
+					dialog.dismiss();
 				}
-				if (q.contains(File.separator)) {
-					ed.setError(get(L.ContainsIllegalChar));
-					return;
-				}
-				if (!q.endsWith(".js")) q += ".js";
-				if (new File(pro.getDir(), q).exists()) {
-					ed.setError(get(L.Editor_FileAlreadyExist));
-					return;
-				}
-				pro.getFile(s).renameTo(new File(pro.getDir(), q));
-				OpenedAdapter.notifyDataSetChanged();
-				s.setName(q);
-				s.setExtend(JsExtend.valueOf(sp.getSelectedItem().toString()));
-				pro.saveManifest();
-				refreshAutoComplete(s);
-				dialog.dismiss();
-			}
-		}).setNegativeButton(get(L.Editor_Cancel), null).setCancelable(true).show();
+			}).setNegativeButton(get(L.Editor_Cancel), null).setCancelable(true).show();
 	}
 	private void refreshAutoComplete(Jsc c) {
 		AutoCompletePanel.clearConst();
@@ -848,25 +822,25 @@ public class EditorActivity extends VActivity {
 	}
 	private void importUi() {
 		ui.newFileChooserDialog(Environment.getExternalStorageDirectory(), new FileChooserDialog.FileChooserListener() {
-			@Override
-			public void onChoose(final File f) {
-				VProgressDialog p=new VProgressDialog(EditorActivity.this);
-				p.setTitle(get(L.Wait)).setMessage(get(L.Importing)).setCancelable(false).putToUi("ImportAssets").show();
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							IOUtil.copy(f, new File(pro.getAssets(), f.getName()));
-							VProgressDialog.getFromUi("ImportAssets").dismiss();
-							ui.print(get(L.Done));
-						} catch (IOException e) {
-							VProgressDialog.getFromUi("ImportAssets").dismiss();
-							ui.newAlertDialog().setTitle(get(L.Wrong)).setMessage(Log.getStackTraceString(e)).show();
-						}
-					}
-				}).start();
-			}
-		}, true).setCancelable(true).show();
+				@Override
+				public void onChoose(final File f) {
+					VProgressDialog p=new VProgressDialog(EditorActivity.this);
+					p.setTitle(get(L.Wait)).setMessage(get(L.Importing)).setCancelable(false).putToUi("ImportAssets").show();
+					new Thread(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									IOUtil.copy(f, new File(pro.getAssets(), f.getName()));
+									VProgressDialog.getFromUi("ImportAssets").dismiss();
+									ui.print(get(L.Done));
+								} catch (IOException e) {
+									VProgressDialog.getFromUi("ImportAssets").dismiss();
+									ui.newAlertDialog().setTitle(get(L.Wrong)).setMessage(Log.getStackTraceString(e)).show();
+								}
+							}
+						}).start();
+				}
+			}, true).setCancelable(true).show();
 	}
 	private void settingUi() {
 		Jsc c=getNowOpen();
@@ -887,25 +861,26 @@ public class EditorActivity extends VActivity {
 		spin.setAdapter(q);
 		spin.setSelection(c.getExtend().ordinal());
 		d.setView(layout).setCancelable(true).setPositiveButton(get(L.Editor_OK), false, new VAlertDialog.OnClickListener() {
-			@Override
-			public void onClick(VAlertDialog dialog, int pos) {
-				String w=ed.getText().toString();
-				if (w == null || w.length() == 0) {
-					ed.setError(get(L.NameCantEmpty));
-					return;
+				@Override
+				public void onClick(VAlertDialog dialog, int pos) {
+					String w=ed.getText().toString();
+					if (w == null || w.length() == 0) {
+						ed.setError(get(L.NameCantEmpty));
+						return;
+					}
+					if (w.contains("/")) {
+						ed.setError(get(L.ContainsIllegalChar));
+						return;
+					}
+					if (!w.endsWith(".js")) w += ".js";
+					getNowOpen().setName(w);
+					getNowOpen().setExtend(JsExtend.valueOf(spin.getSelectedItem().toString()));
+					OpenedAdapter.notifyDataSetChanged();
+					pro.saveManifest();
+					refreshAutoComplete(getNowOpen());
+					ui.print(get(L.Editor_ConfigEdited));
+					dialog.dismiss();
 				}
-				if (w.contains("/")) {
-					ed.setError(get(L.ContainsIllegalChar));
-					return;
-				}
-				if (!w.endsWith(".js")) w += ".js";
-				getNowOpen().setName(w);
-				getNowOpen().setExtend(JsExtend.valueOf(spin.getSelectedItem().toString()));
-				OpenedAdapter.notifyDataSetChanged();
-				pro.saveManifest();
-				ui.print(get(L.Editor_ConfigEdited));
-				dialog.dismiss();
-			}
-		}).setNegativeButton(get(L.Editor_Cancel), null).show();
+			}).setNegativeButton(get(L.Editor_Cancel), null).show();
 	}
 }
