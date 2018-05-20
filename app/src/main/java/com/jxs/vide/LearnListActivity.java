@@ -67,7 +67,7 @@ public class LearnListActivity extends VActivity {
 		FASES.clear();
 		try {
 			Scanner scan=null;
-			if (Global.LEARN_DEBUG) scan = new Scanner(new FileInputStream(new File(Environment.getExternalStorageDirectory(), "AppProjects/VIDE/Lessons/List"))); else scan = new Scanner(getAssets().open("lessons/List"));
+			if (Global.LEARN_DEBUG) scan = new Scanner(new FileInputStream(new File(Environment.getExternalStorageDirectory(), "AppProjects/VIDE/app/src/main/assets/lessons/List"))); else scan = new Scanner(getAssets().open("lessons/List"));
 			Lesson.Fase present=null;
 			String read;
 			while (scan.hasNextLine()) {

@@ -44,7 +44,7 @@ public class LearnActivity extends VActivity {
 		String name=getIntent().getStringExtra("name");
 		Program = new JsProgram(name);
 		try {
-			if (Global.LEARN_DEBUG) Program.setCode(new String(IOUtil.read(new File(Environment.getExternalStorageDirectory(), "Lessons/" + name)))); else Program.setCode(new String(IOUtil.read(getAssets().open(String.format("lessons/%s", name)))));
+			if (Global.LEARN_DEBUG) Program.setCode(new String(IOUtil.read(new File(Environment.getExternalStorageDirectory(), "AppProjects/VIDE/app/src/main/assets/lessons/" + name)))); else Program.setCode(new String(IOUtil.read(getAssets().open(String.format("lessons/%s", name)))));
 			Program.getScriptableObject().defineProperty("a", this, ScriptableObject.CONST);
 		} catch (Throwable e) {err(e, true);}
 		initContentView();

@@ -13,13 +13,10 @@ function onActivityFinish() {
   if (finished) return;
   onClick();
 }
-
 function onClick(v) {
 switch (s) {
 
-default:
-  a.run();
-  break;
+default:a.run();break;
 }
 s++;
 }

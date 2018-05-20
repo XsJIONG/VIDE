@@ -7,8 +7,8 @@ a.setButtonText("下一步");
 function onClick(v) {
 switch (s) {
 case 0:
-  a.setContent("number - 数字\n数字的表达形式很简单，就像你平时书写数字一样就可以了\n不过你并不能使用科学计数法(计算机读不懂啊说？)");
-  a.setCode("vout.println(23);\nvout.println(3.14);\nvout.println(2333);");
+  a.setContent("number - 数字\n数字的表达形式很简单，就像你平时书写数字一样就可以了\n当然你也可以使用科学计数法");
+  a.setCode("vout.println(23);\nvout.println(3.14);\nvout.println(2333);\nvout.println(123e5);");
   a.setButtonText("运行");
   break;
 case 1:
@@ -43,7 +43,7 @@ case 9:
   a.run();
   break;
 case 10:
-  a.setContent("今天的课程就到这里，你可以随意修改代码来联系，下课！");
+  a.setContent("今天的课程就到这里，你可以随意修改代码来练习，下课！");
   finish();
   break;
 default:
