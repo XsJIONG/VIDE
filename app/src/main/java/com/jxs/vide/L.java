@@ -23,7 +23,8 @@ public class L {
 	Debugger_EvalCode,Debugger_NotInCurrentThread,Debugger_CompileErr,Debugger_ExecErr,VButton_Ticker,VButton_Title,VButton_Text,Debugger_Variable,Debugger_ScriptableInfo,
 	UnknownError,Exit,Title_VApp,HaveFun,Login,Regist,UserName,Password,Login_OR,UserNameCannotEmpty,PasswordCannotEmpty,UserNameExceed,PasswordExceed,Registing,NoNetwork,ConnectTimeout,
 	UserNameBeenUsed,InvalidOldPassword,UploadFailed,RegistSuccess,Logining,InvalidUserNameOrPassword,Logined,Title_UploadVApp,Description,DesCannotBeEmpty,DesExceed,DidnotChoosed,Uploading,
-	Compiling,Uploaded,Downloading,MoreSettings,VersionInfo,EditPermissions,VersionCode,VersionName,VersionCodeCannotBeEmpty,VersionNameCannotBeEmpty,EditSuccessfully,OpenSource,UpdateDes,Update,PkgLessThanTwo;
+	Compiling,Uploaded,Downloading,MoreSettings,VersionInfo,EditPermissions,VersionCode,VersionName,VersionCodeCannotBeEmpty,VersionNameCannotBeEmpty,EditSuccessfully,OpenSource,UpdateDes,Update,PkgLessThanTwo,
+	LoginFirst;
 	public static String get(int id) {
 		return Language.get(id);
 	}

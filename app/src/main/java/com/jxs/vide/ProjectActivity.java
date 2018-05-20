@@ -152,15 +152,15 @@ public class ProjectActivity extends VActivity {
 		StartEdit = new Button(this);
 		StartEdit.setText(get(L.EnterEditor));
 		StartEdit.setBackgroundColor(UI.getThemeColor());
-		StartEdit.setTextColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		StartEdit.setTextColor(UI.getAccentColor());
 		SaveManifest = new Button(this);
 		SaveManifest.setText(get(L.SaveManifest));
 		SaveManifest.setBackgroundColor(UI.getThemeColor());
-		SaveManifest.setTextColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		SaveManifest.setTextColor(UI.getAccentColor());
 		MoreSettings = new Button(this);
 		MoreSettings.setText(get(L.MoreSettings));
 		MoreSettings.setBackgroundColor(UI.getThemeColor());
-		MoreSettings.setTextColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		MoreSettings.setTextColor(UI.getAccentColor());
 		/*try {
 		 StartEdit.setElevation(0);
 		 SaveManifest.setElevation(0);
@@ -197,12 +197,12 @@ public class ProjectActivity extends VActivity {
 		AppNameDes.setTextColor(c);
 		PackageNameDes.setTextColor(c);
 		StartEdit.setBackgroundColor(c);
-		StartEdit.setTextColor(ColorUtil.getBlackOrWhite(c));
+		int w=UI.getAccentColor();
+		StartEdit.setTextColor(w);
 		SaveManifest.setBackgroundColor(c);
-		SaveManifest.setTextColor(ColorUtil.getBlackOrWhite(c));
+		SaveManifest.setTextColor(w);
 		MoreSettings.setBackgroundColor(c);
-		MoreSettings.setTextColor(ColorUtil.getBlackOrWhite(c));
-		int w=ColorUtil.getBlackOrWhite(c);
+		MoreSettings.setTextColor(w);
 		if (_Menu != null) for (int i=0;i < MENU_COUNT;i++) UI.tintDrawable(_Menu.getItem(i).getIcon(), w);
 	}
 	public void openEditor(View v) {
@@ -360,7 +360,7 @@ public class ProjectActivity extends VActivity {
 			}
 			public void setChoosed(boolean flag) {
 				root.setBackgroundColor(flag ?UI.getThemeColor(): Color.WHITE);
-				tv.setTextColor(flag ?ColorUtil.getBlackOrWhite(UI.getThemeColor()): Color.BLACK);
+				tv.setTextColor(flag ?UI.getAccentColor(): Color.BLACK);
 			}
 		}
 	}

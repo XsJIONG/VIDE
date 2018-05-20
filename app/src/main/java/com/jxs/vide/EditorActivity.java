@@ -109,14 +109,14 @@ public class EditorActivity extends VActivity {
 	public void onThemeChange(String key) {
 		if (!key.equals(UI.THEME_UI_COLOR)) return;
 		super.onThemeChange(key);
-		setTitleTextColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		setTitleTextColor(UI.getAccentColor());
 		_Toolbar.setBackgroundColor(UI.getThemeColor());
 		_BarLayout.setBackgroundColor(UI.getThemeColor());
 		SymbolLayout.setBackgroundColor(UI.getThemeColor());
-		int w=ColorUtil.getBlackOrWhite(UI.getThemeColor());
+		int w=UI.getAccentColor();
 		for (int i=0;i < ContentLayout.getChildCount();i++) ((TextView) ContentLayout.getChildAt(i)).setTextColor(w);
 		if (_Menu != null) for (int i=0;i < MenuCount;i++) UI.tintDrawable(_Menu.getItem(i).getIcon(), w);
-		for (int i=0;i < _ToolLayout.getChildCount();i++) UI.tintDrawable(((ImageView) _ToolLayout.getChildAt(i)).getDrawable(), ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		for (int i=0;i < _ToolLayout.getChildCount();i++) UI.tintDrawable(((ImageView) _ToolLayout.getChildAt(i)).getDrawable(), UI.getAccentColor());
 	}
 	@Override
 	protected void onDestroy() {
@@ -151,7 +151,7 @@ public class EditorActivity extends VActivity {
 		setContentView(RootLayout);
 		setSupportActionBar(_Toolbar);
 		setTitleText(get(L.Title_Edit));
-		setTitleTextColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		setTitleTextColor(UI.getAccentColor());
 		enableBackButton();
 		_Toolbar.setBackgroundColor(UI.getThemeColor());
 		_BarLayout.setBackgroundColor(UI.getThemeColor());
@@ -194,7 +194,7 @@ public class EditorActivity extends VActivity {
 	private int _IMWidth=-1, _IMPadding=-1;
 	private ImageView createImageView(int resource, OnClickListener listener, CharSequence des) {
 		final ImageView v=new ImageView(this);
-		v.setImageDrawable(DrawableHelper.getDrawable(resource, ColorUtil.getBlackOrWhite(UI.getThemeColor())));
+		v.setImageDrawable(DrawableHelper.getDrawable(resource, UI.getAccentColor()));
 		if (_IMWidth == -1) {
 			_IMWidth = ui.dp2px(48);
 			_IMPadding = ui.dp2px(10);
@@ -279,7 +279,7 @@ public class EditorActivity extends VActivity {
 		SymbolLayout.setAlpha(0.7f);
 		ContentLayout = new LinearLayout(this);
 		ContentLayout.setOrientation(LinearLayout.HORIZONTAL);
-		int w=ColorUtil.getBlackOrWhite(UI.getThemeColor());
+		int w=UI.getAccentColor();
 		TextView tv;
 		LinearLayout.LayoutParams p;
 		for (int i=0;i < SYMBOLS.length;i++) {
@@ -314,7 +314,7 @@ public class EditorActivity extends VActivity {
 				  arr.Bottom, q.RightBottom,
 				  arr.Bottom, q.Dot
 				  );
-		d.setColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		d.setColor(UI.getAccentColor());
 		d.setStrokeWidth(3);
 		setBackDrawable(d);
 	}
@@ -382,7 +382,7 @@ public class EditorActivity extends VActivity {
 		menu.add(0, 0, 0, get(L.Editor_File)).setIcon(R.drawable.icon_file).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		initActions();
 		menu.add(0, 1, 1, get(L.Editor_More)).setIcon(DrawableHelper.getDrawable(R.drawable.icon_class, Color.WHITE)).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		int w=ColorUtil.getBlackOrWhite(UI.getThemeColor());
+		int w=UI.getAccentColor();
 		for (int i=0;i < MenuCount;i++) UI.tintDrawable(_Menu.getItem(i).getIcon(), w);
 		return super.onCreateOptionsMenu(menu);
 	}

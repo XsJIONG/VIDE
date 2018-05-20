@@ -1,28 +1,17 @@
 package com.jxs.vcompat.activity;
 
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
-import com.jxs.vcompat.drawable.ArrowShape;
-import com.jxs.vcompat.fragment.VFragmentManager;
-import com.jxs.vcompat.ui.BDrawable;
-import com.jxs.vcompat.ui.ColorUtil;
-import com.jxs.vcompat.ui.UI;
-import com.jxs.vcompat.ui.VAlertDialog;
-import com.jxs.vcompat.ui.ViewLoader;
-import java.util.ArrayList;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.os.*;
+import android.support.v4.view.*;
+import android.support.v7.app.*;
+import android.util.*;
+import android.view.*;
+import android.widget.*;
+import com.jxs.vcompat.drawable.*;
+import com.jxs.vcompat.fragment.*;
+import com.jxs.vcompat.ui.*;
+import java.util.*;
 
 public class VActivity extends AppCompatActivity implements UI.OnThemeChangeListener {
 	public static ArrayList<VActivity> Activities=new ArrayList<>();
@@ -40,9 +29,9 @@ public class VActivity extends AppCompatActivity implements UI.OnThemeChangeList
 		if (getSupportActionBar() != null) {
 			setTitleElevation(10f);
 			rSetTitleBackground(UI.getThemeColor());
-			rSetTitleTextColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+			rSetTitleTextColor(UI.getAccentColor());
 			BackDrawable = new ArrowShape(this, 5f).toSimpleDrawable();
-			UI.tintDrawable(BackDrawable, ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+			UI.tintDrawable(BackDrawable, UI.getAccentColor());
 			((BDrawable) BackDrawable).setStrokeWidth(5f);
 			getSupportActionBar().setHomeAsUpIndicator(BackDrawable);
 			getSupportActionBar().setLogo(null);
@@ -117,9 +106,9 @@ public class VActivity extends AppCompatActivity implements UI.OnThemeChangeList
 	public void onThemeChange(String key) {
 		if (!key.equals(UI.THEME_UI_COLOR)) return;
 		if (getSupportActionBar() != null && !_TitleBackgroundSetted) rSetTitleBackground(UI.getThemeColor());
-		if (getSupportActionBar() != null && !_TitleTextSetted) rSetTitleTextColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		if (getSupportActionBar() != null && !_TitleTextSetted) rSetTitleTextColor(UI.getAccentColor());
 		if (!StatusT) setStatusBarColor(UI.getThemeColor());
-		setBackButtonColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		setBackButtonColor(UI.getAccentColor());
 	}
 	int titleColor=0xFF000000;
 	int subTitleColor=0xFF555555;
@@ -196,23 +185,23 @@ public class VActivity extends AppCompatActivity implements UI.OnThemeChangeList
 	}
 	public void err(final Throwable t, final boolean force) {
 		ui.autoOnUi(new Runnable() {
-			@Override
-			public void run() {
-				String config=Log.getStackTraceString(t);
-				Log.e(TAG, config);
-				ui.newAlertDialog()
-				.setTitle("Error")
-				.setMessage(config)
-				.setPositiveButton("OK", force ?new VAlertDialog.OnClickListener() {
-									   @Override
-									   public void onClick(VAlertDialog dialog, int pos) {
-										   finish();
-									   }
-								   }: null)
-				.setCancelable(force ?false: true)
-				.show();
-			}
-		});
+				@Override
+				public void run() {
+					String config=Log.getStackTraceString(t);
+					Log.e(TAG, config);
+					ui.newAlertDialog()
+						.setTitle("Error")
+						.setMessage(config)
+						.setPositiveButton("OK", force ?new VAlertDialog.OnClickListener() {
+											   @Override
+											   public void onClick(VAlertDialog dialog, int pos) {
+												   finish();
+											   }
+										   }: null)
+						.setCancelable(force ?false: true)
+						.show();
+				}
+			});
 	}
 	public static void killAll() {
 		for (VActivity one : Activities) one.finish();

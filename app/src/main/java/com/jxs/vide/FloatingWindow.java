@@ -145,7 +145,7 @@ public class FloatingWindow extends LinearLayout implements UI.OnThemeChangeList
 	@Override
 	public void onThemeChange(String key) {
 		if (!key.equals(UI.THEME_UI_COLOR)) return;
-		int w=ColorUtil.getBlackOrWhite(UI.getThemeColor());
+		int w=UI.getAccentColor();
 		Title.setTextColor(w);
 		edgePaint.setColor(UI.getThemeColor());
 		edgeContainter.setBackgroundColor(UI.getThemeColor());

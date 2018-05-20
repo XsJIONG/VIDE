@@ -53,11 +53,15 @@ public class ProjectViewHelper {
 		try {
 			adapter.removeAll();
 			File[] fs=Project.listFiles();
-			if (fs.length == 0) {
+			boolean find=false;
+			for (File one : fs) if (Project.isProject(one)) {
+					find = true;
+					adapter.add(Project.getInstance(one));
+				}
+			if (!find) {
 				Scroller.setVisibility(View.GONE);
 				Cry.setVisibility(View.VISIBLE);
 			}
-			for (File one : fs) if (Project.isProject(one)) adapter.add(Project.getInstance(one));
 		} catch (Exception e) {
 			cx.err(e, true);
 		}

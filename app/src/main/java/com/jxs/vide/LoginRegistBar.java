@@ -38,7 +38,7 @@ public class LoginRegistBar extends View {
 		onThemeChange();
 	}
 	public void onThemeChange() {
-		BackgroundPaint.setColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		BackgroundPaint.setColor(UI.getAccentColor());
 		invalidate();
 	}
 	public void setColor(int color) {
@@ -53,7 +53,7 @@ public class LoginRegistBar extends View {
 		TPaint.setColor(UI.getThemeColor());
 		drawCenter(canvas, inLoginLayout ?get(L.Regist): get(L.Login), new Rect(PAD, PAD, getWidth() / 2 - PAD - r, getHeight() - PAD * 2));
 		drawCenter(canvas, inLoginLayout ?get(L.Login): get(L.Regist), new Rect(getWidth() / 2 + r, PAD, getWidth() - PAD, getHeight() - PAD));
-		TPaint.setColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		TPaint.setColor(UI.getAccentColor());
 		drawCenter(canvas, get(L.Login_OR), new Rect(getWidth() / 2 - r, PAD, getWidth() / 2 + r, getHeight() - PAD));
 	}
 	public void setInLoginLayout(boolean flag) {

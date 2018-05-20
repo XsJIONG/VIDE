@@ -185,6 +185,7 @@ public class Lang_FChinese extends Lang {
 		qwe(L.UpdateDes, "VIDE - V%s");
 		qwe(L.Update, "升級");
 		qwe(L.PkgLessThanTwo, "包名少於兩位！");
+		qwe(L.LoginFirst, "請先登錄！");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

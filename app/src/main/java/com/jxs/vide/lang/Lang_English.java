@@ -185,6 +185,7 @@ public class Lang_English extends Lang {
 		qwe(L.UpdateDes, "VIDE - V%s");
 		qwe(L.Update, "Update");
 		qwe(L.PkgLessThanTwo,"Package name can not less than two parts");
+		qwe(L.LoginFirst, "Please login first!");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

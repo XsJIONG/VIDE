@@ -145,7 +145,7 @@ public class LearnListActivity extends VActivity {
 		}
 		private void onThemeChange() {
 			layout.setBackgroundColor(UI.getThemeColor());
-			int w=ColorUtil.getBlackOrWhite(UI.getThemeColor());
+			int w=UI.getAccentColor();
 			title.setTextColor(w);
 			subtitle.setTextColor(w);
 		}

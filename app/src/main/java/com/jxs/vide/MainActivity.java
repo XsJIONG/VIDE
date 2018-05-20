@@ -1,54 +1,35 @@
 package com.jxs.vide;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.content.res.ColorStateList;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
-import android.support.design.widget.AppBarLayout;
+import android.app.*;
+import android.content.*;
+import android.content.pm.*;
+import android.content.res.*;
+import android.graphics.*;
+import android.net.*;
+import android.os.*;
+import android.support.design.widget.*;
+import android.support.v4.view.*;
+import android.support.v4.widget.*;
+import android.support.v7.app.*;
+import android.support.v7.graphics.drawable.*;
+import android.support.v7.widget.*;
+import android.util.*;
+import android.view.*;
+import android.view.View.*;
+import android.view.animation.*;
+import android.widget.*;
+import cn.bmob.v3.*;
+import cn.bmob.v3.exception.*;
+import cn.bmob.v3.listener.*;
+import com.jxs.vapp.program.*;
+import com.jxs.vcompat.activity.*;
+import com.jxs.vcompat.ui.*;
+import com.jxs.vcompat.widget.*;
+import java.io.*;
+import java.util.*;
+
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.DownloadFileListener;
-import cn.bmob.v3.listener.FindListener;
-import com.jxs.vapp.program.JsExtend;
-import com.jxs.vapp.program.Jsc;
-import com.jxs.vcompat.activity.VActivity;
-import com.jxs.vcompat.ui.ColorUtil;
-import com.jxs.vcompat.ui.UI;
-import com.jxs.vcompat.ui.VAlertDialog;
-import com.jxs.vcompat.widget.VEditText;
-import com.jxs.vcompat.widget.VScrollView;
-import com.jxs.vide.DrawableHelper;
-import com.jxs.vide.Project;
-import com.jxs.vide.R;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.jxs.vide.L.get;
 
@@ -77,34 +58,34 @@ public class MainActivity extends VActivity {
 		//Signature Check
 		if (getSignature(this) != 1484347571 || getSignature(this) + 5 != 1484347576 || !((getSignature(this) + "").equals("1484347571"))) {
 			ui.newAlertDialog().setTitle(new String(new byte[]{-24, -83, -90, -27, -111, -118})).setMessage(new String(new byte[]{-28, -67, -96, -26, -119, -128, -28, -72, -117, -24, -67, -67, -25, -102, -124, -24, -67, -81, -28, -69, -74, -26, -104, -81, -24, -94, -85, -23, -121, -115, -25, -83, -66, -27, -112, -115, -28, -65, -82, -26, -108, -71, -25, -102, -124, -25, -101, -105, -25, -119, -120, 10, -24, -81, -73, -24, -127, -108, -25, -77, -69, -28, -67, -100, -24, -128, -123, 81, 81, 50, 53, 48, 56, 53, 49, 48, 52, 56, -26, -99, -91, -24, -114, -73, -27, -113, -106, -26, -83, -93, -25, -119, -120, -24, -67, -81, -28, -69, -74})).setPositiveButton(new String(new byte[]{-25, -95, -82, -27, -82, -102}), new VAlertDialog.OnClickListener() {
-				@Override
-				public void onClick(VAlertDialog dialog, int pos) {
-					android.os.Process.killProcess(android.os.Process.myPid());
-					System.exit(0);
-				}
-			}).setOnCancelListener(new VAlertDialog.OnCancelListener() {
-				@Override
-				public void onCancel(VAlertDialog dialog) {
-					android.os.Process.killProcess(android.os.Process.myPid());
-					System.exit(0);
-				}
-			}).setCancelable(true).show();
+					@Override
+					public void onClick(VAlertDialog dialog, int pos) {
+						android.os.Process.killProcess(android.os.Process.myPid());
+						System.exit(0);
+					}
+				}).setOnCancelListener(new VAlertDialog.OnCancelListener() {
+					@Override
+					public void onCancel(VAlertDialog dialog) {
+						android.os.Process.killProcess(android.os.Process.myPid());
+						System.exit(0);
+					}
+				}).setCancelable(true).show();
 		}
 		try {
 			Class.forName(new String(new byte[]{99, 99, 46, 98, 105, 110, 109, 116, 46, 115, 105, 103, 110, 97, 116, 117, 114, 101, 46, 80, 109, 115, 72, 111, 111, 107, 65, 112, 112, 108, 105, 99, 97, 116, 105, 111, 110}));
 			ui.newAlertDialog().setTitle(new String(new byte[]{-24, -83, -90, -27, -111, -118})).setMessage(new String(new byte[]{-28, -67, -96, -27, -66, -120, -27, -92, -87, -25, -100, -97, -27, -107, -118, 10, -28, -67, -96, -25, -100, -97, -25, -102, -124, -24, -82, -92, -28, -72, -70, -27, -113, -86, -23, -100, -128, -24, -90, -127, -25, -108, -88, 77, 84, -25, -82, -95, -25, -112, -122, -27, -103, -88, -27, -123, -115, -25, -83, -66, -27, -112, -115, -23, -86, -116, -24, -81, -127, -27, -80, -79, -27, -113, -81, -28, -69, -91, -25, -96, -76, -24, -89, -93, 86, 73, 68, 69, -27, -112, -105, -17, -68, -97, 10, -27, -81, -71, -28, -70, -114, -25, -108, -88, -26, -120, -73, 10, -28, -67, -96, -26, -119, -128, -28, -67, -65, -25, -108, -88, -25, -102, -124, 86, 73, 68, 69, -26, -104, -81, -24, -94, -85, -28, -69, -106, -28, -70, -70, -28, -65, -82, -26, -108, -71, -24, -65, -121, -25, -102, -124, -25, -101, -105, -25, -119, -120, 10, -24, -81, -73, -24, -127, -108, -25, -77, -69, -28, -67, -100, -24, -128, -123, 81, 81, 50, 53, 48, 56, 53, 49, 48, 52, 56, -26, -99, -91, -24, -114, -73, -27, -113, -106, -26, -83, -93, -25, -119, -120})).setPositiveButton(new String(new byte[]{-25, -95, -82, -27, -82, -102}), new VAlertDialog.OnClickListener() {
-				@Override
-				public void onClick(VAlertDialog dialog, int pos) {
-					android.os.Process.killProcess(android.os.Process.myPid());
-					System.exit(0);
-				}
-			}).setOnCancelListener(new VAlertDialog.OnCancelListener() {
-				@Override
-				public void onCancel(VAlertDialog dialog) {
-					android.os.Process.killProcess(android.os.Process.myPid());
-					System.exit(0);
-				}
-			}).setCancelable(true).show();
+					@Override
+					public void onClick(VAlertDialog dialog, int pos) {
+						android.os.Process.killProcess(android.os.Process.myPid());
+						System.exit(0);
+					}
+				}).setOnCancelListener(new VAlertDialog.OnCancelListener() {
+					@Override
+					public void onCancel(VAlertDialog dialog) {
+						android.os.Process.killProcess(android.os.Process.myPid());
+						System.exit(0);
+					}
+				}).setCancelable(true).show();
 		} catch (Exception e) {}
 		checkUpdate();
 	}
@@ -120,44 +101,85 @@ public class MainActivity extends VActivity {
 		} else {
 			UserLayout.setVisibility(View.VISIBLE);
 			_User.downloadIcon(new VUser.IconListener() {
-				@Override
-				public void onDone(Bitmap b) {
-					UserIcon.setTag(0);
-					UserIcon.setImageBitmap(b);
-				}
-			});
+					@Override
+					public void onDone(Bitmap b) {
+						UserIcon.setTag(0);
+						UserIcon.setImageBitmap(b);
+					}
+				});
 			UserName.setText(_User.getUsername());
 		}
 	}
 	private ActionBarDrawerToggle DrawerToggle;
+	private FloatingActionButton FABCreateSimple;
+	private static final int P=UI.dp2px(32);
+	private static final int FS=UI.dp2px(64);
+	private static final int SPLIT=UI.dp2px(12);
 	private void initProjectsView() {
 		Root = new RelativeLayout(this);
 		VH = new ProjectViewHelper(this);
 		VH.setOnProjectClickListener(new ProjectViewHelper.OnProjectClickListener() {
-			@Override
-			public void onClick(Project pro, View view) {
-				startActivity(new Intent(MainActivity.this, ProjectActivity.class).putExtra("project", pro.getName()));
-			}
-		});
+				@Override
+				public void onClick(Project pro, View view) {
+					startActivity(new Intent(MainActivity.this, ProjectActivity.class).putExtra("project", pro.getName()));
+				}
+			});
 		Root.addView(VH.getView(), new RelativeLayout.LayoutParams(-1, -1));
 		FAB = new FloatingActionButton(this);
-		FAB.setImageDrawable(DrawableHelper.getDrawable(R.drawable.v_add, ColorUtil.getBlackOrWhite(UI.getThemeColor())));
+		FABCreateSimple = new FloatingActionButton(this);
+		FAB.setImageDrawable(DrawableHelper.getDrawable(R.drawable.v_add, UI.getAccentColor()));
+		FABCreateSimple.setImageDrawable(DrawableHelper.getDrawable(R.drawable.icon_activity, UI.getAccentColor()));
 		try {
-			FAB.setBackgroundTintList(ColorStateList.valueOf(UI.getThemeColor()));
+			ColorStateList s=ColorStateList.valueOf(UI.getThemeColor());
+			FAB.setBackgroundTintList(s);
+			FABCreateSimple.setBackgroundTintList(s);
 		} catch (Exception e) {}
-		RelativeLayout.LayoutParams para=new RelativeLayout.LayoutParams(UI.dp2px(64), UI.dp2px(64));
-		para.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		para.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		para.rightMargin = para.bottomMargin = UI.dp2px(32);
-		Root.addView(FAB, para);
+		FloatingActionButton[] ALL={FAB,FABCreateSimple};
+		RelativeLayout.LayoutParams para;
+		for (int i=0;i < ALL.length;i++) {
+			para = new RelativeLayout.LayoutParams(FS, FS);
+			para.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			para.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			para.rightMargin = para.bottomMargin = P;
+			para.bottomMargin += i * (FS + SPLIT);
+			if (i != 0) ALL[i].setVisibility(View.GONE);
+			Root.addView(ALL[i], para);
+		}
+		ALL = null;
 		para = new RelativeLayout.LayoutParams(-1, -1);
 		para.addRule(RelativeLayout.CENTER_IN_PARENT);
 		FAB.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				createUI();
-			}
-		});
+				private boolean Rotate=false;
+				@Override
+				public void onClick(View v) {
+					RotateAnimation ani=new RotateAnimation(Rotate ?225: 0, Rotate ?0: 225, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+					ani.setDuration(500);
+					ani.setFillAfter(true);
+					ani.setInterpolator(new AccelerateDecelerateInterpolator());
+					AlphaAnimation alpha=new AlphaAnimation(Rotate ?1: 0, Rotate ?0: 1);
+					alpha.setDuration(300);
+					FAB.startAnimation(ani);
+					if (!Rotate) FABCreateSimple.setVisibility(View.VISIBLE); else alpha.setAnimationListener(new Animation.AnimationListener() {
+								@Override
+								public void onAnimationEnd(Animation ani) {
+									FABCreateSimple.setVisibility(View.GONE);
+								}
+								@Override
+								public void onAnimationStart(Animation ani) {}
+								@Override
+								public void onAnimationRepeat(Animation ani) {}
+							});
+					FABCreateSimple.startAnimation(alpha);
+					Rotate = !Rotate;
+				}
+			});
+		FABCreateSimple.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					createUI();
+					FAB.performClick();
+				}
+			});
 	}
 	private LinearLayout LoginLayout;
 	private RelativeLayout UserLayout;
@@ -168,7 +190,7 @@ public class MainActivity extends VActivity {
 		Title.setTitle(getResources().getString(R.string.app_name));
 		setSupportActionBar(Title);
 		Title.setBackgroundColor(UI.getThemeColor());
-		Title.setTitleTextColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		Title.setTitleTextColor(UI.getAccentColor());
 		TitleLayout = new AppBarLayout(this);
 		TitleLayout.addView(Title);
 		Content.addView(TitleLayout);
@@ -184,7 +206,7 @@ public class MainActivity extends VActivity {
 		DrawerToggle = new ActionBarDrawerToggle(this, Drawer, Title, R.string.drawer_open, R.string.drawer_close);
 		DrawerToggle.syncState();
 		Drawer.setDrawerListener(DrawerToggle);
-		((DrawerArrowDrawable) Title.getNavigationIcon()).setColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		((DrawerArrowDrawable) Title.getNavigationIcon()).setColor(UI.getAccentColor());
 	}
 	private GradientView DrawerGradient;
 	private ImageView UserIcon;
@@ -192,7 +214,7 @@ public class MainActivity extends VActivity {
 	private RelativeLayout InfoLayout;
 	public static final int ICON_SIZE=UI.dp2px(64);
 	private View getDrawerView() {
-		int w=ColorUtil.getBlackOrWhite(UI.getThemeColor());
+		int w=UI.getAccentColor();
 		RoundLinearLayout layout=new RoundLinearLayout(this);
 		layout.setRadius(5f);
 		layout.setBackgroundColor(UI.getThemeColor());
@@ -206,11 +228,11 @@ public class MainActivity extends VActivity {
 		LoginLayout.setOrientation(LinearLayout.VERTICAL);
 		LoginLayout.setGravity(Gravity.CENTER);
 		LoginLayout.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				startActivity(new Intent(MainActivity.this, LoginActivity.class));
-			}
-		});
+				@Override
+				public void onClick(View v) {
+					startActivity(new Intent(MainActivity.this, LoginActivity.class));
+				}
+			});
 		ImageView UnknownIcon=new ImageView(this);
 		UnknownIcon.setImageDrawable(ui.tintDrawable(R.drawable.icon_user, w));
 		LoginLayout.addView(UnknownIcon, new LinearLayout.LayoutParams(ICON_SIZE, ICON_SIZE));
@@ -239,12 +261,12 @@ public class MainActivity extends VActivity {
 		ImageView Logout=new ImageView(this);
 		Logout.setImageResource(R.drawable.icon_logout);
 		Logout.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				BmobUser.logOut();
-				fadeFromUserToLogin();
-			}
-		});
+				@Override
+				public void onClick(View v) {
+					BmobUser.logOut();
+					fadeFromUserToLogin();
+				}
+			});
 		UserLayout.addView(UserContentLayout, new RelativeLayout.LayoutParams(-1, -1));
 		RelativeLayout.LayoutParams LogoutPara=new RelativeLayout.LayoutParams(UI.dp2px(32), UI.dp2px(32));
 		LogoutPara.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -261,11 +283,11 @@ public class MainActivity extends VActivity {
 		ItemLayout.addView(newItemView(R.drawable.icon_settings, get(L.Title_Setting), new StartActivityListener(SettingActivity.class)));
 		ItemLayout.addView(newItemView(R.drawable.v_about, get(L.Title_About), new StartActivityListener(AboutActivity.class)));
 		ItemLayout.addView(newItemView(R.drawable.icon_exit, get(L.Exit), new OnClickListener() {
-							   @Override
-							   public void onClick(View v) {
-								   killAll();
-							   }
-						   }));
+								   @Override
+								   public void onClick(View v) {
+									   killAll();
+								   }
+							   }));
 		//Items - End
 		VScrollView ItemScroller=new VScrollView(this);
 		ItemScroller.setFillViewport(true);
@@ -277,15 +299,15 @@ public class MainActivity extends VActivity {
 		AlphaAnimation ani=new AlphaAnimation(1, 0);
 		ani.setDuration(700);
 		ani.setAnimationListener(new Animation.AnimationListener() {
-			@Override
-			public void onAnimationStart(Animation ani) {}
-			@Override
-			public void onAnimationRepeat(Animation ani) {}
-			@Override
-			public void onAnimationEnd(Animation ani) {
-				UserLayout.setVisibility(View.GONE);
-			}
-		});
+				@Override
+				public void onAnimationStart(Animation ani) {}
+				@Override
+				public void onAnimationRepeat(Animation ani) {}
+				@Override
+				public void onAnimationEnd(Animation ani) {
+					UserLayout.setVisibility(View.GONE);
+				}
+			});
 		ani.setFillAfter(false);
 		UserLayout.startAnimation(ani);
 		ani = new AlphaAnimation(0, 1);
@@ -306,7 +328,7 @@ public class MainActivity extends VActivity {
 	}
 	private ArrayList<LinearLayout> Items=new ArrayList<>();
 	private View newItemView(int id, String title, OnClickListener click) {
-		int w=ColorUtil.getBlackOrWhite(UI.getThemeColor());
+		int w=UI.getAccentColor();
 		LinearLayout layout=new LinearLayout(this);
 		layout.setOrientation(LinearLayout.HORIZONTAL);
 		layout.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
@@ -337,8 +359,8 @@ public class MainActivity extends VActivity {
 	public void onThemeChange(String key) {
 		super.onThemeChange(key);
 		if (!key.equals(UI.THEME_UI_COLOR)) return;
-		int w=ColorUtil.getBlackOrWhite(UI.getThemeColor());
-		((DrawerArrowDrawable) Title.getNavigationIcon()).setColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		int w=UI.getAccentColor();
+		((DrawerArrowDrawable) Title.getNavigationIcon()).setColor(UI.getAccentColor());
 		Drawer.getChildAt(1).setBackgroundColor(UI.getThemeColor());
 		ImageView iv;
 		for (LinearLayout one : Items) {
@@ -346,7 +368,7 @@ public class MainActivity extends VActivity {
 			iv.setImageDrawable(UI.tintDrawable(iv.getDrawable(), w));
 			((TextView) one.getChildAt(1)).setTextColor(w);
 		}
-		FAB.setImageDrawable(DrawableHelper.getDrawable(R.drawable.v_add, ColorUtil.getBlackOrWhite(UI.getThemeColor())));
+		FAB.setImageDrawable(DrawableHelper.getDrawable(R.drawable.v_add, UI.getAccentColor()));
 		try {
 			FAB.setBackgroundTintList(ColorStateList.valueOf(UI.getThemeColor()));
 		} catch (Throwable e) {}
@@ -382,40 +404,40 @@ public class MainActivity extends VActivity {
 		layout.addView(ped);
 		dialog.setView(layout);
 		dialog.setPositiveButton(get(L.OK), false, new VAlertDialog.OnClickListener() {
-			@Override
-			public void onClick(VAlertDialog dialog, int pos) {
-				String name=ed.getText().toString();
-				String ill=Project.isAppNameValid(name);
-				if (ill != null) {
-					ed.setError(ill);
-					return;
+				@Override
+				public void onClick(VAlertDialog dialog, int pos) {
+					String name=ed.getText().toString();
+					String ill=Project.isAppNameValid(name);
+					if (ill != null) {
+						ed.setError(ill);
+						return;
+					}
+					String p=ped.getText().toString();
+					ill = Project.isPackageNameValid(p);
+					if (ill != null) {
+						ped.setError(ill);
+						return;
+					}
+					File f=new File(Project.PATH, name);
+					if (f.exists()) {
+						ed.setError(get(L.Main_ProjectAlreadyExist));
+						return;
+					}
+					try {
+						Project pro=Project.getInstance(f, true);
+						pro.setAppName(name);
+						pro.setPackageName(p);
+						Jsc sc=pro.addJs("Main.js", JsExtend.JsVActivity);
+						pro.setMainJs(sc);
+						pro.saveManifest();
+					} catch (Exception e) {
+						err(e);
+					}
+					ui.print(get(L.Main_ProjectCreated));
+					dialog.dismiss();
+					VH.loadData();
 				}
-				String p=ped.getText().toString();
-				ill = Project.isPackageNameValid(p);
-				if (ill != null) {
-					ped.setError(ill);
-					return;
-				}
-				File f=new File(Project.PATH, name);
-				if (f.exists()) {
-					ed.setError(get(L.Main_ProjectAlreadyExist));
-					return;
-				}
-				try {
-					Project pro=Project.getInstance(f, true);
-					pro.setAppName(name);
-					pro.setPackageName(p);
-					Jsc sc=pro.addJs("Main.js", JsExtend.JsVActivity);
-					pro.setMainJs(sc);
-					pro.saveManifest();
-				} catch (Exception e) {
-					err(e);
-				}
-				ui.print(get(L.Main_ProjectCreated));
-				dialog.dismiss();
-				VH.loadData();
-			}
-		});
+			});
 		dialog.show();
 	}
 	public void notifyProjectRename() {
@@ -428,44 +450,44 @@ public class MainActivity extends VActivity {
 			q.addWhereGreaterThan("VCode", c);
 			q.order("VCode");
 			q.findObjects(new FindListener<AppEntity>() {
-				@Override
-				public void done(List<AppEntity> data, BmobException e) {
-					if (e != null) return;
-					if (data == null || data.size() == 0) return;
-					final AppEntity en=data.get(0);
-					final File target=getUpdateFile(en.VName);
-					VAlertDialog dialog=ui.newAlertDialog();
-					dialog.setTitle(String.format(get(L.UpdateDes), en.VName))
-					.setMessage(en.Content)
-					.setCancelable(!en.Force)
-					.setNegativeButton(get(L.Cancel), null).setPositiveButton(get(L.Update), false, new VAlertDialog.OnClickListener() {
-						@Override
-						public void onClick(final VAlertDialog dialog, int pos) {
-							if (target.exists()) {
-								installApk(target);
-								dialog.dismiss();
-							}
-							dialog.setCancelable(false);
-							dialog.setPositiveButton("0%", false, null);
-							en.File.download(target, new DownloadFileListener() {
+					@Override
+					public void done(List<AppEntity> data, BmobException e) {
+						if (e != null) return;
+						if (data == null || data.size() == 0) return;
+						final AppEntity en=data.get(0);
+						final File target=getUpdateFile(en.VName);
+						VAlertDialog dialog=ui.newAlertDialog();
+						dialog.setTitle(String.format(get(L.UpdateDes), en.VName))
+							.setMessage(en.Content)
+							.setCancelable(!en.Force)
+							.setNegativeButton(get(L.Cancel), null).setPositiveButton(get(L.Update), false, new VAlertDialog.OnClickListener() {
 								@Override
-								public void done(String path, BmobException e) {
-									dialog.dismiss();
-									if (e != null) {
-										Global.onBmobErr(ui, e);
-										return;
+								public void onClick(final VAlertDialog dialog, int pos) {
+									if (target.exists()) {
+										installApk(target);
+										dialog.dismiss();
 									}
-									installApk(target);
+									dialog.setCancelable(false);
+									dialog.setPositiveButton("0%", false, null);
+									en.File.download(target, new DownloadFileListener() {
+											@Override
+											public void done(String path, BmobException e) {
+												dialog.dismiss();
+												if (e != null) {
+													Global.onBmobErr(ui, e);
+													return;
+												}
+												installApk(target);
+											}
+											@Override
+											public void onProgress(Integer pro, long size) {
+												dialog.setPositiveButton(pro + "%", false, null);
+											}
+										});
 								}
-								@Override
-								public void onProgress(Integer pro, long size) {
-									dialog.setPositiveButton(pro + "%", false, null);
-								}
-							});
-						}
-					}).show();
-				}
-			});
+							}).show();
+					}
+				});
 		} catch (Throwable t) {}
 	}
 	private void installApk(File f) {

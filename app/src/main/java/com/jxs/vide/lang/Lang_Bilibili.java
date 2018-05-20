@@ -185,6 +185,7 @@ public class Lang_Bilibili extends Lang {
 		qwe(L.UpdateDes, "VIDE - V%s");
 		qwe(L.Update, "升级！");
 		qwe(L.PkgLessThanTwo, "包名少于两位啦！");
+		qwe(L.LoginFirst, "请先登录啦！");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

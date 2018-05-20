@@ -185,6 +185,7 @@ public class Lang_Chinese extends Lang {
 		qwe(L.UpdateDes, "VIDE - V%s");
 		qwe(L.Update, "升级");
 		qwe(L.PkgLessThanTwo, "包名少于两位！");
+		qwe(L.LoginFirst, "请先登录！");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

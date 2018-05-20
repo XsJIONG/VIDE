@@ -292,7 +292,7 @@ public class LoginActivity extends VActivity {
 	@Override
 	public void onThemeChange(String key) {
 		super.onThemeChange(key);
-		int w=ColorUtil.getBlackOrWhite(UI.getThemeColor());
+		int w=UI.getAccentColor();
 		if (!key.equals(UI.THEME_UI_COLOR)) return;
 		if (Helper != null) Helper.onThemeChange();
 		Root.setBackgroundColor(UI.getThemeColor());
@@ -406,7 +406,7 @@ public class LoginActivity extends VActivity {
 				_Paint = new Paint();
 				_Paint.setStyle(Paint.Style.FILL);
 				_Paint.setAntiAlias(true);
-				_Paint.setColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+				_Paint.setColor(UI.getAccentColor());
 				_Paint.setShadowLayer(10, 0, 3, Color.GRAY);
 			}
 			public void setProgress(float pro) {
@@ -435,7 +435,7 @@ public class LoginActivity extends VActivity {
 				canvas.drawPath(ArrowPath, _Paint);
 			}
 			public void onThemeChange() {
-				_Paint.setColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+				_Paint.setColor(UI.getAccentColor());
 			}
 		}
 	}
@@ -479,7 +479,7 @@ public class LoginActivity extends VActivity {
 				_Paint = new Paint();
 				_Paint.setStyle(Paint.Style.FILL);
 				_Paint.setAntiAlias(true);
-				_Paint.setColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+				_Paint.setColor(UI.getAccentColor());
 				_Paint.setShadowLayer(10, 3, 0, Color.GRAY);
 			}
 			public void setProgress(float pro) {
@@ -508,7 +508,7 @@ public class LoginActivity extends VActivity {
 				invalidate();
 			}
 			public void onThemeChange() {
-				_Paint.setColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+				_Paint.setColor(UI.getAccentColor());
 			}
 		}
 	}

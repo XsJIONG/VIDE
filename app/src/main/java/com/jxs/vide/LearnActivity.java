@@ -54,7 +54,7 @@ public class LearnActivity extends VActivity {
 		enableBackButton();
 		onThemeChange(UI.THEME_UI_COLOR);
 		BDrawable BackDrawable = new ArrowShape(this, 5f).toSimpleDrawable();
-		UI.tintDrawable(BackDrawable, ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		UI.tintDrawable(BackDrawable, UI.getAccentColor());
 		BackDrawable.setStrokeWidth(5f);
 		getSupportActionBar().setHomeAsUpIndicator(BackDrawable);
 		getSupportActionBar().setLogo(null);
@@ -74,21 +74,21 @@ public class LearnActivity extends VActivity {
 		Content.setSingleLine(false);
 		int dp=ui.dp2px(15);
 		Content.setPadding(dp, dp, dp, dp);
-		Content.setTextColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		Content.setTextColor(UI.getAccentColor());
 		Content.setMovementMethod(ScrollingMovementMethod.getInstance());
 		BarLayout.addView(Content);
 		Addon = new LinearLayout(this);
 		Addon.setOrientation(LinearLayout.VERTICAL);
 		SplitLine = new View(this);
 		int dp2=ui.dp2px(13);
-		SplitLine.setBackgroundColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		SplitLine.setBackgroundColor(UI.getAccentColor());
 		Addon.addView(SplitLine, new LinearLayout.LayoutParams(-1, ui.dp2px(2)));
 		Addon.setPadding(dp2, 0, dp2, dp2);
 		Control = new Button(this);
 		Control.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
 		Control.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 		Control.setTextSize(13);
-		Control.setTextColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		Control.setTextColor(UI.getAccentColor());
 		Control.setText(get(L.Run));
 		Control.setBackground(null);
 		Control.setPadding(dp - dp2, 0, dp - dp2, 0);
@@ -108,9 +108,9 @@ public class LearnActivity extends VActivity {
 		super.onThemeChange(key);
 		if (!key.equals(UI.THEME_UI_COLOR)) return;
 		BarLayout.setBackgroundColor(UI.getThemeColor());
-		Control.setTextColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
-		SplitLine.setBackgroundColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
-		Content.setTextColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		Control.setTextColor(UI.getAccentColor());
+		SplitLine.setBackgroundColor(UI.getAccentColor());
+		Content.setTextColor(UI.getAccentColor());
 	}
 	public void setContent(CharSequence s) {
 		Content.setText(s);

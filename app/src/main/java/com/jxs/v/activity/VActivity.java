@@ -39,9 +39,9 @@ public class VActivity extends Activity implements UI.OnThemeChangeListener {
 		if (getActionBar() != null) {
 			setTitleElevation(10f);
 			rSetTitleBackground(UI.getThemeColor());
-			rSetTitleTextColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+			rSetTitleTextColor(UI.getAccentColor());
 			BackDrawable = new ArrowShape(this, 5f).toSimpleDrawable();
-			UI.tintDrawable(BackDrawable, ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+			UI.tintDrawable(BackDrawable, UI.getAccentColor());
 			((BDrawable) BackDrawable).setStrokeWidth(5f);
 			getActionBar().setHomeAsUpIndicator(BackDrawable);
 			getActionBar().setLogo(null);
@@ -116,9 +116,9 @@ public class VActivity extends Activity implements UI.OnThemeChangeListener {
 	public void onThemeChange(String key) {
 		if (!key.equals(UI.THEME_UI_COLOR)) return;
 		if (getActionBar() != null && !_TitleBackgroundSetted) rSetTitleBackground(UI.getThemeColor());
-		if (getActionBar() != null && !_TitleTextSetted) rSetTitleTextColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		if (getActionBar() != null && !_TitleTextSetted) rSetTitleTextColor(UI.getAccentColor());
 		if (!StatusT) setStatusBarColor(UI.getThemeColor());
-		setBackButtonColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		setBackButtonColor(UI.getAccentColor());
 	}
 	int titleColor=0xFF000000;
 	int subTitleColor=0xFF555555;

@@ -87,12 +87,12 @@ public class UploadVAppActivity extends VActivity {
 		Title.setTitle(get(L.Title_UploadVApp));
 		Title.setBackgroundColor(UI.getThemeColor());
 		BarLayout.setBackgroundColor(UI.getThemeColor());
-		int w=ColorUtil.getBlackOrWhite(UI.getThemeColor());
+		int w=UI.getAccentColor();
 		Title.setTitleTextColor(w);
 		BarLayout.addView(Title);
 		setSupportActionBar(Title);
 		BDrawable BackDrawable = new ArrowShape(this, 5f).toSimpleDrawable();
-		UI.tintDrawable(BackDrawable, ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		UI.tintDrawable(BackDrawable, UI.getAccentColor());
 		BackDrawable.setStrokeWidth(5f);
 		Title.setNavigationIcon(BackDrawable);
 		ViewCompat.setElevation(BarLayout, 5f);
@@ -105,10 +105,10 @@ public class UploadVAppActivity extends VActivity {
 		Open = new CheckBox(this);
 		Open.setChecked(false);
 		try {
-			Open.setButtonTintList(ColorStateList.valueOf(ColorUtil.getBlackOrWhite(UI.getThemeColor())));
+			Open.setButtonTintList(ColorStateList.valueOf(UI.getAccentColor()));
 		} catch (Throwable t) {}
 		OpenDes = new TextView(this);
-		OpenDes.setTextColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+		OpenDes.setTextColor(UI.getAccentColor());
 		OpenDes.setText(get(L.OpenSource));
 		LinearLayout OpenSource=new LinearLayout(this);
 		OpenSource.setOrientation(LinearLayout.HORIZONTAL);
@@ -120,7 +120,7 @@ public class UploadVAppActivity extends VActivity {
 	public void onThemeChange(String key) {
 		if (!key.equals(UI.THEME_UI_COLOR)) return;
 		super.onThemeChange(key);
-		int w=ColorUtil.getBlackOrWhite(UI.getThemeColor());
+		int w=UI.getAccentColor();
 		Des.setUnderLineColor(w);
 		Des.setHintTextColor(w);
 		Des.setTextColor(w);
@@ -159,7 +159,7 @@ public class UploadVAppActivity extends VActivity {
 					CenterText = new TextView(this);
 					CenterText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 35);
 					CenterText.setText(get(L.Wait));
-				 	CenterText.setTextColor(ColorUtil.getBlackOrWhite(UI.getThemeColor()));
+				 	CenterText.setTextColor(UI.getAccentColor());
 					FrameLayout.LayoutParams para=new FrameLayout.LayoutParams(-2, -2);
 					para.gravity = Gravity.CENTER;
 					Ani = new RevealAnimation(Root, getWindowManager().getDefaultDisplay().getWidth() - UI.dp2px(16), UI.dp2px(16), UI.getThemeColor());

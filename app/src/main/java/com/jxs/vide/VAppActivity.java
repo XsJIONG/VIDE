@@ -1,40 +1,32 @@
 package com.jxs.vide;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.os.Environment;
+import android.app.*;
+import android.content.*;
+import android.content.res.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.os.*;
+import android.support.design.widget.*;
+import android.support.v4.widget.*;
+import android.util.*;
+import android.view.*;
+import android.view.View.*;
+import android.widget.*;
+import android.widget.AdapterView.*;
+import cn.bmob.v3.*;
+import cn.bmob.v3.exception.*;
+import cn.bmob.v3.listener.*;
+import com.jxs.v.widget.*;
+import com.jxs.vcompat.activity.*;
+import com.jxs.vcompat.ui.*;
+import com.jxs.vcompat.widget.*;
+import java.io.*;
+import java.util.*;
+
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.DownloadFileListener;
-import cn.bmob.v3.listener.FindListener;
 import com.jxs.v.widget.CardView;
-import com.jxs.vcompat.activity.VActivity;
-import com.jxs.vcompat.ui.ColorUtil;
-import com.jxs.vcompat.ui.UI;
-import com.jxs.vcompat.ui.VProgressDialog;
 import com.jxs.vcompat.widget.VListView;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.jxs.vide.L.get;
 
@@ -68,28 +60,28 @@ public class VAppActivity extends VActivity {
 	}
 	private void loadData() {
 		Refresh.post(new Runnable() {
-			@Override
-			public void run() {
-				Refresh.setRefreshing(true);
-			}
-		});
+				@Override
+				public void run() {
+					Refresh.setRefreshing(true);
+				}
+			});
 		BmobQuery<VAppEntity> q=new BmobQuery<>();
 		q.order("-createdAt");
 		q.findObjects(new FindListener<VAppEntity>() {
-			@Override
-			public void done(List<VAppEntity> data, BmobException e) {
-				if (e != null) {
-					Global.onBmobErr(ui, e);
+				@Override
+				public void done(List<VAppEntity> data, BmobException e) {
+					if (e != null) {
+						Global.onBmobErr(ui, e);
+						Refresh.setRefreshing(false);
+						return;
+					}
+					if (data == null) return;
+					Adapter.clear();
+					for (VAppEntity one : data) Adapter.add(one);
+					Adapter.notifyDataSetChanged();
 					Refresh.setRefreshing(false);
-					return;
 				}
-				if (data == null) return;
-				Adapter.clear();
-				for (VAppEntity one : data) Adapter.add(one);
-				Adapter.notifyDataSetChanged();
-				Refresh.setRefreshing(false);
-			}
-		});
+			});
 	}
 	@Override
 	public void onThemeChange(String key) {
@@ -104,12 +96,12 @@ public class VAppActivity extends VActivity {
 		Root = new RelativeLayout(this);
 		Refresh = new SwipeRefreshLayout(this);
 		Refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-			@Override
-			public void onRefresh() {
-				Global.UserNames.clear();
-				loadData();
-			}
-		});
+				@Override
+				public void onRefresh() {
+					Global.UserNames.clear();
+					loadData();
+				}
+			});
 		Refresh.setColorSchemeColors(new int[]{UI.getThemeColor()});
 		ContentList = new VListView(this);
 		ContentList.setDividerHeight(0);
@@ -128,18 +120,23 @@ public class VAppActivity extends VActivity {
 		UploadPara.bottomMargin = UploadPara.rightMargin = UI.dp2px(32);
 		Root.addView(Upload, UploadPara);
 		Upload.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				startActivity(new Intent(VAppActivity.this, BmobUser.getCurrentUser(VUser.class) == null ?LoginActivity.class: UploadVAppActivity.class));
-			}
-		});
+				@Override
+				public void onClick(View v) {
+					if (BmobUser.getCurrentUser(VUser.class) == null) {
+						ui.toast(get(L.LoginFirst));
+						startActivity(new Intent(VAppActivity.this, LoginActivity.class));
+						return;
+					}
+					startActivity(new Intent(VAppActivity.this, BmobUser.getCurrentUser(VUser.class) == null ?LoginActivity.class: UploadVAppActivity.class));
+				}
+			});
 		ContentList.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-				VAppEntity en=Adapter.getItem(pos);
-				downloadJsc(en, getTempFile(en));
-			}
-		});
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+					VAppEntity en=Adapter.getItem(pos);
+					downloadJsc(en, getTempFile(en));
+				}
+			});
 	}
 	private void runJsc(File f) {
 		Intent i=new Intent(VAppActivity.this, NoDisplayActivity.class);
@@ -168,26 +165,26 @@ public class VAppActivity extends VActivity {
 		public void run() {
 			if (en.Content == null) return;
 			en.Content.download(f, new DownloadFileListener() {
-				@Override
-				public void done(String path, BmobException e) {
-					if (e != null) {
-						H.dismiss();
-						Global.onBmobErr(cx.ui, e);
-						return;
-					}
-					H.dismiss();
-					cx.ui.autoOnUi(new Runnable() {
-						@Override
-						public void run() {
-							cx.runJsc(f);
+					@Override
+					public void done(String path, BmobException e) {
+						if (e != null) {
+							H.dismiss();
+							Global.onBmobErr(cx.ui, e);
+							return;
 						}
-					});
-				}
-				@Override
-				public void onProgress(Integer value, long size) {
-					H.setMessage(String.format(get(L.Downloading), value));
-				}
-			});
+						H.dismiss();
+						cx.ui.autoOnUi(new Runnable() {
+								@Override
+								public void run() {
+									cx.runJsc(f);
+								}
+							});
+					}
+					@Override
+					public void onProgress(Integer value, long size) {
+						H.setMessage(String.format(get(L.Downloading), value));
+					}
+				});
 		}
 	}
 	public static File getTempFile(VAppEntity entity) {
@@ -253,18 +250,18 @@ public class VAppActivity extends VActivity {
 				q.addWhereEqualTo("objectId", entity.Author);
 				q.setLimit(1); //WTF
 				q.findObjects(new FindListener<VUser>() {
-					@Override
-					public void done(List<VUser> data, BmobException e) {
-						if (e != null) {
-							Global.onBmobErr(new UI(getContext()), e);
-							return;
+						@Override
+						public void done(List<VUser> data, BmobException e) {
+							if (e != null) {
+								Global.onBmobErr(new UI(getContext()), e);
+								return;
+							}
+							if (data == null || data.size() != 1) return;
+							VUser u=data.get(0);
+							Global.UserNames.put(u.getObjectId(), u.getUsername());
+							User.setText(u.getUsername());
 						}
-						if (data == null || data.size() != 1) return;
-						VUser u=data.get(0);
-						Global.UserNames.put(u.getObjectId(), u.getUsername());
-						User.setText(u.getUsername());
-					}
-				});
+					});
 			}
 			return Content;
 		}
@@ -273,7 +270,7 @@ public class VAppActivity extends VActivity {
 			public TextView Title,Des,User;
 			public void onThemeChange() {
 				int ui=UI.getThemeColor();
-				int w=ColorUtil.getBlackOrWhite(ui);
+				int w=UI.getAccentColor();
 				if (Card != null) Card.setCardBackgroundColor(ui);
 				if (Title != null) Title.setTextColor(w);
 				if (Des != null) Des.setTextColor(w);
