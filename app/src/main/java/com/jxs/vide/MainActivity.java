@@ -111,7 +111,7 @@ public class MainActivity extends VActivity {
 		}
 	}
 	private ActionBarDrawerToggle DrawerToggle;
-	private FloatingActionButton FABCreateSimple;
+	private FloatingActionButton FABCreateSimple,FABCreateConsole;
 	private static final int P=UI.dp2px(32);
 	private static final int FS=UI.dp2px(64);
 	private static final int SPLIT=UI.dp2px(12);
@@ -127,14 +127,17 @@ public class MainActivity extends VActivity {
 		Root.addView(VH.getView(), new RelativeLayout.LayoutParams(-1, -1));
 		FAB = new FloatingActionButton(this);
 		FABCreateSimple = new FloatingActionButton(this);
+		FABCreateConsole = new FloatingActionButton(this);
 		FAB.setImageDrawable(DrawableHelper.getDrawable(R.drawable.v_add, UI.getAccentColor()));
 		FABCreateSimple.setImageDrawable(DrawableHelper.getDrawable(R.drawable.icon_activity, UI.getAccentColor()));
+		FABCreateConsole.setImageDrawable(DrawableHelper.getDrawable(R.drawable.icon_console, UI.getAccentColor()));
 		try {
 			ColorStateList s=ColorStateList.valueOf(UI.getThemeColor());
 			FAB.setBackgroundTintList(s);
 			FABCreateSimple.setBackgroundTintList(s);
+			FABCreateConsole.setBackgroundTintList(s);
 		} catch (Exception e) {}
-		FloatingActionButton[] ALL={FAB,FABCreateSimple};
+		FloatingActionButton[] ALL={FAB,FABCreateSimple,FABCreateConsole};
 		RelativeLayout.LayoutParams para;
 		for (int i=0;i < ALL.length;i++) {
 			para = new RelativeLayout.LayoutParams(FS, FS);
@@ -176,7 +179,14 @@ public class MainActivity extends VActivity {
 		FABCreateSimple.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					createUI();
+					createUI(true);
+					FAB.performClick();
+				}
+			});
+		FABCreateConsole.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					createUI(false);
 					FAB.performClick();
 				}
 			});
@@ -389,7 +399,7 @@ public class MainActivity extends VActivity {
 		} catch (PackageManager.NameNotFoundException e) {e.printStackTrace();}
 		return -1;
 	}
-	private void createUI() {
+	private void createUI(final boolean app) {
 		VAlertDialog dialog=new VAlertDialog(this);
 		dialog.setTitle(get(L.Main_CreateProject)).setCancelable(true);
 		LinearLayout layout=new LinearLayout(this);
@@ -427,7 +437,7 @@ public class MainActivity extends VActivity {
 						Project pro=Project.getInstance(f, true);
 						pro.setAppName(name);
 						pro.setPackageName(p);
-						Jsc sc=pro.addJs("Main.js", JsExtend.JsVActivity);
+						Jsc sc=pro.addJs("Main.js", app ?JsExtend.JsVActivity: JsExtend.JsConsole);
 						pro.setMainJs(sc);
 						pro.saveManifest();
 					} catch (Exception e) {
