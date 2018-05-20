@@ -112,6 +112,7 @@ public class MainActivity extends VActivity {
 	}
 	private ActionBarDrawerToggle DrawerToggle;
 	private FloatingActionButton FABCreateSimple,FABCreateConsole;
+	private FloatingActionButton[] AllFAB;
 	private static final int P=UI.dp2px(32);
 	private static final int FS=UI.dp2px(64);
 	private static final int SPLIT=UI.dp2px(12);
@@ -137,18 +138,22 @@ public class MainActivity extends VActivity {
 			FABCreateSimple.setBackgroundTintList(s);
 			FABCreateConsole.setBackgroundTintList(s);
 		} catch (Exception e) {}
-		FloatingActionButton[] ALL={FAB,FABCreateSimple,FABCreateConsole};
+		AllFAB = new FloatingActionButton[] {FABCreateSimple,FABCreateConsole};
 		RelativeLayout.LayoutParams para;
-		for (int i=0;i < ALL.length;i++) {
+		for (int i=0;i < AllFAB.length;i++) {
 			para = new RelativeLayout.LayoutParams(FS, FS);
 			para.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 			para.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 			para.rightMargin = para.bottomMargin = P;
-			para.bottomMargin += i * (FS + SPLIT);
-			if (i != 0) ALL[i].setVisibility(View.GONE);
-			Root.addView(ALL[i], para);
+			para.bottomMargin += (i + 1) * (FS + SPLIT);
+			AllFAB[i].setVisibility(View.GONE);
+			Root.addView(AllFAB[i], para);
 		}
-		ALL = null;
+		para = new RelativeLayout.LayoutParams(FS, FS);
+		para.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		para.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		para.rightMargin = para.bottomMargin = P;
+		Root.addView(FAB, para);
 		para = new RelativeLayout.LayoutParams(-1, -1);
 		para.addRule(RelativeLayout.CENTER_IN_PARENT);
 		FAB.setOnClickListener(new OnClickListener() {
@@ -159,20 +164,24 @@ public class MainActivity extends VActivity {
 					ani.setDuration(500);
 					ani.setFillAfter(true);
 					ani.setInterpolator(new AccelerateDecelerateInterpolator());
-					AlphaAnimation alpha=new AlphaAnimation(Rotate ?1: 0, Rotate ?0: 1);
-					alpha.setDuration(300);
-					FAB.startAnimation(ani);
-					if (!Rotate) FABCreateSimple.setVisibility(View.VISIBLE); else alpha.setAnimationListener(new Animation.AnimationListener() {
-								@Override
-								public void onAnimationEnd(Animation ani) {
-									FABCreateSimple.setVisibility(View.GONE);
-								}
-								@Override
-								public void onAnimationStart(Animation ani) {}
-								@Override
-								public void onAnimationRepeat(Animation ani) {}
-							});
-					FABCreateSimple.startAnimation(alpha);
+					for (int i=0;i < AllFAB.length;i++) {
+						AlphaAnimation alpha=new AlphaAnimation(Rotate ?1: 0, Rotate ?0: 1);
+						alpha.setDuration(300);
+						FAB.startAnimation(ani);
+						if (!Rotate) AllFAB[i].setVisibility(View.VISIBLE); else alpha.setAnimationListener(new Animation.AnimationListener() {
+									@Override
+									public void onAnimationEnd(Animation ani) {
+										FABCreateSimple.setVisibility(View.GONE);
+										FABCreateConsole.setVisibility(View.GONE);
+									}
+									@Override
+									public void onAnimationStart(Animation ani) {}
+									@Override
+									public void onAnimationRepeat(Animation ani) {}
+								});
+						AllFAB[i].startAnimation(alpha);
+						AllFAB[i].setVisibility(View.VISIBLE);
+					}
 					Rotate = !Rotate;
 				}
 			});
