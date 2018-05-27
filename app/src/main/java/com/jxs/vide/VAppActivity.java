@@ -138,21 +138,75 @@ public class VAppActivity extends VActivity {
 				@Override
 				public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
 					final VAppEntity en=Adapter.getItem(pos);
-					if (!en.OpenSource) {
-						runJsc(en);
-						return;
-					}
 					final android.support.v7.widget.PopupMenu menu=new android.support.v7.widget.PopupMenu(VAppActivity.this, view, Gravity.CENTER);
-					menu.getMenu().add(0, 0, 0, get(L.VAppRun));
-					menu.getMenu().add(0, 1, 1, get(L.VAppClone));
+					Menu q=menu.getMenu();
+					q.add(0, 0, 0, get(L.VAppRun));
+					q.add(0, 1, 1, get(L.VAppDetail));
+					if (en.OpenSource) q.add(0, 2, 2, get(L.VAppClone));
+					BmobUser user;
+					if ((user = BmobUser.getCurrentUser()) != null && user.getObjectId().equals(en.Author)) q.add(0, 3, 3, get(L.VAppDelete));
 					menu.setOnMenuItemClickListener(new android.support.v7.widget.PopupMenu.OnMenuItemClickListener() {
 							@Override
 							public boolean onMenuItemClick(MenuItem item) {
 								switch (item.getOrder()) {
 									case 0:runJsc(en);break;
-									case 1:
-										if (!TempJscDir.exists()) TempJscDir.mkdirs();
-										downloadJsc(en, new File(TempJscDir, "Tmp"), false);break;
+									case 1:{
+											ui.newAlertDialog().setTitle(get(L.VAppDetail)).setMessage(en.Description).setCancelable(true).setPositiveButton(get(L.OK), null).show();
+											break;
+										}
+									case 2:{
+											if (!TempJscDir.exists()) TempJscDir.mkdirs();
+											downloadJsc(en, new File(TempJscDir, "Tmp"), false);
+											break;
+										}
+									case 3:{
+											final VProgressDialog pro=ui.newProgressDialog();
+											pro.setTitle(get(L.Wait)).setMessage(get(L.Deleting)).setCancelable(false).show();
+											new Thread(new Runnable() {
+													@Override
+													public void run() {
+														en.Content.delete(new UpdateListener() {
+																@Override
+																public void done(final BmobException e) {
+																	if (e != null) {
+																		ui.autoOnUi(new Runnable() {
+																				@Override
+																				public void run() {
+																					pro.dismiss();
+																					Global.onBmobErr(ui, e);
+																				}
+																			});
+																		return;
+																	}
+																	en.delete(new UpdateListener() {
+																			@Override
+																			public void done(final BmobException e) {
+																				if (e != null) {
+																					ui.autoOnUi(new Runnable() {
+																							@Override
+																							public void run() {
+																								pro.dismiss();
+																								Global.onBmobErr(ui, e);
+																							}
+																						});
+																					return;
+																				}
+																				ui.autoOnUi(new Runnable() {
+																						@Override
+																						public void run() {
+																							pro.dismiss();
+																							ui.print(get(L.Deleted));
+																							refresh();
+																						}
+																					});
+																			}
+																		});
+																}
+															});
+													}
+												}).start();
+											break;
+										}
 								}
 								menu.dismiss();
 								return true;
@@ -166,12 +220,15 @@ public class VAppActivity extends VActivity {
 		downloadJsc(en, getTempFile(en), true);
 	}
 	private void runJsc(File f) {
-		Intent i=new Intent(VAppActivity.this, NoDisplayActivity.class);
-		i.putExtra("JscPath", f.getAbsolutePath());
-		startActivity(i);
+		try {
+			JsApp app=new JsApp(new FileInputStream(f));
+			app.run();
+		} catch (Throwable t) {
+			err(t);
+		}
 	}
 	private void downloadJsc(VAppEntity en, File f, boolean run) {
-		VProgressDialog dialog=ui.newLoadingDialog();
+		VProgressDialog dialog=ui.newProgressDialog();
 		dialog.setTitle(get(L.Wait));
 		dialog.setCancelable(false).setMessage(String.format(get(L.Downloading), 0));
 		ProgressDialog d=dialog.show();

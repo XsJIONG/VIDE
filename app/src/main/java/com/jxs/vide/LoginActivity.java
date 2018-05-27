@@ -220,7 +220,7 @@ public class LoginActivity extends VActivity {
 		VUser user=new VUser();
 		user.setUsername(strUserName);
 		user.setPassword(strPassword);
-		final VProgressDialog dialog=ui.newLoadingDialog();
+		final VProgressDialog dialog=ui.newProgressDialog();
 		dialog.setTitle(get(L.Wait)).setMessage(get(L.Registing)).setCancelable(false).show();
 		user.signUp(new SaveListener<VUser>() {
 			@Override
@@ -252,7 +252,7 @@ public class LoginActivity extends VActivity {
 			ui.print(String.format(get(L.PasswordExceed), Global.PasswordMaxLength));
 			return;
 		}
-		final VProgressDialog dialog=ui.newLoadingDialog();
+		final VProgressDialog dialog=ui.newProgressDialog();
 		dialog.setTitle(get(L.Wait)).setMessage(get(L.Logining)).setCancelable(false).show();
 		BmobUser.loginByAccount(name, pwd, new LogInListener<VUser>() {
 			@Override

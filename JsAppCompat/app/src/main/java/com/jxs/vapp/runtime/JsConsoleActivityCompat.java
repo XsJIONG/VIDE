@@ -1,15 +1,12 @@
 package com.jxs.vapp.runtime;
 
-import android.os.Bundle;
-import android.util.Log;
-import com.jxs.vapp.program.JsApp;
-import com.jxs.vapp.program.JsExtend;
-import com.jxs.vapp.program.JsProgram;
-import com.jxs.vapp.program.Jsc;
-import com.jxs.vapp.program.Program;
-import com.jxs.vcompat.activity.ConsoleActivity;
-import com.jxs.vcompat.ui.VAlertDialog;
-import org.mozilla.javascript.ScriptableObject;
+import android.content.res.*;
+import android.os.*;
+import android.util.*;
+import com.jxs.vapp.program.*;
+import com.jxs.vcompat.activity.*;
+import com.jxs.vcompat.ui.*;
+import org.mozilla.javascript.*;
 
 public class JsConsoleActivityCompat extends ConsoleActivity {
 	public static final String ThreadJs="new java.lang.Thread({run:function() {\n%s\n}}).start();";

@@ -63,6 +63,9 @@ public class Jsc implements Serializable {
 		return name.substring(0, name.lastIndexOf('.'));
 	}
 	public void run() {
+		run(null);
+	}
+	public void run(String rs) {
 		JsProgram pro=new JsProgram(name);
 		pro.setJsApp(parent);
 		pro.setCode(code);
@@ -75,7 +78,7 @@ public class Jsc implements Serializable {
 					try {
 						c = Class.forName(parent.isCompat() ?"com.jxs.vapp.runtime.JsVActivityCompat": "com.jxs.vapp.runtime.JsVActivity");
 					} catch (Exception e) {e.printStackTrace();System.exit(1);}
-					JsApp.GlobalContext.startActivity(new Intent(JsApp.GlobalContext, c).putExtra("ID", s).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+					JsApp.GlobalContext.startActivity(new Intent(JsApp.GlobalContext, c).putExtra("ID", s).putExtra("RS", rs).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 					break;
 				}
 			case JsConsole:{
@@ -83,7 +86,7 @@ public class Jsc implements Serializable {
 					try {
 						c = Class.forName(parent.isCompat() ?"com.jxs.vapp.runtime.JsConsoleActivityCompat": "com.jxs.vapp.runtime.JsConsoleActivity");
 					} catch (Exception e) {e.printStackTrace();System.exit(1);}
-					JsApp.GlobalContext.startActivity(new Intent(JsApp.GlobalContext, c).putExtra("ID", s).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+					JsApp.GlobalContext.startActivity(new Intent(JsApp.GlobalContext, c).putExtra("ID", s).putExtra("RS", rs).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 					break;
 				}
 		}

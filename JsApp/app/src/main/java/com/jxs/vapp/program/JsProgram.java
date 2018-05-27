@@ -1,6 +1,7 @@
 package com.jxs.vapp.program;
 
 import android.util.*;
+import com.jxs.vide.*;
 import java.lang.reflect.*;
 import java.util.*;
 import org.mozilla.javascript.*;
@@ -62,6 +63,7 @@ public class JsProgram extends Program {
 	}
 	public JsProgram(JsApp exe, String programName) {
 		cx = org.mozilla.javascript.Context.enter();
+		//For VIDE
 		cx.setOptimizationLevel(-1);
 		scope = new ImporterTopLevel(cx);
 		/*_Require = new Require(cx, scope, new ModuleScriptProvider() {

@@ -200,6 +200,9 @@ public class Lang_Chinese extends Lang {
 		qwe(L.VAppRun, "运行");
 		qwe(L.VAppClone, "克隆到本地");
 		qwe(L.Cloned, "已克隆至\"%s\"");
+		qwe(L.VAppDetail, "详情");
+		qwe(L.VAppDelete, "删除");
+		qwe(L.Deleting, "删除中...");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

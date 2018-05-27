@@ -188,7 +188,7 @@ public class UI {
 	public static void registThemeChangedListener(Object key, OnThemeChangeListener listener) {
 		mThemeChangeListeners.put(key, listener);
 	}
-	public VProgressDialog newLoadingDialog() {
+	public VProgressDialog newProgressDialog() {
 		return new VProgressDialog(cx);
 	}
 	public VAlertDialog newAlertDialog() {

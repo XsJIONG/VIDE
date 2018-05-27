@@ -1,14 +1,16 @@
 package com.jxs.vapp.program;
 
-import android.content.Context;
-import android.content.Intent;
-import com.jxs.vcompat.io.EncryptUtil;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.content.*;
+import android.content.res.*;
+import com.jxs.vcompat.io.*;
+import java.io.*;
+import java.lang.reflect.*;
+import java.nio.*;
+import java.util.*;
+import java.util.zip.*;
+import org.json.*;
+import com.jxs.vide.*;
+import android.os.*;
 
 public class JsApp {
 	public static JsApp INSTANCE;
@@ -18,12 +20,12 @@ public class JsApp {
 	//private File TempDir=new File("/data/data/" + GlobalContext.getPackageName() + "/files/JsAppTemp");
 	//private File TempDir=new File("/sdcard/VIDETmp");
 	//private DexClassLoader ClassLoader;
-	private static ByteBuffer Buffer=ByteBuffer.allocate(4);
+	private static ByteBuffer IntBuffer=ByteBuffer.allocate(Integer.SIZE / 4);
 	private static int byteArrayToInt(byte[] data) {
-		Buffer.position(0);
-		Buffer.put(data, 0, data.length);
-		Buffer.flip();
-		return Buffer.getInt();
+		IntBuffer.position(0);
+		IntBuffer.put(data, 0, data.length);
+		IntBuffer.flip();
+		return IntBuffer.getInt();
 	}
 	private static String readString(InputStream input) throws IOException {
 		byte[] len=new byte[4];
@@ -42,19 +44,6 @@ public class JsApp {
 		for (int i=0;i < all.size();i++) all.get(i).setCode(new String(EncryptUtil.decrypt(EncryptUtil.decrypt(readString(in).getBytes(), EncryptUtil.Type.Base64), EncryptUtil.Type.GZip)));
 		all = null;
 	}
-	/*private void readDex(InputStream in) throws IOException {
-	 if (TempDir.isFile()) TempDir.delete();
-	 if (!TempDir.exists()) TempDir.mkdirs();
-	 File TempDex=new File(TempDir, "classes.dex");
-	 if (TempDex.exists()) TempDex.delete();
-	 FileOutputStream out=new FileOutputStream(TempDex);
-	 byte[] buff=new byte[1024];
-	 int read;
-	 while ((read = in.read(buff)) != -1) out.write(buff, 0, read);
-	 out.close();
-	 in.close();
-	 ClassLoader = new DexClassLoader(TempDex.getPath(), GlobalContext.getCodeCacheDir().getPath(), null, GlobalContext.getClassLoader());
-	 }*/
 	public boolean isCompat() {
 		return isCompat;
 	}

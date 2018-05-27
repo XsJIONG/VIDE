@@ -1,25 +1,16 @@
 package com.jxs.vcompat.fragment;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ScrollView;
-import com.jxs.vcompat.ui.UI;
-import com.jxs.vcompat.widget.VEditText;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-import java.util.LinkedList;
-import java.util.Queue;
+import android.content.*;
+import android.graphics.*;
+import android.text.*;
+import android.view.*;
+import android.widget.*;
+import com.jxs.vcompat.ui.*;
+import com.jxs.vcompat.widget.*;
+import java.io.*;
+import java.nio.*;
+import java.nio.charset.*;
+import java.util.*;
 
 public class ConsoleFragment extends VFragment {
 	public static final String TAG="VConsole";
@@ -32,17 +23,17 @@ public class ConsoleFragment extends VFragment {
 	public Object getTag() {
 		return "VConsole";
 	}
-	ScrollView scroll;
-	EditText scr;
-	int AcceptLength;
-	UI ui;
-	boolean TextChanging=false,reading=true;
+	private VScrollView scroll;
+	private EditText scr;
+	private int AcceptLength;
+	private UI ui;
+	private boolean TextChanging=false,reading=true;
 	@Override
 	public View getView() {
 		ui = new UI(getContext());
 		scr = new VEditText(getContext());
 		scr.setGravity(Gravity.TOP | Gravity.LEFT);
-		scroll = new ScrollView(getContext());
+		scroll = new VScrollView(getContext());
 		scroll.addView(scr, new ScrollView.LayoutParams(ScrollView.LayoutParams.FILL_PARENT, ScrollView.LayoutParams.FILL_PARENT));
 		scroll.setFillViewport(true);
 		scr.setTypeface(Typeface.MONOSPACE);

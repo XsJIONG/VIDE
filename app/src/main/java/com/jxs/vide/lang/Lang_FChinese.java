@@ -200,6 +200,9 @@ public class Lang_FChinese extends Lang {
 		qwe(L.VAppRun, "運行");
 		qwe(L.VAppClone, "克隆到本地");
 		qwe(L.Cloned, "已克隆至\"%s\"");
+		qwe(L.VAppDetail, "詳情");
+		qwe(L.VAppDelete, "刪除");
+		qwe(L.Deleting, "刪除中...");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

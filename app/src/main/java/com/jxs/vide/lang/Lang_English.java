@@ -200,6 +200,9 @@ public class Lang_English extends Lang {
 		qwe(L.VAppRun, "Run");
 		qwe(L.VAppClone, "Clone");
 		qwe(L.Cloned, "Cloned to \"%s\"");
+		qwe(L.VAppDetail, "Detail");
+		qwe(L.VAppDelete, "Delete");
+		qwe(L.Deleting, "Deleting...");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

@@ -21,11 +21,11 @@ import com.jxs.vcompat.drawable.*;
 import com.jxs.vcompat.io.*;
 import com.jxs.vcompat.ui.*;
 import com.jxs.vcompat.widget.*;
-import com.jxs.vide.*;
 import com.kellinwood.security.zipsigner.*;
 import com.myopicmobile.textwarrior.android.*;
 import dalvik.system.*;
 import java.io.*;
+import java.lang.reflect.*;
 import java.util.*;
 
 import android.support.v7.view.ActionMode;
@@ -70,7 +70,6 @@ public class EditorActivity extends VActivity {
 		initOpenedSpinner();
 		openJs(pro.getMainJs());
 		initBackDrawable();
-		_ToolLayout.collapse(false);
 		initSupportAC();
 		initDexAutoComplete();
 	}
@@ -116,7 +115,7 @@ public class EditorActivity extends VActivity {
 		int w=UI.getAccentColor();
 		for (int i=0;i < ContentLayout.getChildCount();i++) ((TextView) ContentLayout.getChildAt(i)).setTextColor(w);
 		if (_Menu != null) for (int i=0;i < MenuCount;i++) UI.tintDrawable(_Menu.getItem(i).getIcon(), w);
-		for (int i=0;i < _ToolLayout.getChildCount();i++) UI.tintDrawable(((ImageView) _ToolLayout.getChildAt(i)).getDrawable(), UI.getAccentColor());
+		UI.tintDrawable(mMenuView.getOverflowIcon(), UI.getAccentColor());
 	}
 	@Override
 	protected void onDestroy() {
@@ -135,9 +134,9 @@ public class EditorActivity extends VActivity {
 	}
 	private ArrayAdapter<Jsc> OpenedAdapter;
 	private ActionMode FileActionMode=null;
-	private Toolbar _Toolbar;
+	private android.support.v7.widget.Toolbar _Toolbar;
 	private LinearLayout _BarLayout;
-	private ExpandableLinearLayout _ToolLayout;
+	private android.support.v7.widget.ActionMenuView mMenuView;
 
 	private void initToolbar() {
 		_Toolbar = new Toolbar(this);
@@ -154,57 +153,61 @@ public class EditorActivity extends VActivity {
 		setTitleTextColor(UI.getAccentColor());
 		enableBackButton();
 		_Toolbar.setBackgroundColor(UI.getThemeColor());
+		try {
+			_Toolbar.getMenu();
+			Field MVF=android.support.v7.widget.Toolbar.class.getDeclaredField("mMenuView");
+			MVF.setAccessible(true);
+			mMenuView = (android.support.v7.widget.ActionMenuView) MVF.get(_Toolbar);
+			UI.tintDrawable(mMenuView.getOverflowIcon(), UI.getAccentColor());
+		} catch (Throwable t) {
+			err(t, true);
+		}
 		_BarLayout.setBackgroundColor(UI.getThemeColor());
-		_ToolLayout = new ExpandableLinearLayout(this);
-		_ToolLayout.setOrientation(LinearLayout.HORIZONTAL);
-		_ToolLayout.getExpandAnimator().setDuration(600);
-		_ToolLayout.getCollapseAnimator().setDuration(600);
-		_BarLayout.addView(_ToolLayout);
 		ViewCompat.setElevation(_BarLayout, 10);
-		_ToolLayout.addView(createImageView(R.drawable.v_run,
-								new OnClickListener() {
-									@Override
-									public void onClick(View v) {
-										runUi();
-									}
-								}, get(L.Editor_Run)));
-		_ToolLayout.addView(createImageView(R.drawable.v_android,
-								new OnClickListener() {
-									@Override
-									public void onClick(View v) {
-										outputUi();
-									}
-								}, get(L.Editor_Output)));
-		_ToolLayout.addView(createImageView(R.drawable.icon_config,
-								new OnClickListener() {
-									@Override
-									public void onClick(View v) {
-										settingUi();
-									}
-								}, get(L.Editor_Setting)));
-		_ToolLayout.addView(createImageView(R.drawable.icon_import,
-								new OnClickListener() {
-									@Override
-									public void onClick(View v) {
-										importUi();
-									}
-								}, get(L.Editor_Import)));
+		/*_ToolLayout.addView(createImageView(R.drawable.v_run,
+		 new OnClickListener() {
+		 @Override
+		 public void onClick(View v) {
+		 runUi();
+		 }
+		 }, get(L.Editor_Run)));
+		 _ToolLayout.addView(createImageView(R.drawable.v_android,
+		 new OnClickListener() {
+		 @Override
+		 public void onClick(View v) {
+		 outputUi();
+		 }
+		 }, get(L.Editor_Output)));
+		 _ToolLayout.addView(createImageView(R.drawable.icon_config,
+		 new OnClickListener() {
+		 @Override
+		 public void onClick(View v) {
+		 settingUi();
+		 }
+		 }, get(L.Editor_Setting)));
+		 _ToolLayout.addView(createImageView(R.drawable.icon_import,
+		 new OnClickListener() {
+		 @Override
+		 public void onClick(View v) {
+		 importUi();
+		 }
+		 }, get(L.Editor_Import)));*/
 		getSupportActionBar().setElevation(0);
 	}
 	private int _IMWidth=-1, _IMPadding=-1;
-	private ImageView createImageView(int resource, OnClickListener listener, CharSequence des) {
-		final ImageView v=new ImageView(this);
-		v.setImageDrawable(DrawableHelper.getDrawable(resource, UI.getAccentColor()));
-		if (_IMWidth == -1) {
-			_IMWidth = ui.dp2px(48);
-			_IMPadding = ui.dp2px(10);
-		}
-		v.setPadding(_IMPadding, _IMPadding, _IMPadding, _IMPadding);
-		v.setLayoutParams(new LinearLayout.LayoutParams(_IMWidth, _IMWidth));
-		v.setOnClickListener(listener);
-		v.setContentDescription(des);
-		return v;
-	}
+	/*private ImageView createImageView(int resource, OnClickListener listener, CharSequence des) {
+	 final ImageView v=new ImageView(this);
+	 v.setImageDrawable(DrawableHelper.getDrawable(resource, UI.getAccentColor()));
+	 if (_IMWidth == -1) {
+	 _IMWidth = ui.dp2px(48);
+	 _IMPadding = ui.dp2px(10);
+	 }
+	 v.setPadding(_IMPadding, _IMPadding, _IMPadding, _IMPadding);
+	 v.setLayoutParams(new LinearLayout.LayoutParams(_IMWidth, _IMWidth));
+	 v.setOnClickListener(listener);
+	 v.setContentDescription(des);
+	 return v;
+	 }*/
 	private void initOpenedSpinner() {
 		OpenedSpinner = new Spinner(this);
 		OpenedAdapter = new ArrayAdapter<Jsc>(this, android.R.layout.simple_spinner_item, Opened);
@@ -319,7 +322,7 @@ public class EditorActivity extends VActivity {
 		setBackDrawable(d);
 	}
 	private void readText(final Jsc js) {
-		final VProgressDialog prog=ui.newLoadingDialog();
+		final VProgressDialog prog=ui.newProgressDialog();
 		prog.setTitle(get(L.Wait));
 		prog.setMessage(get(L.Editor_Reading));
 		prog.setCancelable(true);
@@ -375,13 +378,17 @@ public class EditorActivity extends VActivity {
 	};
 
 	private Menu _Menu;
-	private static final int MenuCount=2;
+	private static final int MenuCount=1;
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		_Menu = menu;
 		menu.add(0, 0, 0, get(L.Editor_File)).setIcon(R.drawable.icon_file).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		initActions();
-		menu.add(0, 1, 1, get(L.Editor_More)).setIcon(DrawableHelper.getDrawable(R.drawable.icon_class, Color.WHITE)).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		//menu.add(0, 1, 1, get(L.Editor_More)).setIcon(DrawableHelper.getDrawable(R.drawable.icon_class, Color.WHITE)).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		menu.add(0, 1, 1, get(L.Editor_Run));
+		menu.add(0, 2, 2, get(L.Editor_Output));
+		menu.add(0, 3, 3, get(L.Editor_Import));
+		menu.add(0, 4, 4, get(L.Editor_Setting));
 		int w=UI.getAccentColor();
 		for (int i=0;i < MenuCount;i++) UI.tintDrawable(_Menu.getItem(i).getIcon(), w);
 		return super.onCreateOptionsMenu(menu);
@@ -487,7 +494,10 @@ public class EditorActivity extends VActivity {
 		if (item.getTitle() == null) return super.onOptionsItemSelected(item);
 		switch (item.getOrder()) {
 			case 0:startSupportActionMode(FileAction);break;
-			case 1:_ToolLayout.expandOrCollapse();break;
+			case 1:runUi();break;
+			case 2:outputUi();break;
+			case 3:importUi();break;
+			case 4:settingUi();break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -519,8 +529,8 @@ public class EditorActivity extends VActivity {
 			if (TmpJsc.exists()) TmpJsc.delete();
 			TmpJsc.mkdirs(); TmpJsc.delete(); TmpJsc.createNewFile();
 			pro.compile(new FileOutputStream(TmpJsc), true);
-			if (Last!=null) Last.destroy();
-			Last=new JsApp(new FileInputStream(TmpJsc));
+			if (Last != null) Last.destroy();
+			Last = new JsApp(new FileInputStream(TmpJsc));
 			Last.run();
 			//Mark 等Js结束时移除掉(JsProgram.delete)
 		} catch (Throwable e) {
@@ -696,7 +706,7 @@ public class EditorActivity extends VActivity {
 	private VProgressDialog vdialog=null;
 	private void outputReal(final File f) {
 		BuildApkPath = f;
-		vdialog = ui.newLoadingDialog().setTitle(get(L.Editor_BuildingApk)).setMessage(get(L.Wait)).setCancelable(false);
+		vdialog = ui.newProgressDialog().setTitle(get(L.Editor_BuildingApk)).setMessage(get(L.Wait)).setCancelable(false);
 		vdialog.getDialog().setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		vdialog.getDialog().setIndeterminate(false);
 		vdialog.show();

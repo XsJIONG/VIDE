@@ -59,8 +59,8 @@ public class JsConsoleActivity extends ConsoleActivity {
 		}
 		program.defineProperty("cx", this, ScriptableObject.CONST);
 		program.defineProperty("ui", ui, ScriptableObject.CONST);
-		program.defineProperty("vout", in, ScriptableObject.CONST);
-		program.defineProperty("vin", out, ScriptableObject.CONST);
+		program.defineProperty("vout", out, ScriptableObject.CONST);
+		program.defineProperty("vin", in, ScriptableObject.CONST);
 		program.setOnErrorListener(new Program.OnErrorListener() {
 			@Override
 			public void onError(Throwable e) {

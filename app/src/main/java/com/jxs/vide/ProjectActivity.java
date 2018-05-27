@@ -523,7 +523,7 @@ public class ProjectActivity extends VActivity {
 				}
 				if (f.getName().endsWith(".jar")) {
 					//try {
-					LoadingDialog = ui.newLoadingDialog().setTitle(get(L.Wait)).setMessage(get(L.Converting)).setCancelable(false);
+					LoadingDialog = ui.newProgressDialog().setTitle(get(L.Wait)).setMessage(get(L.Converting)).setCancelable(false);
 					//} catch (Throwable t) {err(t);}
 					LoadingDialog.getDialog().setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 					LoadingDialog.getDialog().setIndeterminate(false);

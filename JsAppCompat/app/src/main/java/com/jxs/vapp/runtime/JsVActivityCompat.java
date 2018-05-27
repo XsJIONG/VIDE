@@ -1,35 +1,30 @@
 package com.jxs.vapp.runtime;
 
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.Dialog;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.ComponentCallbacks;
-import android.content.ComponentName;
-import android.content.ContentResolver;
+import android.app.*;
+import android.content.*;
+import android.content.pm.*;
+import android.content.res.*;
+import android.database.*;
+import android.database.sqlite.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.net.*;
+import android.os.*;
+import android.support.v4.app.*;
+import android.support.v7.app.*;
+import android.support.v7.view.*;
+import android.support.v7.widget.*;
+import android.util.*;
+import android.view.*;
+import android.view.accessibility.*;
+import com.jxs.vapp.program.*;
+import com.jxs.vcompat.activity.*;
+import com.jxs.vcompat.fragment.*;
+import com.jxs.vcompat.ui.*;
+import java.io.*;
+import org.mozilla.javascript.*;
+
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.IntentSender;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.database.Cursor;
-import android.database.DatabaseErrorHandler;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.UserHandle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
@@ -37,45 +32,11 @@ import android.support.v4.app.SharedElementCallback;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.view.ActionMode;
-import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.Display;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.accessibility.AccessibilityEvent;
-import com.jxs.vapp.program.JsApp;
-import com.jxs.vapp.program.JsExtend;
-import com.jxs.vapp.program.JsObjectRef;
-import com.jxs.vapp.program.JsProgram;
-import com.jxs.vapp.program.Jsc;
-import com.jxs.vapp.program.Program;
-import com.jxs.vcompat.activity.VActivity;
-import com.jxs.vcompat.fragment.VFragmentManager;
-import com.jxs.vcompat.ui.VAlertDialog;
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import org.mozilla.javascript.ScriptableObject;
+import com.jxs.vide.*;
 
 public class JsVActivityCompat extends VActivity {
-	JsProgram program;
+	private JsProgram program;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -293,9 +254,6 @@ public class JsVActivityCompat extends VActivity {
 			case "getApplicationInfo":
 				if (args.length==0) return super.getApplicationInfo();
 				EF(name,args.length);break;
-			case "getAssets":
-				if (args.length==0) return super.getAssets();
-				EF(name,args.length);break;
 			case "getBaseContext":
 				if (args.length==0) return super.getBaseContext();
 				EF(name,args.length);break;
@@ -424,9 +382,6 @@ public class JsVActivityCompat extends VActivity {
 				EF(name,args.length);break;
 			case "getRequestedOrientation":
 				if (args.length==0) return super.getRequestedOrientation();
-				EF(name,args.length);break;
-			case "getResources":
-				if (args.length==0) return super.getResources();
 				EF(name,args.length);break;
 			case "getSharedPreferences":
 				if (args.length==2&&args[0] instanceof String&&args[1] instanceof int) return super.getSharedPreferences((String) args[0], (int) args[1]);
@@ -1290,11 +1245,6 @@ public class JsVActivityCompat extends VActivity {
 		if (!callFunction(ref)) return super.getApplicationInfo(); else return (ApplicationInfo) ref.get();
 	}
 	@Override
-	public AssetManager getAssets() {
-		JsObjectRef ref=newJsRef();
-		if (!callFunction(ref)) return super.getAssets(); else return (AssetManager) ref.get();
-	}
-	@Override
 	public Context getBaseContext() {
 		JsObjectRef ref=newJsRef();
 		if (!callFunction(ref)) return super.getBaseContext(); else return (Context) ref.get();
@@ -1493,11 +1443,6 @@ public class JsVActivityCompat extends VActivity {
 	public int getRequestedOrientation() {
 		JsObjectRef ref=newJsRef();
 		if (!callFunction(ref)) return super.getRequestedOrientation(); else return (int) ref.get();
-	}
-	@Override
-	public Resources getResources() {
-		JsObjectRef ref=newJsRef();
-		if (!callFunction(ref)) return super.getResources(); else return (Resources) ref.get();
 	}
 	@Override
 	public SharedPreferences getSharedPreferences(String p0, int p1) {

@@ -1,15 +1,12 @@
 package com.jxs.vapp.runtime;
 
-import android.os.Bundle;
-import android.util.Log;
-import com.jxs.v.activity.ConsoleActivity;
-import com.jxs.v.ui.VAlertDialog;
-import com.jxs.vapp.program.JsApp;
-import com.jxs.vapp.program.JsExtend;
-import com.jxs.vapp.program.JsProgram;
-import com.jxs.vapp.program.Jsc;
-import com.jxs.vapp.program.Program;
-import org.mozilla.javascript.ScriptableObject;
+import android.content.res.*;
+import android.os.*;
+import android.util.*;
+import com.jxs.v.activity.*;
+import com.jxs.v.ui.*;
+import com.jxs.vapp.program.*;
+import org.mozilla.javascript.*;
 
 public class JsConsoleActivity extends ConsoleActivity {
 	public static final String ThreadJs="new java.lang.Thread({run:function() {\n%s\n}}).start();";
@@ -53,8 +50,8 @@ public class JsConsoleActivity extends ConsoleActivity {
 		}
 		program.defineProperty("cx", this, ScriptableObject.CONST);
 		program.defineProperty("ui", ui, ScriptableObject.CONST);
-		program.defineProperty("vout", in, ScriptableObject.CONST);
-		program.defineProperty("vin", out, ScriptableObject.CONST);
+		program.defineProperty("vout", out, ScriptableObject.CONST);
+		program.defineProperty("vin", in, ScriptableObject.CONST);
 		program.setOnErrorListener(new Program.OnErrorListener() {
 			@Override
 			public void onError(Throwable e) {
