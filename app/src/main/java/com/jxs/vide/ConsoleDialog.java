@@ -28,6 +28,12 @@ public class ConsoleDialog extends FloatingWindow implements Console.UpdateListe
 		Console.getInstance().addUpdateListener(this);
 	}
 	@Override
+	public void onThemeChange(String key) {
+		super.onThemeChange(key);
+		if (!key.equals(UI.THEME_UI_COLOR)) return;
+		sc.setGlowColor(UI.getThemeColor());
+	}
+	@Override
 	public void onUpdate(Console c) {
 		Content.setText(c.getText());
 	}

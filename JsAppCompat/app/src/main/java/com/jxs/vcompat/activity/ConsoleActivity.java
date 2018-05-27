@@ -1,10 +1,8 @@
 package com.jxs.vcompat.activity;
 
-import android.graphics.Color;
-import android.os.Bundle;
-import com.jxs.vcompat.fragment.ConsoleFragment;
-import java.io.InputStream;
-import java.io.PrintStream;
+import android.os.*;
+import com.jxs.vcompat.fragment.*;
+import java.io.*;
 
 public abstract class ConsoleActivity extends VActivity {
 	private ConsoleFragment frag;

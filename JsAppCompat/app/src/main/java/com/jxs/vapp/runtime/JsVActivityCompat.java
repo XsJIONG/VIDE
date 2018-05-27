@@ -1,6 +1,7 @@
 package com.jxs.vapp.runtime;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -54,7 +55,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
-import com.jxs.jsapp.R;
 import com.jxs.vapp.program.JsApp;
 import com.jxs.vapp.program.JsExtend;
 import com.jxs.vapp.program.JsObjectRef;
@@ -1247,6 +1247,11 @@ public class JsVActivityCompat extends VActivity {
 		if (!callFunction(ref)) return super.fileList(); else return (String[]) ref.get();
 	}
 	@Override
+	public View findViewById(int p0) {
+		JsObjectRef ref=newJsRef();
+		if (!callFunction(ref, toArray(p0))) return super.findViewById(p0); else return (View) ref.get();
+	}
+	@Override
 	public void finish() {
 		if (!callFunction()) super.finish();
 	}
@@ -1343,6 +1348,11 @@ public class JsVActivityCompat extends VActivity {
 	public File getDatabasePath(String p0) {
 		JsObjectRef ref=newJsRef();
 		if (!callFunction(ref, toArray(p0))) return super.getDatabasePath(p0); else return (File) ref.get();
+	}
+	@Override
+	public AppCompatDelegate getDelegate() {
+		JsObjectRef ref=newJsRef();
+		if (!callFunction(ref)) return super.getDelegate(); else return (AppCompatDelegate) ref.get();
 	}
 	@Override
 	public File getDir(String p0, int p1) {

@@ -181,11 +181,25 @@ public class Lang_FChinese extends Lang {
 		qwe(L.VersionCodeCannotBeEmpty, "版本號不能為空");
 		qwe(L.VersionNameCannotBeEmpty, "版本名不能為空");
 		qwe(L.EditSuccessfully, "修改成功！");
-		qwe(L.OpenSource, "開源代碼");
+		qwe(L.OpenSource, "開源");
 		qwe(L.UpdateDes, "VIDE - V%s");
 		qwe(L.Update, "升級");
 		qwe(L.PkgLessThanTwo, "包名少於兩位！");
 		qwe(L.LoginFirst, "請先登錄！");
+		qwe(L.Please, "拜託！");
+		qwe(L.ShareApp, "請為又可憐又帥氣又沒錢的作者捐獻你的愛心吧！！\n如果你覺得VIDE很棒，請將這個軟件分享給你的好友或在應用市場中評分！");
+		qwe(L.Nop, "不！");
+		qwe(L.Share, "分享");
+		qwe(L.AppMarket, "評分");
+		qwe(L.Badguy, "你好無情！");
+		qwe(L.IRepented, "我後悔了");
+		qwe(L.ShareContent, "來看看這個軟件！VIDE能够在手機上用Js編寫出軟件或控制台程式——即使你不會開發，這裡也有有趣的小程式平臺！立刻下載-> https://www.coolapk.com/apk/com.jxs.vide");
+		qwe(L.ShareVIDE, "分享VIDE");
+		qwe(L.Nothing, "毫無卵用（瘋狂暗示）");
+		qwe(L.EnableVIDELog, "允許打印VIDE的日誌");
+		qwe(L.VAppRun, "運行");
+		qwe(L.VAppClone, "克隆到本地");
+		qwe(L.Cloned, "已克隆至\"%s\"");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

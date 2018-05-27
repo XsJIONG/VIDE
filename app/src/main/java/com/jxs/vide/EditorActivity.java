@@ -307,8 +307,8 @@ public class EditorActivity extends VActivity {
 	private ArrayList<Jsc> Opened=new ArrayList<>();
 	private void initBackDrawable() {
 		BDrawable d=new BDrawable();
-		ArrowShape arr=new ArrowShape(this, 3f);
-		QuestionMarkShape q=new QuestionMarkShape(this, 1, 3);
+		ArrowShape arr=new ArrowShape(3f);
+		QuestionMarkShape q=new QuestionMarkShape(1, 3);
 		d.addPair(arr.Top, q.LeftTop,
 				  arr.Body, q.RightTop,
 				  arr.Bottom, q.RightBottom,
@@ -513,15 +513,20 @@ public class EditorActivity extends VActivity {
 		} else rRun();
 	}
 	private static final File TmpJsc=new File(Environment.getExternalStorageDirectory(), "VIDETmp/Running.jsc");
+	private static JsApp Last=null;
 	private void rRun() {
 		try {
 			if (TmpJsc.exists()) TmpJsc.delete();
 			TmpJsc.mkdirs(); TmpJsc.delete(); TmpJsc.createNewFile();
-			pro.compile(new FileOutputStream(TmpJsc));
-			JsApp app=new JsApp(new FileInputStream(TmpJsc));
-			app.run();
+			pro.compile(new FileOutputStream(TmpJsc), true);
+			if (Last!=null) Last.destroy();
+			Last=new JsApp(new FileInputStream(TmpJsc));
+			Last.run();
 			//Mark 等Js结束时移除掉(JsProgram.delete)
-		} catch (Exception e) {err(e);}
+		} catch (Throwable e) {
+			Global.log(Log.getStackTraceString(e));
+			err(e);
+		}
 	}
 	@Override
 	protected void onResume() {

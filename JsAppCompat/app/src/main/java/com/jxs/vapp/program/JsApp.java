@@ -78,6 +78,9 @@ public class JsApp {
 		}
 		return j;
 	}
+	public Manifest getManifest() {
+		return this.manifest;
+	}
 	public boolean isUseDx() {
 		return manifest.isUseDx();
 	}

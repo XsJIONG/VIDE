@@ -1,34 +1,24 @@
 package com.jxs.vide;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.app.*;
+import android.content.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.support.v4.widget.*;
+import android.util.*;
+import android.view.*;
+import android.widget.*;
+import android.widget.AdapterView.*;
+import com.jxs.v.ui.*;
+import com.jxs.vapp.program.*;
+import com.jxs.vcompat.ui.*;
+import com.jxs.vcompat.widget.*;
+import java.util.*;
+import org.mozilla.javascript.*;
+
 import com.jxs.v.ui.VAlertDialog;
-import com.jxs.vapp.program.JsProgram;
 import com.jxs.vcompat.ui.UI;
-import com.jxs.vcompat.widget.VListView;
-import com.jxs.vcompat.widget.VScrollView;
-import java.util.ArrayList;
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.NativeJavaObject;
-import org.mozilla.javascript.Script;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.Undefined;
-import org.mozilla.javascript.UniqueTag;
 
 import static com.jxs.vide.L.get;
 
@@ -37,6 +27,12 @@ public class DebugWindow extends FloatingWindow implements Runnable {
 	public static DebugWindow getInstance() {
 		if (_Instance == null) _Instance = new DebugWindow();
 		return _Instance;
+	}
+	public static boolean hasInstance() {
+		return _Instance == null;
+	}
+	public static void clearInstance() {
+		_Instance = null;
 	}
 	private VListView list;
 	private JsProgramAdapter adapter;
@@ -48,14 +44,20 @@ public class DebugWindow extends FloatingWindow implements Runnable {
 		adapter = new JsProgramAdapter();
 		list.setAdapter(adapter);
 		list.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View v, int pos, long id) {
-				CmdWindow.getInstance(JsProgram.download(parent.getItemAtPosition(pos))).show();
-			}
-		});
+				@Override
+				public void onItemClick(AdapterView<?> parent, View v, int pos, long id) {
+					CmdWindow.getInstance(JsProgram.download(parent.getItemAtPosition(pos))).show();
+				}
+			});
 		run();
 		JsProgram.addUpdateListener(this);
 		setView(list);
+	}
+	@Override
+	public void onThemeChange(String key) {
+		super.onThemeChange(key);
+		if (!key.equals(UI.THEME_UI_COLOR)) return;
+		list.setGlowColor(UI.getThemeColor());
 	}
 	public static class JsProgramAdapter extends BaseAdapter {
 		private ArrayList<Object> nodes=new ArrayList<>();
@@ -131,12 +133,12 @@ public class DebugWindow extends FloatingWindow implements Runnable {
 		}
 		public void destroy() {
 			hide();
-			UI.removeThemeChangedListener(this);
 		}
 		@Override
 		public void onThemeChange(String key) {
 			super.onThemeChange(key);
 			if (!key.equals(UI.THEME_UI_COLOR)) return;
+			sc.setGlowColor(UI.getThemeColor());
 		}
 		private static final boolean inCurrentThread(Context cx) {
 			return Context.getCurrentContext() == cx;
@@ -155,23 +157,23 @@ public class DebugWindow extends FloatingWindow implements Runnable {
 						editor.setText("");
 						editor.getAutoCompletePanel().setTextColor(Color.WHITE);
 						b.setView(editor).setPositiveButton(get(L.Debugger_EvalCode), new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int pos) {
-								Script s=null;
-								try {
-									s = program.getContext().compileString(editor.getText().toString(), "Debugger", 1, null);
-								} catch (Throwable t) {
-									MessageDialog.showMessage(get(L.Debugger_CompileErr), Log.getStackTraceString(t));
-									return;
+								@Override
+								public void onClick(DialogInterface dialog, int pos) {
+									Script s=null;
+									try {
+										s = program.getContext().compileString(editor.getText().toString(), "Debugger", 1, null);
+									} catch (Throwable t) {
+										MessageDialog.showMessage(get(L.Debugger_CompileErr), Log.getStackTraceString(t));
+										return;
+									}
+									try {
+										s.exec(program.getContext(), program.getScriptableObject());
+									} catch (Throwable t) {
+										MessageDialog.showMessage(get(L.Debugger_ExecErr), Log.getStackTraceString(t));
+										return;
+									}
 								}
-								try {
-									s.exec(program.getContext(), program.getScriptableObject());
-								} catch (Throwable t) {
-									MessageDialog.showMessage(get(L.Debugger_ExecErr), Log.getStackTraceString(t));
-									return;
-								}
-							}
-						}).setNegativeButton(get(L.Cancel), null).setCancelable(true);
+							}).setNegativeButton(get(L.Cancel), null).setCancelable(true);
 						AlertDialog d=b.create();
 						d.getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
 						d.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
@@ -231,43 +233,49 @@ public class DebugWindow extends FloatingWindow implements Runnable {
 			list.setAdapter(adapter);
 			refresh.addView(list);
 			refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-				@Override
-				public void onRefresh() {
-					refresh.setRefreshing(true);
-					loadData();
-					refresh.setRefreshing(false);
-				}
-			});
-			list.setOnItemClickListener(new OnItemClickListener() {
-				@Override
-				public void onItemClick(AdapterView<?> parent, View v, int pos, long id) {
-					Object key=adapter.getItem(pos);
-					Object obj = current.get(key.toString(), current);
-					if (obj instanceof Scriptable) {
-						current = (Scriptable) obj;
-						currentId = key.toString();
+					@Override
+					public void onRefresh() {
+						refresh.setRefreshing(true);
 						loadData();
-					} else {
-						AlertDialog d=new AlertDialog.Builder(getContext())
-						.setTitle(Context.toString(obj))
-						.setMessage(getDescribe(adapter.getItem(pos), obj))
-						.setCancelable(true)
-						.setPositiveButton(get(L.OK), null)
-						.create();
-						d.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-						d.show();
+						refresh.setRefreshing(false);
 					}
-				}
-			});
+				});
+			list.setOnItemClickListener(new OnItemClickListener() {
+					@Override
+					public void onItemClick(AdapterView<?> parent, View v, int pos, long id) {
+						Object key=adapter.getItem(pos);
+						Object obj = current.get(key.toString(), current);
+						if (obj instanceof Scriptable) {
+							current = (Scriptable) obj;
+							currentId = key.toString();
+							loadData();
+						} else {
+							AlertDialog d=new AlertDialog.Builder(getContext())
+								.setTitle(Context.toString(obj))
+								.setMessage(getDescribe(adapter.getItem(pos), obj))
+								.setCancelable(true)
+								.setPositiveButton(get(L.OK), null)
+								.create();
+							d.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+							d.show();
+						}
+					}
+				});
 			setView(root);
 			last.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					current = current.getParentScope();
-					loadData();
-				}
-			});
+					@Override
+					public void onClick(View v) {
+						current = current.getParentScope();
+						loadData();
+					}
+				});
 			loadData();
+		}
+		@Override
+		public void onThemeChange(String key) {
+			super.onThemeChange(key);
+			if (!key.equals(UI.THEME_UI_COLOR)) return;
+			list.setGlowColor(UI.getThemeColor());
 		}
 		private void clearState() {
 			state.setText("");

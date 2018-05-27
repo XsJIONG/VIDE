@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.Display;
 import com.jxs.vcompat.ui.UI;
 
-public class VButton extends FloatingView {
+public class VButton extends FloatingView implements UI.OnThemeChangeListener {
 	public static final int SIZE=UI.dp2px(57);
 	private static VButton _instance;
 	private VButton(Context cx) {
@@ -33,5 +33,10 @@ public class VButton extends FloatingView {
 	public static boolean _hide() {
 		if (_instance == null) return false;
 		return _instance.hide();
+	}
+	@Override
+	public void onThemeChange(String key) {
+		if (!key.equals(UI.THEME_UI_COLOR)) return;
+		((FWView) getView()).onThemeChange(key);
 	}
 }

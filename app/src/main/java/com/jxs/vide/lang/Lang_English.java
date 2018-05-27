@@ -1,6 +1,6 @@
 package com.jxs.vide.lang;
 
-import com.jxs.vide.L;
+import com.jxs.vide.*;
 
 public class Lang_English extends Lang {
 	@Override
@@ -184,8 +184,22 @@ public class Lang_English extends Lang {
 		qwe(L.OpenSource, "Open Source");
 		qwe(L.UpdateDes, "VIDE - V%s");
 		qwe(L.Update, "Update");
-		qwe(L.PkgLessThanTwo,"Package name can not less than two parts");
+		qwe(L.PkgLessThanTwo, "Package name can not less than two parts");
 		qwe(L.LoginFirst, "Please login first!");
+		qwe(L.Please, "Please!");
+		qwe(L.ShareApp, "Please help me!!! I'm so poor that I can not even buy a chicken!\nIf you think VIDE is great, you can either share it to your friend or rate it in app market!");
+		qwe(L.Nop, "No way!");
+		qwe(L.Share, "Share");
+		qwe(L.AppMarket, "Rate");
+		qwe(L.Badguy, "You a badguy!");
+		qwe(L.IRepented, "I Repented");
+		qwe(L.ShareContent, "Check out this App! VIDE allow you to develop App or Console Program on the phone——if you can't develop, the interesting small programs here may attract you too! Download Now -> https://www.coolapk.com/apk/com.jxs.vide");
+		qwe(L.ShareVIDE, "Share VIDE");
+		qwe(L.Nothing, "(Click me!)");
+		qwe(L.EnableVIDELog, "Allow VIDE to print log");
+		qwe(L.VAppRun, "Run");
+		qwe(L.VAppClone, "Clone");
+		qwe(L.Cloned, "Cloned to \"%s\"");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

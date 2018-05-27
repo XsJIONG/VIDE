@@ -30,7 +30,7 @@ public class VActivity extends AppCompatActivity implements UI.OnThemeChangeList
 			setTitleElevation(10f);
 			rSetTitleBackground(UI.getThemeColor());
 			rSetTitleTextColor(UI.getAccentColor());
-			BackDrawable = new ArrowShape(this, 5f).toSimpleDrawable();
+			BackDrawable = new ArrowShape(5f).toSimpleDrawable();
 			UI.tintDrawable(BackDrawable, UI.getAccentColor());
 			((BDrawable) BackDrawable).setStrokeWidth(5f);
 			getSupportActionBar().setHomeAsUpIndicator(BackDrawable);

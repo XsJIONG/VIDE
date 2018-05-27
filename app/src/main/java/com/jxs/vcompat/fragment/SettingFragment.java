@@ -1,28 +1,15 @@
 package com.jxs.vcompat.fragment;
 
-import android.content.Context;
-import android.content.res.ColorStateList;
-import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
-import android.widget.CheckBox;
-import android.widget.LinearLayout;
-import android.widget.Switch;
-import android.widget.TextView;
-import com.jxs.vcompat.ui.ColorUtil;
-import com.jxs.vcompat.ui.UI;
-import com.jxs.vcompat.ui.VAlertDialog;
-import com.jxs.vcompat.widget.VScrollView;
+import android.content.*;
+import android.content.res.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.util.*;
+import android.view.*;
+import android.view.View.*;
+import android.widget.*;
+import com.jxs.vcompat.ui.*;
+import com.jxs.vcompat.widget.*;
 
 public class SettingFragment extends VFragment implements UI.OnThemeChangeListener {
 	private LinearLayout Layout;
@@ -246,25 +233,20 @@ public class SettingFragment extends VFragment implements UI.OnThemeChangeListen
 			_Title = new TextView(getContext());
 			_Title.setTextColor(UI.getThemeColor());
 			_Title.setTextSize(13);
-			_Title.setVisibility(View.GONE);
-			_DesLayout.addView(_Title);
 			_SubTitle = new TextView(getContext());
 			_SubTitle.setTextColor(ColorUtil.lightColor(UI.getThemeColor(), 40));
 			_SubTitle.setTextSize(8);
-			_SubTitle.setVisibility(View.GONE);
-			_DesLayout.addView(_SubTitle);
-			_DesLayout.setVisibility(View.GONE);
 			super.setOnClickListener(this);
 			setLongClickable(true);
 			setOnLongClickListener(new OnLongClickListener() {
-				@Override
-				public boolean onLongClick(View v) {
-					if (showContentWhenLongClick) {
-						new VAlertDialog(getContext()).setTitle(getTitle()).setMessage(getSubTitle()).setCancelable(true).show();
-						return true;
-					} else return false;
-				}
-			});
+					@Override
+					public boolean onLongClick(View v) {
+						if (showContentWhenLongClick) {
+							new VAlertDialog(getContext()).setTitle(getTitle()).setMessage(getSubTitle()).setCancelable(true).show();
+							return true;
+						} else return false;
+					}
+				});
 		}
 		private boolean showContentWhenLongClick=true;
 		public void setShowContentWhenLongClick(boolean flag) {
@@ -283,9 +265,20 @@ public class SettingFragment extends VFragment implements UI.OnThemeChangeListen
 		public boolean onInterceptTouchEvent(MotionEvent ev) {
 			return true;
 		}
+		private boolean addTitle=false, addSubTitle=false;
 		public void setTitle(CharSequence title) {
-			checkDesLayout();
-			if (_Title.getVisibility() == View.GONE) _Title.setVisibility(View.VISIBLE);
+			if (title == null) {
+				_Title.setText("");
+				if (addTitle) {
+					_DesLayout.removeView(_Title);
+					addTitle = true;
+				}
+				return;
+			}
+			if (!addTitle) {
+				_DesLayout.addView(_Title, 0);
+				_Title.setTag(true);
+			}
 			_Title.setText(title);
 		}
 		public void setTitleTextSize(int size) {
@@ -295,12 +288,19 @@ public class SettingFragment extends VFragment implements UI.OnThemeChangeListen
 			_SubTitle.setTextSize(size);
 		}
 		public void setSubTitle(CharSequence text) {
-			checkDesLayout();
-			if (_SubTitle.getVisibility() == View.GONE) _SubTitle.setVisibility(View.VISIBLE);
+			if (text == null) {
+				_SubTitle.setText("");
+				if (addSubTitle) {
+					_DesLayout.removeView(_SubTitle);
+					addSubTitle = false;
+				}
+				return;
+			}
+			if (!addSubTitle) {
+				_DesLayout.addView(_SubTitle);
+				addSubTitle = true;
+			}
 			_SubTitle.setText(text);
-		}
-		private void checkDesLayout() {
-			if (_DesLayout.getVisibility() == View.GONE) _DesLayout.setVisibility(View.VISIBLE);
 		}
 		@Override
 		protected void onAttachedToWindow() {

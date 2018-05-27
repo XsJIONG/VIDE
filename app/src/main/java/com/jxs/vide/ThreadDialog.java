@@ -74,6 +74,12 @@ public class ThreadDialog extends FloatingWindow {
 		setView(layout);
 		loadData();
 	}
+	@Override
+	public void onThemeChange(String key) {
+		super.onThemeChange(key);
+		if (!key.equals(UI.THEME_UI_COLOR)) return;
+		list.setGlowColor(UI.getThemeColor());
+	}
 	public static class ThreadAdapter extends BaseAdapter {
 		private ArrayList<Node> nodes=new ArrayList<>();
 		@Override

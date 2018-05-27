@@ -1,18 +1,10 @@
 package com.jxs.vapp.program;
 
-import com.jxs.vide.Global;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ImporterTopLevel;
-import org.mozilla.javascript.Script;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
-import org.mozilla.javascript.Undefined;
-import org.mozilla.javascript.Vposed;
-import org.mozilla.javascript.VposedListener;
-import android.util.Log;
+import android.util.*;
+import com.jxs.vide.*;
+import java.lang.reflect.*;
+import java.util.*;
+import org.mozilla.javascript.*;
 
 public class JsProgram extends Program {
 	public static HashMap<Object,JsProgram> Internet=new HashMap<>();
@@ -72,11 +64,7 @@ public class JsProgram extends Program {
 	public JsProgram(JsApp exe, String programName) {
 		cx = org.mozilla.javascript.Context.enter();
 		//For VIDE
-		try {
-			Class<?> c=Class.forName("com.jxs.vide.Global");
-			ClassLoader loader=(ClassLoader) c.getField("ClassLoader").get(null);
-			if (loader != null) cx.setApplicationClassLoader(loader);
-		} catch (Throwable e) {}
+		if (Global.ClassLoader != null) cx.setApplicationClassLoader(Global.ClassLoader);
 		cx.setOptimizationLevel(-1);
 		scope = new ImporterTopLevel(cx);
 		/*_Require = new Require(cx, scope, new ModuleScriptProvider() {
@@ -94,22 +82,21 @@ public class JsProgram extends Program {
 		this.programName = programName == null ?"": programName;
 		scope.defineProperty("console", Console.getInstance(), ScriptableObject.CONST);
 		try {
-			Class.forName("com.jxs.vide.Global");
 			if (Global.ClassLoader != null) {
 				cx.setVposed(true);
 				cx.injertMethod(Class.class.getMethod("forName", String.class), new VposedListener() {
-					@Override
-					public void beforeInvoke(Context cx, Scriptable thisObj, Object obj, Object[] args, Vposed p) {
-						try {
-							if (args.length>0&&args[0] instanceof String && args[0] != null && Global.ClassLoader != null) {
-								p.setReturnObject(Global.ClassLoader.loadClass((String) args[0]));
-								p.refuseInvokeMethod(true);
-							}
-						} catch (Throwable t) {Console.getInstance().log("VIDE",Log.getStackTraceString(t));}
-					}
-					@Override
-					public void afterInvoke(Context cx, Scriptable thisObj, Object obj, Object[] args, Vposed p) {}
-				});
+						@Override
+						public void beforeInvoke(Context cx, Scriptable thisObj, Object obj, Object[] args, Vposed p) {
+							try {
+								if (args.length > 0 && args[0] instanceof String && args[0] != null && Global.ClassLoader != null) {
+									p.setReturnObject(Global.ClassLoader.loadClass((String) args[0]));
+									p.refuseInvokeMethod(true);
+								}
+							} catch (Throwable t) {Console.getInstance().log("VIDE", Log.getStackTraceString(t));}
+						}
+						@Override
+						public void afterInvoke(Context cx, Scriptable thisObj, Object obj, Object[] args, Vposed p) {}
+					});
 			}
 		} catch (Throwable t) {}
 	}

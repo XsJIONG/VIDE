@@ -1167,11 +1167,6 @@ public class JsVActivity extends VActivity {
 		if (!callFunction(ref)) return super.fileList(); else return (String[]) ref.get();
 	}
 	@Override
-	public View findViewById(int p0) {
-		JsObjectRef ref=newJsRef();
-		if (!callFunction(ref, toArray(p0))) return super.findViewById(p0); else return (View) ref.get();
-	}
-	@Override
 	public void finish() {
 		if (!callFunction()) super.finish();
 	}

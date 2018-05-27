@@ -1,30 +1,19 @@
 package com.jxs.vide;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.provider.Settings;
-import android.support.v7.app.AlertDialog;
-import android.text.InputType;
-import android.view.View;
-import android.view.View.OnClickListener;
-import com.android.permission.rom.HuaweiUtils;
-import com.android.permission.rom.MeizuUtils;
-import com.android.permission.rom.MiuiUtils;
-import com.android.permission.rom.OppoUtils;
-import com.android.permission.rom.QikuUtils;
-import com.android.permission.rom.RomUtils;
-import com.jxs.vcompat.activity.VActivity;
-import com.jxs.vcompat.fragment.SettingFragment;
-import com.jxs.vcompat.ui.ColorSelector;
-import com.jxs.vcompat.ui.UI;
-import com.jxs.vcompat.ui.VAlertDialog;
-import com.jxs.vide.lang.Lang;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import android.content.*;
+import android.net.*;
+import android.os.*;
+import android.provider.*;
+import android.support.v7.app.*;
+import android.text.*;
+import android.view.*;
+import android.view.View.*;
+import com.android.permission.rom.*;
+import com.jxs.vcompat.activity.*;
+import com.jxs.vcompat.fragment.*;
+import com.jxs.vcompat.ui.*;
+import com.jxs.vide.lang.*;
+import java.lang.reflect.*;
 
 import static com.jxs.vide.L.get;
 
@@ -49,46 +38,58 @@ public class SettingActivity extends VActivity {
 		Q = new SettingFragment(this);
 		Q.addGroup(get(L.Setting_GUI));
 		Q.addSimpleItem(get(L.Setting_ThemeColor), get(L.Setting_ThemeColor_Des)).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				setThemeColor();
-			}
-		});
+				@Override
+				public void onClick(View v) {
+					setThemeColor();
+				}
+			});
 		Q.addSimpleItem(get(L.Setting_SplashTime), get(L.Setting_SplashTime_Des)).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				setSplashTime();
-			}
-		});
+				@Override
+				public void onClick(View v) {
+					setSplashTime();
+				}
+			});
 		Q.addSimpleItem(get(L.Setting_Language), get(L.Setting_Language_Des)).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				setLanguage();
-			}
-		});
+				@Override
+				public void onClick(View v) {
+					setLanguage();
+				}
+			});
 		Q.addSpace(GROUP_SPACE);
 		Q.addGroup(get(L.Setting_Extra));
 		VButtonItem = Q.addSwitchItem(get(L.ShowVButton), get(L.ShowVButton_Subtitle));
 		VButtonItem.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				SettingFragment.SwitchItem item=(SettingFragment.SwitchItem) v;
-				if (item.isChecked()) {
-					if (!checkOverlayPermission(SettingActivity.this)) {
-						item.setChecked(false);
-						ui.print(get(L.PlzEnableOverlay));
-						applyOverlayPermission(SettingActivity.this);
-						return;
+				@Override
+				public void onClick(View v) {
+					SettingFragment.SwitchItem item=(SettingFragment.SwitchItem) v;
+					if (item.isChecked()) {
+						if (!checkOverlayPermission(SettingActivity.this)) {
+							item.setChecked(false);
+							ui.print(get(L.PlzEnableOverlay));
+							applyOverlayPermission(SettingActivity.this);
+							return;
+						}
+						Global.setShowVButton(true);
+						startService(new Intent(SettingActivity.this, VButtonService.class));
+					} else {
+						Global.setShowVButton(false);
+						VButton._hide();
 					}
-					Global.setShowVButton(true);
-					startService(new Intent(SettingActivity.this, VButtonService.class));
-				} else {
-					Global.setShowVButton(false);
-					VButton._hide();
 				}
-			}
-		});
+			});
 		VButtonItem.setChecked(Global.isShowVButton());
+		Q.addSwitchItem(get(L.EnableVIDELog)).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Global.setShowVIDELog(((SettingFragment.SwitchItem) v).isChecked());
+				}
+			});
+		Q.addSimpleItem(get(L.ShareVIDE), get(L.Nothing)).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					MainActivity.shareMe(SettingActivity.this);
+				}
+			});
 	}
 	public static void setVButtonItemChecked(boolean c) {
 		if (cx == null) return;
@@ -96,39 +97,39 @@ public class SettingActivity extends VActivity {
 	}
 	private void setSplashTime() {
 		VAlertDialog d=ui.newAlertDialog().setTitle(get(L.Setting_SplashTime)).setEditHint(get(L.Setting_SplashTime_Hint)).setEdit(String.valueOf(Global.getSplashTime())).setCancelable(true).setNegativeButton(get(L.Cancel), null).setPositiveButton(get(L.OK), false, new VAlertDialog.OnClickListener() {
-			@Override
-			public void onClick(VAlertDialog dialog, int pos) {
-				long res;
-				String s=dialog.getEditText().getText().toString();
-				if (s == null || s.length() == 0) res = 0; else {
-					try {
-						res = Long.parseLong(s);
-					} catch (NumberFormatException e) {
-						dialog.getEditText().setError(get(L.IllegalNumber));
+				@Override
+				public void onClick(VAlertDialog dialog, int pos) {
+					long res;
+					String s=dialog.getEditText().getText().toString();
+					if (s == null || s.length() == 0) res = 0; else {
+						try {
+							res = Long.parseLong(s);
+						} catch (NumberFormatException e) {
+							dialog.getEditText().setError(get(L.IllegalNumber));
+							return;
+						}
+					}
+					if (res < 0) {
+						dialog.getEditText().setText(get(L.SplashTimeCantNegative));
 						return;
 					}
+					Global.setSplashTime(res);
+					dialog.dismiss();
+					ui.print(get(L.Setted));
 				}
-				if (res < 0) {
-					dialog.getEditText().setText(get(L.SplashTimeCantNegative));
-					return;
-				}
-				Global.setSplashTime(res);
-				dialog.dismiss();
-				ui.print(get(L.Setted));
-			}
-		});
+			});
 		d.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
 		d.getEditText().setSelection(d.getEditText().getText().length());
 		d.show();
 	}
 	public void setThemeColor() {
-		new ColorSelector(this).setColor(UI.getThemeColor()).setPositiveButton(get(L.OK), new VAlertDialog.OnClickListener() {
-			@Override
-			public void onClick(VAlertDialog dialog, int pos) {
-				UI.setThemeColor(((ColorSelector) dialog).getColor());
-				ui.print(get(L.Setted));
-			}
-		}).setNegativeButton(get(L.Cancel), null).setCancelable(true).show();
+		new com.jxs.vcompat.ui.ColorSelector(this).setColor(UI.getThemeColor()).setPositiveButton(get(L.OK), new VAlertDialog.OnClickListener() {
+				@Override
+				public void onClick(VAlertDialog dialog, int pos) {
+					UI.setThemeColor(((ColorSelector) dialog).getColor());
+					ui.print(get(L.Setted));
+				}
+			}).setNegativeButton(get(L.Cancel), null).setCancelable(true).show();
 	}
 	private int selectedLanguage=-1;
 	public void setLanguage() {
@@ -148,22 +149,22 @@ public class SettingActivity extends VActivity {
 		if (index == -1) return;
 		selectedLanguage = -1;
 		b.setSingleChoiceItems(all, index, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int pos) {
-				selectedLanguage = pos;
-			}
-		});
+				@Override
+				public void onClick(DialogInterface dialog, int pos) {
+					selectedLanguage = pos;
+				}
+			});
 		b.setPositiveButton(get(L.OK), new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int pos) {
-				Lang.setLanguage(Lang.Langs[selectedLanguage]);
-				Global.setLanguage(selectedLanguage);
-				killAll();
-				Intent i=getPackageManager().getLaunchIntentForPackage(getPackageName());
-				i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(i);
-			}
-		}).setNegativeButton(get(L.Cancel), null).setCancelable(true).show();
+				@Override
+				public void onClick(DialogInterface dialog, int pos) {
+					Lang.setLanguage(Lang.Langs[selectedLanguage]);
+					Global.setLanguage(selectedLanguage);
+					killAll();
+					Intent i=getPackageManager().getLaunchIntentForPackage(getPackageName());
+					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					startActivity(i);
+				}
+			}).setNegativeButton(get(L.Cancel), null).setCancelable(true).show();
 	}
 	public static final String TAG="VIDE";
 	public final boolean checkOverlayPermission(Context context) {

@@ -39,6 +39,19 @@ public class Manifest implements Serializable {
 	private int VersionCode;
 	private String VersionName;
 	private int Type=TYPE_APK;
+	public void loadFrom(Manifest a) {
+		this.ProjectName=a.ProjectName;
+		this.MainJs=a.MainJs;
+		this.PackageName=a.PackageName;
+		this.AppName=a.AppName;
+		this.isCompat=a.isCompat;
+		this.UseDx=a.UseDx;
+		this.VersionCode=a.VersionCode;
+		this.VersionName=a.VersionName;
+		this.Type=a.Type;
+		this.AllJs.clear();
+		this.AllJs.addAll(a.getAllJs());
+	}
 	private ArrayList<Integer> Permissions=new ArrayList<>();
 	public Manifest() {
 		Permissions.add(18); //WRITE_EXTERNAL_STORAGE

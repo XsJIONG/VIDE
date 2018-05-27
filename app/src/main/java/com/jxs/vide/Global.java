@@ -1,23 +1,19 @@
 package com.jxs.vide;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Typeface;
-import android.util.Log;
-import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobWrapper;
-import cn.bmob.v3.exception.BmobException;
-import com.jxs.vcompat.io.IOUtil;
-import com.jxs.vcompat.ui.UI;
-import com.jxs.vide.lang.Lang;
-import dalvik.system.DexClassLoader;
-import dalvik.system.DexFile;
-import java.io.File;
-import java.util.Enumeration;
+import android.content.*;
+import android.graphics.*;
+import android.util.*;
+import cn.bmob.v3.*;
+import cn.bmob.v3.exception.*;
+import com.jxs.vcompat.io.*;
+import com.jxs.vcompat.ui.*;
+import com.jxs.vide.lang.*;
+import dalvik.system.*;
+import java.io.*;
+import java.util.*;
 
 import static com.jxs.v.addon.VApplication.getContext;
 import static com.jxs.vide.L.get;
-import java.util.HashMap;
 
 public class Global {
 	public static final int UserNameMaxLength=20;
@@ -223,17 +219,21 @@ public class Global {
 	public static SharedPreferences getSharedPreferences() {
 		return getSharedPreferences("Config");
 	}
+	private static long SplashTime=-1;
 	public static long getSplashTime() {
-		return getSharedPreferences().getLong("SplashTime", 3000);
+		return SplashTime == -1 ?(SplashTime = getSharedPreferences().getLong("SplashTime", 3000)): SplashTime;
 	}
 	public static void setSplashTime(long time) {
 		getSharedPreferences().edit().putLong("SplashTime", time).commit();
+		SplashTime = time;
 	}
+	private static int CurrentLanguage=-1;
 	public static int getLanguage() {
-		return getSharedPreferences().getInt("Language", 0);
+		return CurrentLanguage == -1 ?(CurrentLanguage = getSharedPreferences().getInt("Language", 0)): CurrentLanguage;
 	}
 	public static void setLanguage(int q) {
 		getSharedPreferences().edit().putInt("Language", q).commit();
+		CurrentLanguage = q;
 	}
 	public static int getThemeColor() {
 		return getSharedPreferences().getInt("ThemeColor", UI.getThemeColor());
@@ -256,6 +256,18 @@ public class Global {
 		pos[0] = Integer.parseInt(s.substring(0, s.indexOf(',')));
 		pos[1] = Integer.parseInt(s.substring(s.indexOf(',') + 1));
 		return pos;
+	}
+	private static boolean ShowVIDELog=false,ShowVIDELogInited=false;
+	public static boolean isShowVIDELog() {
+		if (ShowVIDELogInited) return ShowVIDELog; else {
+			ShowVIDELog = getSharedPreferences().getBoolean("ShowVIDELog", false);
+			ShowVIDELogInited = true;
+			return ShowVIDELog;
+		}
+	}
+	public static void setShowVIDELog(boolean show) {
+		getSharedPreferences().edit().putBoolean("ShowVIDELog", show).commit();
+		ShowVIDELog = show;
 	}
 	public final static void onBmobErr(UI ui, BmobException e) {
 		String res=null;
@@ -282,6 +294,13 @@ public class Global {
 				break;
 		}
 		if (res == null) res = get(L.UnknownError) + ":" + e.getErrorCode();
+		log("BmobErr", Log.getStackTraceString(e));
 		ui.print(res);
+	}
+	public static void log(Object c) {
+		log("VIDE", c);
+	}
+	public static void log(String n, Object c) {
+		if (isShowVIDELog()) com.jxs.vapp.program.Console.getInstance().log(n, c);
 	}
 }

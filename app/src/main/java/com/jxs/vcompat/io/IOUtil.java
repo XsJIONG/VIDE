@@ -151,7 +151,7 @@ public class IOUtil {
 	public static String getRelativePath(File dir, File son) {
 		String s=son.getPath();
 		String d=dir.getPath();
-		if (d.endsWith("/")) d = d.substring(0, d.length() - 1);
+		if (!d.endsWith("/")) d+="/";
 		return s.substring(d.length(), s.length());
 	}
 	private IOUtil() {}

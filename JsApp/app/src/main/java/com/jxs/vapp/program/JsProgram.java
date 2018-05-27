@@ -1,14 +1,9 @@
 package com.jxs.vapp.program;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ImporterTopLevel;
-import org.mozilla.javascript.Script;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
-import org.mozilla.javascript.Undefined;
+import android.util.*;
+import java.lang.reflect.*;
+import java.util.*;
+import org.mozilla.javascript.*;
 
 public class JsProgram extends Program {
 	public static HashMap<Object,JsProgram> Internet=new HashMap<>();
@@ -67,12 +62,6 @@ public class JsProgram extends Program {
 	}
 	public JsProgram(JsApp exe, String programName) {
 		cx = org.mozilla.javascript.Context.enter();
-		//For VIDE
-		try {
-			Class<?> c=Class.forName("com.jxs.vide.Global");
-			ClassLoader loader=(ClassLoader) c.getField("ClassLoader").get(null);
-			if (loader != null) cx.setApplicationClassLoader(loader);
-		} catch (Throwable e) {}
 		cx.setOptimizationLevel(-1);
 		scope = new ImporterTopLevel(cx);
 		/*_Require = new Require(cx, scope, new ModuleScriptProvider() {

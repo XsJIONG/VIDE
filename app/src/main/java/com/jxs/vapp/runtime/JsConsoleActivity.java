@@ -1,19 +1,25 @@
 package com.jxs.vapp.runtime;
 
-import android.os.Bundle;
-import android.util.Log;
-import com.jxs.v.activity.ConsoleActivity;
-import com.jxs.v.ui.VAlertDialog;
-import com.jxs.vapp.program.JsApp;
-import com.jxs.vapp.program.JsExtend;
-import com.jxs.vapp.program.JsProgram;
-import com.jxs.vapp.program.Jsc;
-import com.jxs.vapp.program.Program;
-import org.mozilla.javascript.ScriptableObject;
+import android.content.res.*;
+import android.os.*;
+import android.util.*;
+import com.jxs.v.activity.*;
+import com.jxs.v.ui.*;
+import com.jxs.vapp.program.*;
+import org.mozilla.javascript.*;
 
 public class JsConsoleActivity extends ConsoleActivity {
 	public static final String ThreadJs="new java.lang.Thread({run:function() {\n%s\n}}).start();";
 	private JsProgram program;
+	private Resources RS;
+	@Override
+	public Resources getResources() {
+		return RS;
+	}
+	@Override
+	public AssetManager getAssets() {
+		return RS.getAssets();
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

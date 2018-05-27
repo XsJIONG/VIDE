@@ -1,16 +1,13 @@
 package com.jxs.vcompat.ui;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.drawable.ColorDrawable;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import com.jxs.vcompat.ui.VAlertDialog;
-import com.jxs.vcompat.widget.VEditText;
-import com.jxs.vcompat.widget.VListView;
+import android.app.*;
+import android.content.*;
+import android.graphics.drawable.*;
+import android.view.*;
+import android.widget.*;
+import android.widget.AdapterView.*;
+import com.jxs.vcompat.ui.*;
+import com.jxs.vcompat.widget.*;
 
 public class VAlertDialog implements UI.OnThemeChangeListener {
 	public static final String THEME_FULL_COLOR="VAlertDialog_FULLCOLOR";
@@ -34,7 +31,12 @@ public class VAlertDialog implements UI.OnThemeChangeListener {
 		UI.autoOnUi(cx, new Runnable() {
 			@Override
 			public void run() {
-				dialog.setMessage(s);
+				TextView tv=new TextView(cx);
+				tv.setText(s);
+				VScrollView sc=new VScrollView(cx);
+				sc.setFillViewport(true);
+				sc.addView(tv, -1, -1);
+				setView(sc);
 			}
 		});
 		return this;

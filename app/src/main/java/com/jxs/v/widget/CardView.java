@@ -16,19 +16,17 @@
 
 package com.jxs.v.widget;
 
-import android.animation.ValueAnimator;
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Rect;
-import android.os.Build;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.FrameLayout;
-import com.jxs.vcompat.ui.VAnimation;
-import com.jxs.vide.R;
-import android.widget.Toast;
-import com.jxs.vide.VLogger;
+import android.animation.*;
+import android.content.*;
+import android.content.res.*;
+import android.graphics.*;
+import android.os.*;
+import android.util.*;
+import android.view.*;
+import android.view.animation.*;
+import android.widget.*;
+import com.jxs.vcompat.ui.*;
+import com.jxs.vide.*;
 
 /**
  * A FrameLayout with a rounded corner background and shadow.

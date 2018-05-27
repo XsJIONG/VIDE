@@ -1,17 +1,9 @@
 package com.jxs.vapp.program;
 
-import com.jxs.vcompat.io.IOUtil;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.jxs.vcompat.io.*;
+import java.io.*;
+import java.util.*;
+import org.json.*;
 
 public class Manifest implements Serializable {
 	public static final String TAG_ALL_JS="Js";
@@ -26,7 +18,7 @@ public class Manifest implements Serializable {
 	public static final String TAG_PERMISSIONS="Permissions";
 	public static final String TAG_TYPE="Type";
 	public static final int TYPE_APK=0,TYPE_VAPP=1;
-
+	
 	private ArrayList<Jsc> AllJs=new ArrayList<>();
 	private boolean Writable=false;
 	private File OutFile;
@@ -39,6 +31,19 @@ public class Manifest implements Serializable {
 	private int VersionCode;
 	private String VersionName;
 	private int Type=TYPE_APK;
+	public void loadFrom(Manifest a) {
+		this.ProjectName=a.ProjectName;
+		this.MainJs=a.MainJs;
+		this.PackageName=a.PackageName;
+		this.AppName=a.AppName;
+		this.isCompat=a.isCompat;
+		this.UseDx=a.UseDx;
+		this.VersionCode=a.VersionCode;
+		this.VersionName=a.VersionName;
+		this.Type=a.Type;
+		this.AllJs.clear();
+		this.AllJs.addAll(a.getAllJs());
+	}
 	private ArrayList<Integer> Permissions=new ArrayList<>();
 	public Manifest() {
 		Permissions.add(18); //WRITE_EXTERNAL_STORAGE
@@ -71,7 +76,7 @@ public class Manifest implements Serializable {
 		UseDx = obj.optBoolean(TAG_USE_DX, false);
 		VersionCode = obj.optInt(TAG_VERSION_CODE, 1);
 		VersionName = obj.optString(TAG_VERSION_NAME, "1.0.0");
-		Type = obj.optInt(TAG_TYPE, TYPE_APK);
+		Type=obj.optInt(TAG_TYPE, TYPE_APK);
 		JSONArray arr=obj.optJSONArray(TAG_PERMISSIONS);
 		if (arr != null) {
 			Permissions.clear();
@@ -82,7 +87,7 @@ public class Manifest implements Serializable {
 		return Permissions;
 	}
 	public void setType(int type) {
-		this.Type = type;
+		this.Type=type;
 	}
 	public int getType() {
 		return this.Type;

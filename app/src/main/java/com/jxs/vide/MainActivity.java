@@ -45,10 +45,12 @@ public class MainActivity extends VActivity {
 	private RelativeLayout Root;
 	private FloatingActionButton FAB;
 	private ProjectViewHelper VH;
+	private SharedPreferences Pref;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		cx = this;
+		Pref = getSharedPreferences("Config", MODE_PRIVATE);
 		super.onCreate(savedInstanceState);
 		Global.checkBmob(this);
 		initProjectsView();
@@ -87,7 +89,51 @@ public class MainActivity extends VActivity {
 					}
 				}).setCancelable(true).show();
 		} catch (Exception e) {}
+		int c=Pref.getInt("Count", 0);
+		if (c != -1) {
+			if (c != 0 && (c % 4 == 0)) {
+				shareMe(this);
+				Pref.edit().putInt("Count", -1).commit();
+				c = 0;
+			}
+			Pref.edit().putInt("Count", ++c).commit();
+		}
 		checkUpdate();
+	}
+	public static void shareMe(final VActivity ac) {
+		ac.ui.newAlertDialog().setTitle(get(L.Please)).setMessage(get(L.ShareApp)).setCancelable(false).setPositiveButton(get(L.Share), new VAlertDialog.OnClickListener() {
+				@Override
+				public void onClick(VAlertDialog dialog, int pos) {
+					Intent in=new Intent(Intent.ACTION_SEND);
+					in.setType("text/plain");
+					in.putExtra(Intent.EXTRA_SUBJECT, "VIDE");
+					in.putExtra(Intent.EXTRA_TEXT, get(L.ShareContent));
+					in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					ac.startActivity(Intent.createChooser(in, get(L.Share)));
+				}
+			}).setNegativeButton(get(L.AppMarket), new VAlertDialog.OnClickListener() {
+				@Override
+				public void onClick(VAlertDialog dialog, int pos) {
+					Intent in=new Intent(Intent.ACTION_VIEW);
+					in.setData(Uri.parse("market://details?id=com.jxs.vide"));
+					in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					ac.startActivity(in);
+				}
+			}).setNeutralButton(get(L.Nop), new VAlertDialog.OnClickListener() {
+				@Override
+				public void onClick(VAlertDialog dialog, int pos) {
+					final Snackbar bar=Snackbar.make(ac.findViewById(android.R.id.content), get(L.Badguy), Snackbar.LENGTH_SHORT);
+					bar.setAction(get(L.IRepented), new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								shareMe(ac);
+								bar.dismiss();
+							}
+						});
+					bar.setActionTextColor(UI.getThemeColor());
+					bar.show();
+				}
+			}).show();
 	}
 	public static void onUserStateChanged() {
 		if (MainActivity.cx != null) MainActivity.cx.updateUser();
@@ -388,14 +434,20 @@ public class MainActivity extends VActivity {
 			((TextView) one.getChildAt(1)).setTextColor(w);
 		}
 		FAB.setImageDrawable(DrawableHelper.getDrawable(R.drawable.v_add, UI.getAccentColor()));
+		FABCreateSimple.setImageDrawable(DrawableHelper.getDrawable(R.drawable.icon_app, UI.getAccentColor()));
+		FABCreateConsole.setImageDrawable(DrawableHelper.getDrawable(R.drawable.icon_console, UI.getAccentColor()));
 		try {
-			FAB.setBackgroundTintList(ColorStateList.valueOf(UI.getThemeColor()));
+			ColorStateList cs=ColorStateList.valueOf(UI.getThemeColor());
+			FAB.setBackgroundTintList(cs);
+			FABCreateSimple.setBackgroundTintList(cs);
+			FABCreateConsole.setBackgroundTintList(cs);
 		} catch (Throwable e) {}
 		if (DrawerGradient != null) DrawerGradient.onThemeChange();
 		((ImageView) LoginLayout.getChildAt(0)).setImageDrawable(ui.tintDrawable(R.drawable.icon_user, w));
 		((TextView) LoginLayout.getChildAt(1)).setTextColor(w);
 		if (UserIcon.getTag() == -1) UserIcon.setImageDrawable(ui.tintDrawable(R.drawable.icon_user, w));
 		((TextView) ((ViewGroup) UserLayout.getChildAt(0)).getChildAt(1)).setTextColor(w);
+		VH.onThemeChange();
 	}
 	int viewHeight;
 	public static int getSignature(Context cx) {
@@ -521,5 +573,10 @@ public class MainActivity extends VActivity {
 		for (File one : dir.listFiles())
 			if (!one.equals(want)) one.delete();
 		return want;
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		ProjectViewHelper.recycle();
 	}
 }

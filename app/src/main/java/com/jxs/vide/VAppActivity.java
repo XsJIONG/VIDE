@@ -8,6 +8,8 @@ import android.graphics.drawable.*;
 import android.os.*;
 import android.support.design.widget.*;
 import android.support.v4.widget.*;
+import android.text.*;
+import android.text.style.*;
 import android.util.*;
 import android.view.*;
 import android.view.View.*;
@@ -17,7 +19,9 @@ import cn.bmob.v3.*;
 import cn.bmob.v3.exception.*;
 import cn.bmob.v3.listener.*;
 import com.jxs.v.widget.*;
+import com.jxs.vapp.program.*;
 import com.jxs.vcompat.activity.*;
+import com.jxs.vcompat.io.*;
 import com.jxs.vcompat.ui.*;
 import com.jxs.vcompat.widget.*;
 import java.io.*;
@@ -133,33 +137,58 @@ public class VAppActivity extends VActivity {
 		ContentList.setOnItemClickListener(new OnItemClickListener() {
 				@Override
 				public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-					VAppEntity en=Adapter.getItem(pos);
-					downloadJsc(en, getTempFile(en));
+					final VAppEntity en=Adapter.getItem(pos);
+					if (!en.OpenSource) {
+						runJsc(en);
+						return;
+					}
+					final android.support.v7.widget.PopupMenu menu=new android.support.v7.widget.PopupMenu(VAppActivity.this, view, Gravity.CENTER);
+					menu.getMenu().add(0, 0, 0, get(L.VAppRun));
+					menu.getMenu().add(0, 1, 1, get(L.VAppClone));
+					menu.setOnMenuItemClickListener(new android.support.v7.widget.PopupMenu.OnMenuItemClickListener() {
+							@Override
+							public boolean onMenuItemClick(MenuItem item) {
+								switch (item.getOrder()) {
+									case 0:runJsc(en);break;
+									case 1:
+										if (!TempJscDir.exists()) TempJscDir.mkdirs();
+										downloadJsc(en, new File(TempJscDir, "Tmp"), false);break;
+								}
+								menu.dismiss();
+								return true;
+							}
+						});
+					menu.show();
 				}
 			});
+	}
+	private void runJsc(VAppEntity en) {
+		downloadJsc(en, getTempFile(en), true);
 	}
 	private void runJsc(File f) {
 		Intent i=new Intent(VAppActivity.this, NoDisplayActivity.class);
 		i.putExtra("JscPath", f.getAbsolutePath());
 		startActivity(i);
 	}
-	private void downloadJsc(VAppEntity en, File f) {
+	private void downloadJsc(VAppEntity en, File f, boolean run) {
 		VProgressDialog dialog=ui.newLoadingDialog();
 		dialog.setTitle(get(L.Wait));
 		dialog.setCancelable(false).setMessage(String.format(get(L.Downloading), 0));
 		ProgressDialog d=dialog.show();
-		new Thread(new DownloadRunnable(this, en, f, new DialogHandler(d))).start();
+		new Thread(new DownloadRunnable(this, en, f, new DialogHandler(d), run)).start();
 	}
 	public static class DownloadRunnable implements Runnable {
 		private DialogHandler H;
 		private VAppEntity en;
 		private File f;
 		private VAppActivity cx;
-		public DownloadRunnable(VAppActivity cx, VAppEntity en, File f, DialogHandler handler) {
+		private boolean run;
+		public DownloadRunnable(VAppActivity cx, VAppEntity en, File f, DialogHandler handler, boolean run) {
 			H = handler;
 			this.en = en;
 			this.f = f;
 			this.cx = cx;
+			this.run = run;
 		}
 		@Override
 		public void run() {
@@ -172,13 +201,46 @@ public class VAppActivity extends VActivity {
 							Global.onBmobErr(cx.ui, e);
 							return;
 						}
-						H.dismiss();
-						cx.ui.autoOnUi(new Runnable() {
-								@Override
-								public void run() {
-									cx.runJsc(f);
-								}
-							});
+						if (run) {
+							H.dismiss();
+							cx.ui.autoOnUi(new Runnable() {
+									@Override
+									public void run() {
+										cx.runJsc(f);
+									}
+								});
+							return;
+						}
+						try {
+							JsApp app=new JsApp(new FileInputStream(f));
+							String name=app.getManifest().getAppName();
+							File q=new File(Project.PATH, name);
+							int qwe=0;
+							while (q.exists()) q = new File(Project.PATH, join(name, "-", ++qwe));
+							Project pro=Project.getInstance(q, true);
+							File dir=pro.getDir();
+							Manifest A=app.getManifest();
+							pro.getManifest().loadFrom(A);
+							pro.setAppName(dir.getName());
+							ArrayList<Jsc> s=A.getAllJs();
+							Jsc c;
+							for (int i=0;i < s.size();i++) {
+								c = s.get(i);
+								IOUtil.write(new File(dir, c.getName()), c.getCode());
+							}
+							pro.saveManifest();
+							MainActivity.cx.notifyProjectRename();
+							H.dismiss();
+							cx.ui.print(String.format(get(L.Cloned), pro.getAppName()));
+						} catch (final Throwable er) {
+							H.dismiss();
+							cx.ui.autoOnUi(new Runnable() {
+									@Override
+									public void run() {
+										cx.err(er);
+									}
+								});
+						}
 					}
 					@Override
 					public void onProgress(Integer value, long size) {
@@ -186,6 +248,11 @@ public class VAppActivity extends VActivity {
 					}
 				});
 		}
+	}
+	private static String join(Object...args) {
+		StringBuffer buf=new StringBuffer();
+		for (Object one : args) buf.append(one);
+		return buf.toString();
 	}
 	public static File getTempFile(VAppEntity entity) {
 		if (!TempJscDir.exists()) TempJscDir.mkdirs();
@@ -207,7 +274,7 @@ public class VAppActivity extends VActivity {
 			LinearLayout root=new LinearLayout(getContext());
 			root.setOrientation(LinearLayout.VERTICAL);
 			TextView Title=new TextView(getContext());
-			Title.setText(entity.Title);
+			Title.setText(getTitle(entity));
 			Title.setGravity(Gravity.LEFT);
 			Title.setSingleLine(true);
 			Title.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
@@ -243,9 +310,10 @@ public class VAppActivity extends VActivity {
 			holder.Title = Title;
 			holder.Des = SubTitle;
 			holder.User = User;
+			holder.openSource = entity.OpenSource;
 			holder.onThemeChange();
 			Content.setTag(holder);
-			if (Global.UserNames.containsKey(entity.Author)) User.setText(Global.UserNames.get(entity.Author)); {
+			if (Global.UserNames.containsKey(entity.Author)) User.setText(Global.UserNames.get(entity.Author)); else {
 				BmobQuery<VUser> q=new BmobQuery<>();
 				q.addWhereEqualTo("objectId", entity.Author);
 				q.setLimit(1); //WTF
@@ -265,9 +333,25 @@ public class VAppActivity extends VActivity {
 			}
 			return Content;
 		}
+		private static String OS=null;
+		private static CharSequence getTitle(VAppEntity entity) {
+			if (entity.OpenSource) {
+				if (OS == null) OS = get(L.OpenSource);
+				return getTitle(entity.Title + " " + OS);
+			} else return entity.Title;
+		}
+		private static CharSequence getTitle(String q) {
+			SpannableString s=new SpannableString(q);
+			int en=q.length() - OS.length();
+			s.setSpan(new ForegroundColorSpan(UI.getAccentColor()), 0, en, 0);
+			s.setSpan(new ForegroundColorSpan(UI.getThemeColor()), en, q.length(), 0);
+			s.setSpan(new BackgroundColorSpan(UI.getAccentColor()), en, q.length(), 0);
+			return s;
+		}
 		private static class ViewHolder {
 			public CardView Card;
 			public TextView Title,Des,User;
+			public boolean openSource;
 			public void onThemeChange() {
 				int ui=UI.getThemeColor();
 				int w=UI.getAccentColor();
@@ -275,6 +359,7 @@ public class VAppActivity extends VActivity {
 				if (Title != null) Title.setTextColor(w);
 				if (Des != null) Des.setTextColor(w);
 				if (User != null) User.setTextColor(w);
+				if (openSource) Title.setText(getTitle(Title.getText().toString()));
 			}
 		}
 	}

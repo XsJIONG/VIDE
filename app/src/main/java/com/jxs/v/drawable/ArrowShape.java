@@ -6,8 +6,8 @@ import com.jxs.v.ui.UI;
 
 public class ArrowShape extends BShape {
 	public BCurve Top,Bottom,Body;
-	public ArrowShape(Context cx, float stroke) {
-		this(new UI(cx).dp2px(16), new UI(cx).dp2px(11), stroke);
+	public ArrowShape(float stroke) {
+		this(UI.dp2px(16), UI.dp2px(11), stroke);
 	}
 	public ArrowShape(float length, float arrowlength, float stroke) {
 		arrowlength = (float) (arrowlength / 2 * Math.sqrt(2));

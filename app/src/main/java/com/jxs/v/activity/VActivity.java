@@ -40,7 +40,7 @@ public class VActivity extends Activity implements UI.OnThemeChangeListener {
 			setTitleElevation(10f);
 			rSetTitleBackground(UI.getThemeColor());
 			rSetTitleTextColor(UI.getAccentColor());
-			BackDrawable = new ArrowShape(this, 5f).toSimpleDrawable();
+			BackDrawable = new ArrowShape(5f).toSimpleDrawable();
 			UI.tintDrawable(BackDrawable, UI.getAccentColor());
 			((BDrawable) BackDrawable).setStrokeWidth(5f);
 			getActionBar().setHomeAsUpIndicator(BackDrawable);

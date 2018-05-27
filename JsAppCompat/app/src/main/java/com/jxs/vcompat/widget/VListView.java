@@ -1,11 +1,12 @@
 package com.jxs.vcompat.widget;
 
-import android.content.*;
-import android.support.v7.widget.*;
-import android.util.*;
-import android.widget.*;
-import com.jxs.vcompat.ui.*;
-import java.lang.reflect.*;
+import android.content.Context;
+import android.support.v7.widget.ListViewCompat;
+import android.util.AttributeSet;
+import android.widget.AbsListView;
+import android.widget.EdgeEffect;
+import com.jxs.vcompat.ui.UI;
+import java.lang.reflect.Field;
 
 public class VListView extends ListViewCompat implements UI.OnThemeChangeListener {
 	public VListView(Context cx) {

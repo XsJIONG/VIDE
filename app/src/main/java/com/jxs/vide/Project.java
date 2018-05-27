@@ -1,22 +1,14 @@
 package com.jxs.vide;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.os.Environment;
-import com.jxs.vapp.program.JsExtend;
-import com.jxs.vapp.program.Jsc;
-import com.jxs.vapp.program.Manifest;
-import com.jxs.vcompat.io.EncryptUtil;
-import com.jxs.vcompat.io.IOUtil;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import org.json.JSONException;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.os.*;
+import com.jxs.vapp.program.*;
+import com.jxs.vcompat.io.*;
+import java.io.*;
+import java.nio.*;
+import java.util.*;
+import org.json.*;
 
 import static com.jxs.vide.L.get;
 
@@ -212,16 +204,69 @@ public class Project implements Serializable {
 		IOUtil.delete(dir);
 	}
 	public static final File TMP=new File("/data/data/" + MyApplication.getContext().getPackageName() + "/files/CompileTemp/");
-	private static ByteBuffer buffer=ByteBuffer.allocate(4);
+	private static ByteBuffer IntBuffer=ByteBuffer.allocate(4);
 	public static byte[] intToByteArray(int s) {
-		buffer.putInt(0, s);
-		return buffer.array();
+		IntBuffer.putInt(0, s);
+		return IntBuffer.array();
+	}
+	private static ByteBuffer LongBuffer=ByteBuffer.allocate(8);
+	public static byte[] longToByteArray(long s) {
+		LongBuffer.putLong(0, s);
+		return LongBuffer.array();
 	}
 	public void compile(OutputStream output) throws Exception {
+		compile(output, false);
+	}
+	public void compile(OutputStream output, boolean asset) throws Exception {
 		writeString(output, _Manifest.toJSON().toString());
 		ArrayList<Jsc> s=_Manifest.getAllJs();
 		for (int i=0;i < s.size();i++)
 			writeString(output, new String(EncryptUtil.encrypt(EncryptUtil.encrypt(IOUtil.read(getFile(s.get(i))), EncryptUtil.Type.GZip), EncryptUtil.Type.Base64)));
+		if (asset) {
+			File[] Lib=getLibDir().listFiles(new FileFilter() {
+					@Override
+					public boolean accept(File f) {
+						return f.getPath().endsWith(".dex");
+					}
+				});
+			File[] Ass=getAssets().listFiles();
+			if (Lib.length + Ass.length != 0) {
+				output.write(intToByteArray(Lib.length + Ass.length));
+				File one;
+				long ada,ind;
+				int readed;
+				byte[] buf=new byte[1024];
+				FileInputStream in;
+				for (int i=0;i < Lib.length;i++) {
+					one = Lib[i];
+					writeString(output, IOUtil.getRelativePath(this.dir, one));
+					output.write(longToByteArray(ada = Lib[i].length()));
+					ind = 0;
+					in = new FileInputStream(Lib[i]);
+					while (ind < ada) {
+						readed = ada - ind > 1024 ?1024: (int) (ada - ind);
+						in.read(buf, 0, readed);
+						output.write(buf, 0, readed);
+						ind += readed;
+					}
+					in.close();
+				}
+				for (int i=0;i < Ass.length;i++) {
+					one = Ass[i];
+					writeString(output, IOUtil.getRelativePath(this.dir, one));
+					output.write(longToByteArray(ada = Ass[i].length()));
+					ind = 0;
+					in = new FileInputStream(Ass[i]);
+					while (ind < ada) {
+						readed = ada - ind > 1024 ?1024: (int) (ada - ind);
+						in.read(buf, 0, readed);
+						output.write(buf, 0, readed);
+						ind += readed;
+					}
+					in.close();
+				}
+			}
+		}
 		output.close();
 	}
 	private static void writeString(OutputStream output, String str) throws IOException {

@@ -6,7 +6,7 @@ import com.jxs.v.ui.UI;
 
 public class CancelShape extends BShape {
 	public BCurve LeftRight, RightLeft;
-	public CancelShape(Context cx) {
+	public CancelShape() {
 		this(UI.dp2px(12));
 	}
 	public CancelShape(float length) {

@@ -181,11 +181,25 @@ public class Lang_Bilibili extends Lang {
 		qwe(L.VersionCodeCannotBeEmpty, "版本号不能为空");
 		qwe(L.VersionNameCannotBeEmpty, "版本名不能为空");
 		qwe(L.EditSuccessfully, "修改成功！");
-		qwe(L.OpenSource, "开放代码！");
+		qwe(L.OpenSource, "开源");
 		qwe(L.UpdateDes, "VIDE - V%s");
 		qwe(L.Update, "升级！");
 		qwe(L.PkgLessThanTwo, "包名少于两位啦！");
 		qwe(L.LoginFirst, "请先登录啦！");
+		qwe(L.Please, "呜呜...求你了！");
+		qwe(L.ShareApp, "请为又可怜又帅气又没钱的作者捐献你的爱心吧！！\n如果你觉得VIDE很棒，请将这个软件分享给你的好友或在应用市场中评分！");
+		qwe(L.Nop, "不！");
+		qwe(L.Share, "分享");
+		qwe(L.AppMarket, "评分");
+		qwe(L.Badguy, "你个无情的坏银！");
+		qwe(L.IRepented, "我后悔了");
+		qwe(L.ShareContent, "来看看这个软件！VIDE能够在手机上用Js编写出软件或控制台程序——即使你不会开发，这里也有有趣的小程序平台！立刻下载 -> https://www.coolapk.com/apk/com.jxs.vide");
+		qwe(L.ShareVIDE, "分享VIDE");
+		qwe(L.Nothing, "毫无卵用（疯狂暗示）");
+		qwe(L.EnableVIDELog, "允许打印VIDE的日志");
+		qwe(L.VAppRun, "运行");
+		qwe(L.VAppClone, "克隆到本地");
+		qwe(L.Cloned, "已克隆至\"%s\"");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

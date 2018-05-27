@@ -1,14 +1,11 @@
 package com.jxs.vapp.program;
 
-import android.content.Context;
-import android.content.Intent;
-import com.jxs.v.io.EncryptUtil;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.content.*;
+import com.jxs.v.io.*;
+import java.io.*;
+import java.nio.*;
+import java.util.*;
+import org.json.*;
 
 public class JsApp {
 	public static JsApp INSTANCE;
@@ -77,6 +74,9 @@ public class JsApp {
 			}
 		}
 		return j;
+	}
+	public Manifest getManifest() {
+		return this.manifest;
 	}
 	public boolean isUseDx() {
 		return manifest.isUseDx();

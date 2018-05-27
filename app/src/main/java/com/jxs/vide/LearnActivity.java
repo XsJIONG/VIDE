@@ -53,7 +53,7 @@ public class LearnActivity extends VActivity {
 		setTitleText(getIntent().getStringExtra("title"));
 		enableBackButton();
 		onThemeChange(UI.THEME_UI_COLOR);
-		BDrawable BackDrawable = new ArrowShape(this, 5f).toSimpleDrawable();
+		BDrawable BackDrawable = new ArrowShape(5f).toSimpleDrawable();
 		UI.tintDrawable(BackDrawable, UI.getAccentColor());
 		BackDrawable.setStrokeWidth(5f);
 		getSupportActionBar().setHomeAsUpIndicator(BackDrawable);

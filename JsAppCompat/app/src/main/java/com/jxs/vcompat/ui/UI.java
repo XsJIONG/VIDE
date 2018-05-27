@@ -1,22 +1,19 @@
 package com.jxs.vcompat.ui;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.design.widget.Snackbar;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.view.View;
-import android.view.View.OnClickListener;
-import java.io.File;
-import java.io.FileFilter;
-import java.util.HashMap;
+import android.app.*;
+import android.content.*;
+import android.content.res.*;
+import android.graphics.drawable.*;
+import android.os.*;
+import android.support.design.widget.*;
+import android.support.v4.graphics.drawable.*;
+import android.text.*;
+import android.text.style.*;
+import android.view.*;
+import android.view.View.*;
+import android.widget.*;
+import java.io.*;
+import java.util.*;
 
 public class UI {
 	public static final String THEME_UI_COLOR="UI_ThemeColor";
@@ -24,8 +21,24 @@ public class UI {
 	public UI(Context cx) {
 		this.cx = cx;
 	}
+	private Toast showingToast=null;
+	public void toast(final CharSequence cs) {
+		post(new Runnable() {
+				@Override
+				public void run() {
+					if (showingToast == null) showingToast = Toast.makeText(cx, cs, Toast.LENGTH_SHORT); else {
+						showingToast.setText(cs);
+						showingToast.setDuration(Toast.LENGTH_SHORT);
+					}
+					showingToast.show();
+				}
+			});
+	}
 	public Context getContext() {
 		return cx;
+	}
+	public static int getAccentColor() {
+		return AccentColor;
 	}
 	public static boolean supportElevation() {
 		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
@@ -80,22 +93,22 @@ public class UI {
 	}
 	public void print(final CharSequence c) {
 		post(new Runnable() {
-			@Override
-			public void run() {
-				Snackbar.make(getActivity().findViewById(android.R.id.content), c, Snackbar.LENGTH_SHORT).show();
-			}
-		});
+				@Override
+				public void run() {
+					Snackbar.make(getActivity().findViewById(android.R.id.content), c, Snackbar.LENGTH_SHORT).show();
+				}
+			});
 	}
 	public void print(final CharSequence c, final CharSequence action, final int color, final OnClickListener listener) {
 		post(new Runnable() {
-			@Override
-			public void run() {
-				Snackbar.make(getActivity().findViewById(android.R.id.content), c, Snackbar.LENGTH_SHORT).setAction(action, listener == null ?new OnClickListener() {
-																														@Override
-																														public void onClick(View v) {}
-																													}: listener).setActionTextColor(color).show();
-			}
-		});
+				@Override
+				public void run() {
+					Snackbar.make(getActivity().findViewById(android.R.id.content), c, Snackbar.LENGTH_SHORT).setAction(action, listener == null ?new OnClickListener() {
+																															@Override
+																															public void onClick(View v) {}
+																														}: listener).setActionTextColor(color).show();
+				}
+			});
 	}
 	public void post(Runnable r) {
 		post(cx, r);
@@ -103,7 +116,7 @@ public class UI {
 	public static void post(Context cx, Runnable r) {
 		if (shouldOnUi(cx)) onUi(cx, r); else r.run();
 	}
-	private boolean shouldOnUi() {
+	public boolean shouldOnUi() {
 		return shouldOnUi(cx);
 	}
 	private static boolean shouldOnUi(Context cx) {
@@ -171,8 +184,10 @@ public class UI {
 	public static void autoOnUi(Context cx, Runnable r) {
 		if (inUiThread(cx)) r.run(); else onUi(cx, r);
 	}
+	private static int AccentColor=0xFFFFFFFF;
 	public static void setThemeColor(int color) {
 		putThemeData(THEME_UI_COLOR, color);
+		AccentColor = ColorUtil.getBlackOrWhite(color);
 		for (OnThemeChangeListener one : mThemeChangeListeners.values()) one.onThemeChange(THEME_UI_COLOR);
 	}
 	public static int getThemeColor() {

@@ -1,6 +1,7 @@
 package com.jxs.vide;
 
 import android.app.*;
+import android.content.*;
 import android.content.res.*;
 import android.graphics.*;
 import android.graphics.drawable.*;
@@ -14,7 +15,7 @@ import java.io.*;
 import java.util.*;
 
 public class ProjectViewHelper {
-	public static ArrayList<Bitmap> BS=new ArrayList<>();
+	public static HashMap<File,Bitmap> BS=new HashMap<>();
 	private VActivity cx;
 	private PAdapter adapter;
 	private VScrollView Scroller;
@@ -23,12 +24,12 @@ public class ProjectViewHelper {
 	private GridLayout con;
 	private int columeCount;
 	public static void recycle() {
-		Bitmap b;
-		for (int i=0;i < BS.size();i++) {
-			b = BS.get(i);
-			if (b != null && !b.isRecycled()) b.recycle();
-		}
+		Collection<Bitmap> a=BS.values();
+		for (Bitmap one : a) one.recycle();
 		BS.clear();
+	}
+	public void onThemeChange() {
+		Cry.onThemeChange(UI.THEME_UI_COLOR);
 	}
 	public ProjectViewHelper(VActivity ac) {
 		this.cx = ac;
@@ -112,38 +113,17 @@ public class ProjectViewHelper {
 			final Project f=this.f.get(index);
 			final FrameLayout ff=new FrameLayout(layout.getContext());
 			ff.setBackgroundColor(ColorPalette.getRandom());
-			new Thread(new Runnable() {
+			getIcon(f, new BitmapListener() {
 					@Override
-					public void run() {
-						try {
-							int w=layout.getContext().getResources().getDisplayMetrics().widthPixels / layout.getColumnCount();
-							BitmapFactory.Options op=new BitmapFactory.Options();
-							op.inJustDecodeBounds = true;
-							FileInputStream in=new FileInputStream(f.getIcon());
-							Bitmap RawIcon=BitmapFactory.decodeStream(in);
-							in.close();
-							long S=RawIcon.getWidth() * RawIcon.getHeight();
-							long mem=Runtime.getRuntime().freeMemory() / 2;
-							if (S > mem) {
-								int b=(int) Math.ceil((float) S / mem);
-								op.inSampleSize = b;
+					public void onGet(final Bitmap b) {
+						((Activity) layout.getContext()).runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								ff.setBackground(new BitmapDrawable(b));
 							}
-							op.inJustDecodeBounds = false;
-							in = new FileInputStream(f.getIcon());
-							RawIcon = BitmapFactory.decodeStream(in);
-							in.close();
-							final Bitmap fixed=Bitmap.createScaledBitmap(RawIcon, w, w, true);
-							RawIcon.recycle();
-							BS.add(fixed);
-							((Activity) layout.getContext()).runOnUiThread(new Runnable() {
-									@Override
-									public void run() {
-										ff.setBackground(new BitmapDrawable(fixed));
-									}
-								});
-						} catch (Throwable t) {}
+						});
 					}
-				}).start();
+			});
 			TextView name=new TextView(layout.getContext());
 			name.setBackgroundColor(0x40000000);
 			name.setTextSize(20);
@@ -187,9 +167,48 @@ public class ProjectViewHelper {
 		public boolean contains(File pro) {
 			return f.contains(pro);
 		}
+		public void getIcon(final Project pro, final BitmapListener l) {
+			Bitmap b;
+			if ((b = BS.get(pro.getDir())) != null) l.onGet(b); else
+				new Thread(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								int w=cx.getResources().getDisplayMetrics().widthPixels / layout.getColumnCount();
+								BitmapFactory.Options op=new BitmapFactory.Options();
+								op.inJustDecodeBounds = true;
+								FileInputStream in=new FileInputStream(pro.getIcon());
+								Bitmap RawIcon=BitmapFactory.decodeStream(in);
+								in.close();
+								long S=RawIcon.getWidth() * RawIcon.getHeight();
+								long mem=Runtime.getRuntime().freeMemory() / 2;
+								if (S > mem) {
+									int b=(int) Math.ceil((float) S / mem);
+									op.inSampleSize = b;
+								}
+								op.inJustDecodeBounds = false;
+								in = new FileInputStream(pro.getIcon());
+								RawIcon = BitmapFactory.decodeStream(in);
+								in.close();
+								Bitmap fixed=Bitmap.createScaledBitmap(RawIcon, w, w, true);
+								RawIcon.recycle();
+								if (BS.containsKey(pro.getDir())) BS.get(pro.getDir()).recycle();
+								BS.put(pro.getDir(), fixed);
+								l.onGet(fixed);
+							} catch (Throwable t) {}
+						}
+					}).start();
+		}
+		
+	}
+	public void getIcon(Project pro, BitmapListener l) {
+		adapter.getIcon(pro, l);
 	}
 	public void notifyProjectRename() {
 		adapter.removeAll();
 		loadData();
+	}
+	public static interface BitmapListener {
+		void onGet(Bitmap b);
 	}
 }

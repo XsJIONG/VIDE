@@ -10,6 +10,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import com.jxs.v.widget.VListView;
 import com.jxs.v.widget.VEditText;
+import android.widget.*;
+import com.jxs.v.widget.*;
 
 public class VAlertDialog implements UI.OnThemeChangeListener {
 	public static final String THEME_FULL_COLOR="VAlertDialog_FULLCOLOR";
@@ -33,7 +35,12 @@ public class VAlertDialog implements UI.OnThemeChangeListener {
 		UI.autoOnUi(cx, new Runnable() {
 			@Override
 			public void run() {
-				dialog.setMessage(s);
+				TextView tv=new TextView(cx);
+				tv.setText(s);
+				VScrollView sc=new VScrollView(cx);
+				sc.setFillViewport(true);
+				sc.addView(tv, -1, -1);
+				setView(sc);
 			}
 		});
 		return this;

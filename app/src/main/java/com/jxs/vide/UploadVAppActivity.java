@@ -1,38 +1,27 @@
 package com.jxs.vide;
 
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.view.ViewCompat;
+import android.content.res.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.os.*;
+import android.support.design.widget.*;
+import android.support.v4.view.*;
+import android.support.v7.widget.*;
+import android.util.*;
+import android.view.*;
+import android.widget.*;
+import cn.bmob.v3.*;
+import cn.bmob.v3.datatype.*;
+import cn.bmob.v3.exception.*;
+import cn.bmob.v3.listener.*;
+import com.jxs.vcompat.activity.*;
+import com.jxs.vcompat.animation.*;
+import com.jxs.vcompat.drawable.*;
+import com.jxs.vcompat.ui.*;
+import com.jxs.vcompat.widget.*;
+import java.io.*;
+
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobFile;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.SaveListener;
-import cn.bmob.v3.listener.UploadFileListener;
-import com.jxs.vcompat.activity.VActivity;
-import com.jxs.vcompat.animation.RevealAnimation;
-import com.jxs.vcompat.drawable.ArrowShape;
-import com.jxs.vcompat.ui.BDrawable;
-import com.jxs.vcompat.ui.ColorUtil;
-import com.jxs.vcompat.ui.UI;
-import com.jxs.vcompat.widget.VEditText;
-import java.io.File;
-import java.io.FileOutputStream;
 
 import static com.jxs.vide.L.get;
 
@@ -44,7 +33,6 @@ public class UploadVAppActivity extends VActivity {
 	private VEditText Des;
 	private View LastView;
 	private Project Choosed;
-	private int LastColor;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,18 +46,16 @@ public class UploadVAppActivity extends VActivity {
 		Root.addView(BarLayout);
 		VH = new ProjectViewHelper(this);
 		VH.setOnProjectClickListener(new ProjectViewHelper.OnProjectClickListener() {
-			@Override
-			public void onClick(Project pro, View view) {
-				if (view == LastView) return;
-				if (LastView != null)
-					LastView.setBackgroundColor(LastColor);
-				LastView = view;
-				LastColor = ((ColorDrawable) view.getBackground()).getColor();
-				view.setBackgroundColor(Color.GRAY);
-				Choosed = pro;
-				updateTitle();
-			}
-		});
+				@Override
+				public void onClick(Project pro, final View view) {
+					if (view == LastView) return;
+					if (LastView != null) LastView.setAlpha(1);
+					LastView = view;
+					view.setAlpha(0.77f);
+					Choosed = pro;
+					updateTitle();
+				}
+			});
 		Root.addView(VH.getView(), new LinearLayout.LayoutParams(-1, -1));
 	}
 	private void updateTitle() {
@@ -91,7 +77,7 @@ public class UploadVAppActivity extends VActivity {
 		Title.setTitleTextColor(w);
 		BarLayout.addView(Title);
 		setSupportActionBar(Title);
-		BDrawable BackDrawable = new ArrowShape(this, 5f).toSimpleDrawable();
+		BDrawable BackDrawable = new ArrowShape(5f).toSimpleDrawable();
 		UI.tintDrawable(BackDrawable, UI.getAccentColor());
 		BackDrawable.setStrokeWidth(5f);
 		Title.setNavigationIcon(BackDrawable);
@@ -180,11 +166,11 @@ public class UploadVAppActivity extends VActivity {
 					break;
 				case 1:
 					if (Ani != null) Ani.postAnimationEndAction(new Runnable() {
-							@Override
-							public void run() {
-								Ani.collapse();
-							}
-						});
+								@Override
+								public void run() {
+									Ani.collapse();
+								}
+							});
 					break;
 				case 2:
 					CharSequence[] cs=(CharSequence[]) msg.obj;
@@ -238,37 +224,37 @@ public class UploadVAppActivity extends VActivity {
 				Pro.loadManifest();
 				tmpJsc = File.createTempFile("Tmp", ".jsc");
 				tmpJsc.deleteOnExit();
-				Pro.compile(new FileOutputStream(tmpJsc));
+				Pro.compile(new FileOutputStream(tmpJsc), true);
 				setText(get(L.Uploading));
 				final BmobFile FileEntity=new BmobFile(tmpJsc);
 				FileEntity.upload(new UploadFileListener() {
-					@Override
-					public void done(BmobException e) {
-						if (e != null) {
-							dismiss();
-							bmobErr(e);
-							return;
-						}
-						VAppEntity entity=new VAppEntity();
-						entity.Author = BmobUser.getCurrentUser(VUser.class).getObjectId();
-						entity.Content = FileEntity;
-						entity.Description = Des;
-						entity.Title = Pro.getName();
-						entity.OpenSource = open;
-						entity.save(new SaveListener<String>() {
-							@Override
-							public void done(String id, BmobException e) {
-								if (e != null) {
-									dismiss();
-									bmobErr(e);
-									return;
-								}
+						@Override
+						public void done(BmobException e) {
+							if (e != null) {
 								dismiss();
-								sendMsg(4, null);
+								bmobErr(e);
+								return;
 							}
-						});
-					}
-				});
+							VAppEntity entity=new VAppEntity();
+							entity.Author = BmobUser.getCurrentUser(VUser.class).getObjectId();
+							entity.Content = FileEntity;
+							entity.Description = Des;
+							entity.Title = Pro.getName();
+							entity.OpenSource = open;
+							entity.save(new SaveListener<String>() {
+									@Override
+									public void done(String id, BmobException e) {
+										if (e != null) {
+											dismiss();
+											bmobErr(e);
+											return;
+										}
+										dismiss();
+										sendMsg(4, null);
+									}
+								});
+						}
+					});
 			} catch (Throwable e) {
 				dismiss();
 				alert(get(L.Error), Log.getStackTraceString(e));

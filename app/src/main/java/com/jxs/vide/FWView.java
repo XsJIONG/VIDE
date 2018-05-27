@@ -1,16 +1,10 @@
 package com.jxs.vide;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.media.ThumbnailUtils;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.WindowManager;
-import com.jxs.vcompat.ui.UI;
+import android.content.*;
+import android.graphics.*;
+import android.media.*;
+import android.view.*;
+import com.jxs.vcompat.ui.*;
 
 public class FWView extends View implements UI.OnThemeChangeListener {
 	public static int StatusBarHeight=-1;
@@ -25,7 +19,6 @@ public class FWView extends View implements UI.OnThemeChangeListener {
 	}
 	public void setVButton(VButton vb) {
 		this.vb = vb;
-		vb.getLayoutParams().flags |= WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
 	}
 	private void init() {
 		paint = new Paint();
@@ -37,14 +30,14 @@ public class FWView extends View implements UI.OnThemeChangeListener {
 		Window = new VButtonWindow(getContext(), this);
 		UI.registThemeChangedListener(this, this);
 		setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				WindowManager.LayoutParams para=(WindowManager.LayoutParams) getLayoutParams();
-				Window.setCenter(para.x + getWidth() / 2, para.y + getHeight() / 2);
-				Window.show();
-				Window.expand();
-			}
-		});
+				@Override
+				public void onClick(View v) {
+					WindowManager.LayoutParams para=(WindowManager.LayoutParams) getLayoutParams();
+					Window.setCenter(para.x + getWidth() / 2, para.y + getHeight() / 2);
+					Window.show();
+					Window.expand();
+				}
+			});
 	}
 	@Override
 	protected void onDraw(Canvas canvas) {
@@ -57,7 +50,8 @@ public class FWView extends View implements UI.OnThemeChangeListener {
 		if (ICON == null) {
 			ICON = BitmapFactory.decodeResource(getResources(), R.drawable.v_icon);
 			int w=(int) ((float) CircleRadius * Math.sqrt(2));
-			ICON = ThumbnailUtils.extractThumbnail(ICON, w, w, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+			ICON = ThumbnailUtils.extractThumbnail(ICON, w, w);
+			VButtonService.All.add(ICON);
 		}
 		canvas.drawCircle(getWidth() / 2, getHeight() / 2, CircleRadius, paint);
 		canvas.drawBitmap(ICON, (getWidth() - ICON.getWidth()) / 2, (getHeight() - ICON.getHeight()) / 2, null);
@@ -68,6 +62,7 @@ public class FWView extends View implements UI.OnThemeChangeListener {
 		if (!key.equals(UI.THEME_UI_COLOR)) return;
 		paint.setColor(UI.getThemeColor());
 		invalidate();
+		this.Window.onThemeChange(key);
 	}
 	private float _StartX,_StartY;
 	@Override

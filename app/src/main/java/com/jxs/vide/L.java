@@ -24,7 +24,7 @@ public class L {
 	UnknownError,Exit,Title_VApp,HaveFun,Login,Regist,UserName,Password,Login_OR,UserNameCannotEmpty,PasswordCannotEmpty,UserNameExceed,PasswordExceed,Registing,NoNetwork,ConnectTimeout,
 	UserNameBeenUsed,InvalidOldPassword,UploadFailed,RegistSuccess,Logining,InvalidUserNameOrPassword,Logined,Title_UploadVApp,Description,DesCannotBeEmpty,DesExceed,DidnotChoosed,Uploading,
 	Compiling,Uploaded,Downloading,MoreSettings,VersionInfo,EditPermissions,VersionCode,VersionName,VersionCodeCannotBeEmpty,VersionNameCannotBeEmpty,EditSuccessfully,OpenSource,UpdateDes,Update,PkgLessThanTwo,
-	LoginFirst;
+	LoginFirst,Please,ShareApp,Nop,Share,AppMarket,Badguy,IRepented,ShareContent,ShareVIDE,Nothing,EnableVIDELog,VAppRun,VAppClone,Cloned;
 	public static String get(int id) {
 		return Language.get(id);
 	}

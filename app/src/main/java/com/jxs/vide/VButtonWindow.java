@@ -140,7 +140,9 @@ public class VButtonWindow extends View implements UI.OnThemeChangeListener,Valu
 		canvas.drawBitmap(icon, ImageX - icon.getWidth() / 2, ImageY - icon.getHeight() / 2, null);
 	}
 	private final Bitmap getIcon(int id) {
-		return ThumbnailUtils.extractThumbnail(getBitmap(id), IconSize, IconSize, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+		Bitmap b=ThumbnailUtils.extractThumbnail(getBitmap(id), IconSize, IconSize);
+		VButtonService.All.add(b);
+		return b;
 	}
 	private final Bitmap getBitmap(int id) {
 		return ((BitmapDrawable) getResources().getDrawable(id)).getBitmap();

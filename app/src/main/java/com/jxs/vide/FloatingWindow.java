@@ -121,16 +121,18 @@ public class FloatingWindow extends LinearLayout implements UI.OnThemeChangeList
 		if (v != null) container.addView(v);
 		edgeContainter.addView(container, new FrameLayout.LayoutParams(-1, -1));
 		addView(edgeContainter, new LinearLayout.LayoutParams(-1, -1));
-		onThemeChange(UI.THEME_UI_COLOR);
 	}
 	public void setView(View v) {
 		container.removeAllViews();
 		if (v != null) container.addView(v, new FrameLayout.LayoutParams(-1, -1));
 	}
 	public boolean show() {
+		onThemeChange(UI.THEME_UI_COLOR);
+		UI.registThemeChangedListener(this, this);
 		return Window.show();
 	}
 	public boolean hide() {
+		UI.registThemeChangedListener(this, this);
 		return Window.hide();
 	}
 	public boolean isShowing() {
@@ -150,6 +152,7 @@ public class FloatingWindow extends LinearLayout implements UI.OnThemeChangeList
 		edgePaint.setColor(UI.getThemeColor());
 		edgeContainter.setBackgroundColor(UI.getThemeColor());
 		Close.setImageDrawable(DrawableHelper.getDrawable(R.drawable.icon_close, w));
+		TitleBar.setBackgroundColor(UI.getThemeColor());
 	}
 	public static final int CORNER=UI.dp2px(15);
 	private RectF CornerRect=null;
