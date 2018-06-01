@@ -1,10 +1,11 @@
-package com.jxs.vide;
+package com.jxs.vide.vbutton;
 
 import android.content.*;
 import android.graphics.*;
 import android.media.*;
 import android.view.*;
 import com.jxs.vcompat.ui.*;
+import com.jxs.vide.*;
 
 public class FWView extends View implements UI.OnThemeChangeListener {
 	public static int StatusBarHeight=-1;

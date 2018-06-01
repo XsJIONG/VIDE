@@ -164,50 +164,8 @@ public class EditorActivity extends VActivity {
 		}
 		_BarLayout.setBackgroundColor(UI.getThemeColor());
 		ViewCompat.setElevation(_BarLayout, 10);
-		/*_ToolLayout.addView(createImageView(R.drawable.v_run,
-		 new OnClickListener() {
-		 @Override
-		 public void onClick(View v) {
-		 runUi();
-		 }
-		 }, get(L.Editor_Run)));
-		 _ToolLayout.addView(createImageView(R.drawable.v_android,
-		 new OnClickListener() {
-		 @Override
-		 public void onClick(View v) {
-		 outputUi();
-		 }
-		 }, get(L.Editor_Output)));
-		 _ToolLayout.addView(createImageView(R.drawable.icon_config,
-		 new OnClickListener() {
-		 @Override
-		 public void onClick(View v) {
-		 settingUi();
-		 }
-		 }, get(L.Editor_Setting)));
-		 _ToolLayout.addView(createImageView(R.drawable.icon_import,
-		 new OnClickListener() {
-		 @Override
-		 public void onClick(View v) {
-		 importUi();
-		 }
-		 }, get(L.Editor_Import)));*/
 		getSupportActionBar().setElevation(0);
 	}
-	private int _IMWidth=-1, _IMPadding=-1;
-	/*private ImageView createImageView(int resource, OnClickListener listener, CharSequence des) {
-	 final ImageView v=new ImageView(this);
-	 v.setImageDrawable(DrawableHelper.getDrawable(resource, UI.getAccentColor()));
-	 if (_IMWidth == -1) {
-	 _IMWidth = ui.dp2px(48);
-	 _IMPadding = ui.dp2px(10);
-	 }
-	 v.setPadding(_IMPadding, _IMPadding, _IMPadding, _IMPadding);
-	 v.setLayoutParams(new LinearLayout.LayoutParams(_IMWidth, _IMWidth));
-	 v.setOnClickListener(listener);
-	 v.setContentDescription(des);
-	 return v;
-	 }*/
 	private void initOpenedSpinner() {
 		OpenedSpinner = new Spinner(this);
 		OpenedAdapter = new ArrayAdapter<Jsc>(this, android.R.layout.simple_spinner_item, Opened);
@@ -249,7 +207,7 @@ public class EditorActivity extends VActivity {
 					@Override
 					public void onClick(VAlertDialog dialog, int ppos) {
 						try {
-							IOUtil.write(pro.getFile(getNowOpen()), editor.getText().toString());
+							save();
 							rCloseFile(pos);
 						} catch (IOException e) {
 							err(e);
@@ -508,7 +466,7 @@ public class EditorActivity extends VActivity {
 					@Override
 					public void onClick(VAlertDialog dialog, int ppos) {
 						try {
-							IOUtil.write(pro.getFile(getNowOpen()), editor.getText().toString());
+							save();
 							rRun();
 						} catch (IOException e) {
 							err(e);
@@ -550,6 +508,10 @@ public class EditorActivity extends VActivity {
 			editor.setSaved(true);
 		}
 	};
+	private void save() throws IOException {
+		IOUtil.write(pro.getFile(getNowOpen()), editor.getText().toString());
+		ui.autoOnUi(SaveDoneAction);
+	}
 	public void outputUi() {
 		if (!editor.isSaved()) {
 			ui.newAlertDialog().setTitle(get(L.Remind)).setMessage(get(L.Editor_OutputWithoutSave))
@@ -557,8 +519,8 @@ public class EditorActivity extends VActivity {
 					@Override
 					public void onClick(VAlertDialog dialog, int ppos) {
 						try {
-							IOUtil.write(pro.getFile(getNowOpen()), editor.getText().toString());
-							rOutputUi();
+							save();
+							rOutput();
 						} catch (IOException e) {
 							err(e);
 						}
@@ -566,18 +528,54 @@ public class EditorActivity extends VActivity {
 				}).setNegativeButton(get(L.Editor_DirectlyOutput), new VAlertDialog.OnClickListener() {
 					@Override
 					public void onClick(VAlertDialog dialog, int pos) {
-						rOutputUi();
+						rOutput();
 					}
 				}).setNeutralButton(get(L.Editor_Cancel), null).setCancelable(true).show();
 			return;
 		}
-		rOutputUi();
+		rOutput();
 	}
-	private void rOutputUi() {
+	private void rOutput() {
+		ui.newAlertDialog().setTitle(get(L.Editor_Output)).setItems(new String[] {get(L.OutputApk), get(L.OutputJsc)}, new VAlertDialog.OnClickListener() {
+				@Override
+				public void onClick(VAlertDialog dialog, int pos) {
+					switch (pos) {
+						case 0:OutputApk(false);break;
+						case 1:OutputApk(true);break;
+					}
+				}
+			}).setCancelable(true).setPositiveButton(get(L.Cancel), null).show();
+	}
+	private void OutputJsc(final File f) {
+		ui.newAlertDialog().setEditHint(get(L.OutputJsc)).setTitle(get(L.OutputJsc)).setPositiveButton(get(L.OK), false, new VAlertDialog.OnClickListener() {
+				@Override
+				public void onClick(VAlertDialog dialog, int pos) {
+					String s=dialog.getInputText();
+					if (s == null || s.length() == 0) {
+						dialog.getEditText().setError(get(L.NameCantEmpty));
+						return;
+					}
+					if (!s.endsWith(".jsc")) s += ".jsc";
+					File q=new File(f, s);
+					if (q.exists()) {
+						dialog.getEditText().setError(get(L.Editor_FileAlreadyExist));
+						return;
+					}
+					dialog.dismiss();
+					BuildApkPath = f;
+					vdialog = ui.newProgressDialog().setTitle(get(L.Outputing)).setMessage(get(L.Wait)).setCancelable(false);
+					vdialog.show();
+					jsc = true;
+					new Thread(BuildApkRunnable).start();
+				}
+			}).setNegativeButton(get(L.Cancel), null).setCancelable(true).show();
+	}
+	private boolean jsc;
+	private void OutputApk(final boolean jsc) {
 		ui.newFileChooserDialog(Environment.getExternalStorageDirectory(), new FileChooserDialog.FileChooserListener() {
 				@Override
 				public void onChoose(File f) {
-					outputReal(f);
+					if (jsc) OutputJsc(f); else outputReal(f);
 				}
 			}, true).setTitle(get(L.Editor_ChooseOutputDir)).setCancelable(true).show();
 	}
@@ -610,10 +608,15 @@ public class EditorActivity extends VActivity {
 				VF.mkdirs();
 				long st=System.currentTimeMillis();
 				sendMessage(0, get(L.Editor_Encrypting));
-				sendMessage(2, 0);
+				if (!jsc) sendMessage(2, 0);
 				File ftmp=new File(VF, "Main.jsc");
 				if (ftmp.exists()) ftmp.delete();
 				pro.compile(new FileOutputStream(ftmp));
+				if (jsc) {
+					sendMessage(1, null);
+					ui.print(get(L.OutputSC));
+					return;
+				}
 				sendMessage(0, get(L.Editor_PickingOutApk));
 				sendMessage(2, 16);
 				File apk=new File(VF, "app_unsign.apk");
@@ -710,6 +713,7 @@ public class EditorActivity extends VActivity {
 		vdialog.getDialog().setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		vdialog.getDialog().setIndeterminate(false);
 		vdialog.show();
+		jsc = false;
 		new Thread(BuildApkRunnable).start();
 	}
 	File BuildApkPath;

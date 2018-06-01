@@ -1,20 +1,14 @@
-package com.jxs.vide;
+package com.jxs.vide.vbutton;
 
-import android.animation.Animator;
-import android.animation.ValueAnimator;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.ThumbnailUtils;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import com.jxs.vcompat.ui.ColorUtil;
-import com.jxs.vcompat.ui.UI;
+import android.animation.*;
+import android.content.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.media.*;
+import android.view.*;
+import android.view.animation.*;
+import com.jxs.vcompat.ui.*;
+import com.jxs.vide.*;
 
 public class VButtonWindow extends View implements UI.OnThemeChangeListener,ValueAnimator.AnimatorUpdateListener,Animator.AnimatorListener {
 	public static int FirstSubMenuRadius=UI.dp2px(57);

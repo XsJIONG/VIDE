@@ -95,7 +95,7 @@
 			android:label="学习"
 			android:configChanges="orientation|keyboardHidden|screenSize" />
 		<service
-			android:name=".VButtonService" />
+			android:name="com.jxs.vide.vbutton.VButtonService" />
 		<activity
 			android:label="用VIDE运行"
 			android:icon="@drawable/icon"

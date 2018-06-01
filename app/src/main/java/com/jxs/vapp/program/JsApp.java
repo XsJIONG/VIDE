@@ -9,8 +9,6 @@ import java.nio.*;
 import java.util.*;
 import java.util.zip.*;
 import org.json.*;
-import com.jxs.vide.*;
-import android.os.*;
 
 public class JsApp {
 	public static JsApp INSTANCE;
@@ -67,14 +65,14 @@ public class JsApp {
 		int FS=byteArrayToInt(tmpFS);
 		App = new File(GlobalContext.getExternalCacheDir(), hashCode() + ".apk");
 		App.deleteOnExit();
-		ZipInputStream zin=new ZipInputStream(GlobalContext.getAssets().open(/*isCompat ?"Compat.apk": "Normal.apk"*/"Normal.apk"));
+		ZipInputStream zin=new ZipInputStream(GlobalContext.getAssets().open("Normal.apk"));
 		ZipOutputStream zout=new ZipOutputStream(new FileOutputStream(App));
 		ZipEntry entry;
 		int read;
 		String name;
 		while ((entry = zin.getNextEntry()) != null) {
-			name=entry.getName();
-			if (name.startsWith("res")||name.equals("resources.arsc")||name.startsWith("org")) continue;
+			name = entry.getName();
+			if (name.startsWith("res") || name.equals("resources.arsc") || name.startsWith("org")) continue;
 			zout.putNextEntry(entry);
 			while ((read = zin.read(buf)) != -1) zout.write(buf, 0, read);
 		}
@@ -104,8 +102,8 @@ public class JsApp {
 			Method en=AssetManager.class.getDeclaredMethod("ensureStringBlocks");
 			en.setAccessible(true);
 			en.invoke(m);
-			RS=new Resources(m,GlobalContext.getResources().getDisplayMetrics(),GlobalContext.getResources().getConfiguration());
-			AllRs.put(ID=nextID(), RS);
+			RS = new Resources(m, GlobalContext.getResources().getDisplayMetrics(), GlobalContext.getResources().getConfiguration());
+			AllRs.put(ID = nextID(), RS);
 		} catch (Throwable t) {}
 	}
 	private static int Counter=0;
@@ -173,7 +171,7 @@ public class JsApp {
 		return null;
 	}
 	public void destroy() {
-		App.delete();
+		if (App != null) App.delete();
 		AllRs.remove(this.ID);
 	}
 }

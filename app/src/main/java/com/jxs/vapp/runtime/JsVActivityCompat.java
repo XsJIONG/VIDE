@@ -40,11 +40,11 @@ public class JsVActivityCompat extends VActivity {
 	private Resources RS;
 	@Override
 	public Resources getResources() {
-		return RS;
+		return RS==null?super.getResources():RS;
 	}
 	@Override
 	public AssetManager getAssets() {
-		return RS.getAssets();
+		return RS==null?super.getAssets():RS.getAssets();
 	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

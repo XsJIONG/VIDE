@@ -1,4 +1,4 @@
-package com.jxs.vide;
+package com.jxs.vide.vbutton;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
+import com.jxs.vide.L;
 
 public class FloatingView {
 	private WindowManager _WM;

@@ -316,6 +316,7 @@ public class VAppActivity extends VActivity {
 		return new File(TempJscDir, entity.getObjectId());
 	}
 	public static class VAppAdapter extends ArrayAdapter<VAppEntity> {
+		private static HashMap<String,ArrayList<TextView>> All=new HashMap<>();
 		public VAppAdapter(Context cx) {
 			super(cx, android.R.layout.simple_list_item_1, new ArrayList<VAppEntity>());
 		}
@@ -370,7 +371,10 @@ public class VAppActivity extends VActivity {
 			holder.openSource = entity.OpenSource;
 			holder.onThemeChange();
 			Content.setTag(holder);
-			if (Global.UserNames.containsKey(entity.Author)) User.setText(Global.UserNames.get(entity.Author)); else {
+			if (Global.UserNames.containsKey(entity.Author)) User.setText(Global.UserNames.get(entity.Author)); else if (All.containsKey(entity.Author)) All.get(entity.Author).add(User); else {
+				final ArrayList<TextView> S=new ArrayList<>();
+				S.add(User);
+				All.put(entity.Author, S);
 				BmobQuery<VUser> q=new BmobQuery<>();
 				q.addWhereEqualTo("objectId", entity.Author);
 				q.setLimit(1); //WTF
@@ -384,7 +388,9 @@ public class VAppActivity extends VActivity {
 							if (data == null || data.size() != 1) return;
 							VUser u=data.get(0);
 							Global.UserNames.put(u.getObjectId(), u.getUsername());
-							User.setText(u.getUsername());
+							String s=u.getUsername();
+							ArrayList<TextView> needed=All.remove(u.getObjectId());
+							for (int i=0;i<needed.size();i++) needed.get(i).setText(s);
 						}
 					});
 			}

@@ -6,6 +6,7 @@ import android.view.*;
 import android.widget.*;
 import com.jxs.vcompat.activity.*;
 import com.jxs.vcompat.ui.*;
+import com.jxs.vide.vbutton.*;
 
 public class SplashActivity extends VActivity {
 	private boolean isForeground;

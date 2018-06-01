@@ -24,9 +24,10 @@ public class L {
 	UnknownError,Exit,Title_VApp,HaveFun,Login,Regist,UserName,Password,Login_OR,UserNameCannotEmpty,PasswordCannotEmpty,UserNameExceed,PasswordExceed,Registing,NoNetwork,ConnectTimeout,
 	UserNameBeenUsed,InvalidOldPassword,UploadFailed,RegistSuccess,Logining,InvalidUserNameOrPassword,Logined,Title_UploadVApp,Description,DesCannotBeEmpty,DesExceed,DidnotChoosed,Uploading,
 	Compiling,Uploaded,Downloading,MoreSettings,VersionInfo,EditPermissions,VersionCode,VersionName,VersionCodeCannotBeEmpty,VersionNameCannotBeEmpty,EditSuccessfully,OpenSource,UpdateDes,Update,PkgLessThanTwo,
-	LoginFirst,Please,ShareApp,Nop,Share,AppMarket,Badguy,IRepented,ShareContent,ShareVIDE,Nothing,EnableVIDELog,VAppRun,VAppClone,Cloned,VAppDetail,VAppDelete,Deleting;
+	LoginFirst,Please,ShareApp,Nop,Share,AppMarket,Badguy,IRepented,ShareContent,ShareVIDE,Nothing,EnableVIDELog,VAppRun,VAppClone,Cloned,VAppDetail,VAppDelete,Deleting,OutputApk,OutputJsc,Outputing,
+	OutputSC;
 	public static String get(int id) {
-		return Language.get(id);
+		return Language[id];
 	}
 	public static String[] gets(int...ids) {
 		if (ids.length==0) return new String[0];
@@ -34,7 +35,7 @@ public class L {
 		for (int i=0;i<ids.length;i++) res[i]=get(ids[i]);
 		return res;
 	}
-	public static HashMap<Integer,String> Language=new HashMap<>();
+	public static String[] Language;
 	static {
 		try {
 			Field[] fs=L.class.getDeclaredFields();
@@ -43,6 +44,7 @@ public class L {
 				if (one.getType() != int.class) continue;
 				one.set(null, i++);
 			}
+			Language=new String[i];
 		} catch (Exception e) {}
 	}
 }

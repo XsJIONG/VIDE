@@ -1,22 +1,13 @@
-package com.jxs.vide;
+package com.jxs.vide.vbutton;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.*;
+import android.view.*;
+import android.widget.*;
+import com.jxs.vapp.program.*;
+import com.jxs.vcompat.ui.*;
+import com.jxs.vide.*;
+
 import android.graphics.Point;
-import android.graphics.RectF;
-import android.view.Display;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import com.jxs.vapp.program.JsApp;
-import com.jxs.vcompat.ui.ColorUtil;
-import com.jxs.vcompat.ui.UI;
 
 public class FloatingWindow extends LinearLayout implements UI.OnThemeChangeListener {
 	public static final int EDGE=UI.dp2px(5);

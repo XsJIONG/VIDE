@@ -17,7 +17,7 @@ public class Lang_Bilibili extends Lang {
 		qwe(L.Editor_Run, "运行");
 		qwe(L.Editor_Output, "导出");
 		qwe(L.Editor_Setting, "设定");
-		qwe(L.Editor_Import, "导入(Assets)");
+		qwe(L.Editor_Import, "导入");
 		qwe(L.Remind, "提醒");
 		qwe(L.Editor_DidntSave, "你还没有保存呐，确定要关闭吗？");
 		qwe(L.Editor_SaveAndExit, "保存并关闭");
@@ -203,6 +203,10 @@ public class Lang_Bilibili extends Lang {
 		qwe(L.VAppDetail, "详情");
 		qwe(L.VAppDelete, "删除");
 		qwe(L.Deleting, "删除中...");
+		qwe(L.OutputApk, "Apk");
+		qwe(L.OutputJsc, "Jsc");
+		qwe(L.Outputing, "导出中...");
+		qwe(L.OutputSC, "导出成功！");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

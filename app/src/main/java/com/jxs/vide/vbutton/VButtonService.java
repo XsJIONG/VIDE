@@ -1,12 +1,11 @@
-package com.jxs.vide;
+package com.jxs.vide.vbutton;
 
 import android.app.*;
 import android.content.*;
 import android.graphics.*;
 import android.os.*;
+import com.jxs.vide.*;
 import java.util.*;
-
-import static com.jxs.vide.L.get;
 
 public class VButtonService extends Service {
 	public static ArrayList<Bitmap> All=new ArrayList<>();
@@ -35,9 +34,9 @@ public class VButtonService extends Service {
 		closeIntent.putExtra("close", true);
 		PendingIntent pintent=PendingIntent.getService(this, 0, closeIntent, 0);
 		Notification b=new Notification.Builder(this)
-			.setTicker(get(L.VButton_Ticker))
-			.setContentTitle(get(L.VButton_Title))
-			.setContentText(get(L.VButton_Text))
+			.setTicker(L.get(L.VButton_Ticker))
+			.setContentTitle(L.get(L.VButton_Title))
+			.setContentText(L.get(L.VButton_Text))
 			.setSmallIcon(R.drawable.icon)
 			.setContentIntent(pintent).build();
 		startForeground(1, b);

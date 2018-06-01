@@ -17,7 +17,7 @@ public class Lang_FChinese extends Lang {
 		qwe(L.Editor_Run, "運行");
 		qwe(L.Editor_Output, "導出");
 		qwe(L.Editor_Setting, "設置");
-		qwe(L.Editor_Import, "導入(Assets)");
+		qwe(L.Editor_Import, "導入");
 		qwe(L.Remind, "提醒");
 		qwe(L.Editor_DidntSave, "你還沒有保存，確定要關閉嗎？");
 		qwe(L.Editor_SaveAndExit, "保存並關閉");
@@ -203,6 +203,10 @@ public class Lang_FChinese extends Lang {
 		qwe(L.VAppDetail, "詳情");
 		qwe(L.VAppDelete, "刪除");
 		qwe(L.Deleting, "刪除中...");
+		qwe(L.OutputApk, "Apk");
+		qwe(L.OutputJsc, "Jsc");
+		qwe(L.Outputing, "導出中...");
+		qwe(L.OutputSC, "導出成功！");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

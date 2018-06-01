@@ -1,4 +1,4 @@
-package com.jxs.vide;
+package com.jxs.vide.vbutton;
 
 import android.app.*;
 import android.content.*;
@@ -13,6 +13,7 @@ import com.jxs.v.ui.*;
 import com.jxs.vapp.program.*;
 import com.jxs.vcompat.ui.*;
 import com.jxs.vcompat.widget.*;
+import com.jxs.vide.*;
 import java.util.*;
 import org.mozilla.javascript.*;
 

@@ -1,8 +1,7 @@
 package com.jxs.vide.lang;
 
-import com.jxs.vide.Global;
-import com.jxs.vide.L;
-import java.util.HashMap;
+import com.jxs.vide.*;
+import java.util.*;
 
 public abstract class Lang {
 	public static final Class<? extends Lang>[] Langs=new Class[] {
@@ -13,7 +12,7 @@ public abstract class Lang {
 	};
 	private static HashMap<Class<? extends Lang>, Lang> INSTANCES=new HashMap<>();
 	protected void set(int i, String lan) {
-		L.Language.put(Integer.valueOf(i), lan);
+		L.Language[i] = lan;
 	}
 	public static void setLanguage(Class<? extends Lang> cl) {
 		Lang l=null;
@@ -24,7 +23,6 @@ public abstract class Lang {
 			} catch (Exception e) {}
 		}
 		Global.Language = l;
-		L.Language.clear();
 		l.init();
 	}
 	protected abstract void init();

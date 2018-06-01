@@ -1,22 +1,20 @@
-package com.jxs.vide;
+package com.jxs.vide.vbutton;
 
-import android.app.AlertDialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.app.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.support.v4.widget.*;
+import android.view.*;
+import android.widget.*;
+import android.widget.AdapterView.*;
+import com.jxs.v.ui.*;
+import com.jxs.vcompat.ui.*;
+import com.jxs.vcompat.widget.*;
+import java.util.*;
+
 import com.jxs.v.ui.VAlertDialog;
 import com.jxs.vcompat.ui.UI;
-import com.jxs.vcompat.widget.VListView;
-import java.util.ArrayList;
+import com.jxs.vide.L;
 
 public class ThreadDialog extends FloatingWindow {
 	private static ThreadDialog _Instance;

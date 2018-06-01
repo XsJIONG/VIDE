@@ -1,8 +1,9 @@
-package com.jxs.vide;
+package com.jxs.vide.vbutton;
 
-import android.content.Context;
-import android.view.Display;
-import com.jxs.vcompat.ui.UI;
+import android.content.*;
+import android.view.*;
+import com.jxs.vcompat.ui.*;
+import com.jxs.vide.*;
 
 public class VButton extends FloatingView implements UI.OnThemeChangeListener {
 	public static final int SIZE=UI.dp2px(57);

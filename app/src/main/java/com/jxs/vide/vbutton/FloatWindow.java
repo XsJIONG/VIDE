@@ -1,14 +1,11 @@
-package com.jxs.vide;
+package com.jxs.vide.vbutton;
 
-import android.content.Context;
-import android.graphics.PixelFormat;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
-import android.view.WindowManager;
-import android.widget.Button;
+import android.content.*;
+import android.graphics.*;
+import android.view.*;
+import android.view.View.*;
+import android.widget.*;
+import com.jxs.vide.*;
 
 public class FloatWindow {
 	private FloatWindow() {}

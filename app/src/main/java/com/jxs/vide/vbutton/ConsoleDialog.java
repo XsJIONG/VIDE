@@ -1,10 +1,11 @@
-package com.jxs.vide;
+package com.jxs.vide.vbutton;
 
-import android.graphics.Color;
-import android.widget.TextView;
-import com.jxs.vapp.program.Console;
-import com.jxs.vcompat.ui.UI;
-import com.jxs.vcompat.widget.VScrollView;
+import android.graphics.*;
+import android.widget.*;
+import com.jxs.vapp.program.*;
+import com.jxs.vcompat.ui.*;
+import com.jxs.vcompat.widget.*;
+import com.jxs.vide.L;
 
 public class ConsoleDialog extends FloatingWindow implements Console.UpdateListener {
 	private VScrollView sc;

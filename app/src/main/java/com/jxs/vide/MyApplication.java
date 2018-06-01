@@ -47,15 +47,10 @@ public class MyApplication extends VApplication implements UI.OnThemeChangeListe
 		}
 	}
 	private static class HookInstrumentation extends Instrumentation {
-		private static Field mBaseField,mResourcesField;
 		private static Class<?>[] ACS=new Class<?>[4];
 		private static Field[] ACF=new Field[4];
-		public HookInstrumentation() throws NoSuchFieldException,ClassNotFoundException {
+		public HookInstrumentation() throws NoSuchFieldException {
 			if (ACS[0] == null) {
-				/*mBaseField = Activity.class.getSuperclass().getSuperclass().getDeclaredField("mBase");
-				 mBaseField.setAccessible(true);
-				 mResourcesField = Class.forName("android.app.ContextImpl").getDeclaredField("mResources");
-				 mResourcesField.setAccessible(true);*/
 				ACS[0] = JsVActivity.class;
 				ACS[1] = JsVActivityCompat.class;
 				ACS[2] = JsConsoleActivity.class;
@@ -68,7 +63,6 @@ public class MyApplication extends VApplication implements UI.OnThemeChangeListe
 		}
 		@Override
 		public Activity newActivity(ClassLoader cl, String className, Intent intent) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-			VLogger.out.println("New Activity:" + className);
 			Activity ac=super.newActivity(cl, className, intent);
 			String s;
 			if ((s = intent.getStringExtra("RS")) != null) hookActivity(ac, JsApp.getResources(s));
@@ -76,7 +70,6 @@ public class MyApplication extends VApplication implements UI.OnThemeChangeListe
 		}
 		@Override
 		public Activity newActivity(Class<?> clazz, Context context, IBinder token, Application application, Intent intent, ActivityInfo info, CharSequence title, Activity parent, String id, Object lastNonConfigurationInstance) throws InstantiationException, IllegalAccessException {
-			VLogger.out.println("New ActivityF:" + clazz.getName());
 			Activity ac=super.newActivity(clazz, context, token, application, intent, info, title, parent, id, lastNonConfigurationInstance);
 			String s;
 			if ((s = intent.getStringExtra("RS")) != null) hookActivity(ac, JsApp.getResources(s));
@@ -88,8 +81,6 @@ public class MyApplication extends VApplication implements UI.OnThemeChangeListe
 					ACF[i].set(ac, rs);
 					return;
 				}
-			//Context mBase=(Context) mBaseField.get(ac);
-			//mResourcesField.set(mBase, rs);
 		}
 	}
 	@Override

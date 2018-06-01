@@ -17,7 +17,7 @@ public class Lang_English extends Lang {
 		qwe(L.Editor_Run, "Run");
 		qwe(L.Editor_Output, "Build");
 		qwe(L.Editor_Setting, "Setting");
-		qwe(L.Editor_Import, "Import Assets");
+		qwe(L.Editor_Import, "Import");
 		qwe(L.Remind, "Remind");
 		qwe(L.Editor_DidntSave, "You didn't save yet, are you sure to exit?");
 		qwe(L.Editor_SaveAndExit, "Save & Exit");
@@ -203,6 +203,10 @@ public class Lang_English extends Lang {
 		qwe(L.VAppDetail, "Detail");
 		qwe(L.VAppDelete, "Delete");
 		qwe(L.Deleting, "Deleting...");
+		qwe(L.OutputApk, "Apk");
+		qwe(L.OutputJsc, "Jsc");
+		qwe(L.Outputing, "Outputing...");
+		qwe(L.OutputSC, "Output Successfuly!");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);
