@@ -2,6 +2,7 @@ package com.jxs.v.ui;
 
 import android.app.*;
 import android.content.*;
+import android.content.res.*;
 import android.graphics.*;
 import android.graphics.drawable.*;
 import android.util.*;
@@ -80,6 +81,11 @@ public class VAlertDialog implements UI.OnThemeChangeListener {
 					ArrayAdapter<CharSequence> ada=new ArrayAdapter<CharSequence>(cx, android.R.layout.simple_list_item_1, cs);
 					list.setAdapter(ada);
 					list.setDivider(null);
+					TypedValue value=new TypedValue();
+					cx.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, value, true);
+					TypedArray arr=cx.getTheme().obtainStyledAttributes(value.resourceId, new int[] {android.R.attr.selectableItemBackground});
+					list.setBackground(arr.getDrawable(0));
+					arr.recycle();
 					list.setOnItemClickListener(new OnItemClickListener() {
 							@Override
 							public void onItemClick(AdapterView<?> pa, View v, int pos, long id) {

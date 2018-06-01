@@ -52,7 +52,6 @@ public class EditorActivity extends VActivity {
 			finish();
 			return;
 		}
-		Global.load(this);
 		try {
 			pro.loadManifest();
 		} catch (Exception e) {}
@@ -89,7 +88,7 @@ public class EditorActivity extends VActivity {
 				p = fs[i].getPath();
 				path.append(p);
 				path.append(File.pathSeparator);
-				p = String.format("%s_CTree.txt", p.substring(0, p.lastIndexOf('.')));
+				p = p.substring(0, p.lastIndexOf('.'))+"_CTree.txt";
 				cf = new File(p);
 				if (cf.exists()) {
 					c = CTree.fromString(new String(IOUtil.read(new File(p))));
@@ -101,7 +100,9 @@ public class EditorActivity extends VActivity {
 		} catch (IOException e) {}
 	}
 	private void initSupportAC() {
-		Global.Q.getSon("com").removeSon("jxs");
+		CNode jxs=Global.Q.getSon("com").getSon("jxs");
+		jxs.removeSon("v");
+		jxs.removeSon("vcompat");
 		if (pro.isCompat()) Global.Q.merge(Global.Support); else Global.Q.merge(Global.Unsupport);
 	}
 	@Override

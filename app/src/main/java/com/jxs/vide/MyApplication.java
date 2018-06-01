@@ -105,6 +105,7 @@ public class MyApplication extends VApplication implements UI.OnThemeChangeListe
 			if (Global.getThemeColor() != UI.getThemeColor()) UI.setThemeColor(Global.getThemeColor());
 			UI.registThemeChangedListener(this, this);
 			YoyoNavigationMethod.setCaretColor(UI.getThemeColor());
+			Global.load(this);
 		} catch (Throwable t) {
 			Log.e("VIDE", "Error while Application - onCreate!!!" + Log.getStackTraceString(t));
 		}

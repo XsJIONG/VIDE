@@ -210,6 +210,7 @@ public class Global {
 				if (s.startsWith("android.support.")) Support.addLeaf(q);
 				if (s.startsWith("org.mozilla.")) Standard.addLeaf(q);
 				if (s.startsWith("com.jxs.vapp.") && (!q[q.length - 1].startsWith("JsVActivity"))) Standard.addLeaf(q);
+				if (s.startsWith("com.jxs.vide.")) Standard.addLeaf(q);
 			}
 		} catch (Exception e) {e.printStackTrace();}
 	}

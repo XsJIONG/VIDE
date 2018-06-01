@@ -6,7 +6,7 @@ import com.jxs.v.fragment.FileChooserFragment;
 import java.io.File;
 
 public class FileChooserDialog extends VAlertDialog {
-	FileChooserFragment frag;
+	private FileChooserFragment frag;
 	public FileChooserDialog(Context cx, File f, FileChooserListener listener) {
 		this(cx, f, listener, false);
 	}
