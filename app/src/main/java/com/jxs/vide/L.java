@@ -25,7 +25,7 @@ public class L {
 	UserNameBeenUsed,InvalidOldPassword,UploadFailed,RegistSuccess,Logining,InvalidUserNameOrPassword,Logined,Title_UploadVApp,Description,DesCannotBeEmpty,DesExceed,DidnotChoosed,Uploading,
 	Compiling,Uploaded,Downloading,MoreSettings,VersionInfo,EditPermissions,VersionCode,VersionName,VersionCodeCannotBeEmpty,VersionNameCannotBeEmpty,EditSuccessfully,OpenSource,UpdateDes,Update,PkgLessThanTwo,
 	LoginFirst,Please,ShareApp,Nop,Share,AppMarket,Badguy,IRepented,ShareContent,ShareVIDE,Nothing,EnableVIDELog,VAppRun,VAppClone,Cloned,VAppDetail,VAppDelete,Deleting,OutputApk,OutputJsc,Outputing,
-	OutputSC;
+	OutputSC,ChoosePkg,ChooseDir;
 	public static String get(int id) {
 		return Language[id];
 	}

@@ -573,7 +573,7 @@ public class EditorActivity extends VActivity {
 	}
 	private boolean jsc;
 	private void OutputApk(final boolean jsc) {
-		ui.newFileChooserDialog(Environment.getExternalStorageDirectory(), new FileChooserDialog.FileChooserListener() {
+		Global.newFileChooserDialog(this, Environment.getExternalStorageDirectory(), new FileChooserDialog.FileChooserListener() {
 				@Override
 				public void onChoose(File f) {
 					if (jsc) OutputJsc(f); else outputReal(f);
@@ -841,7 +841,7 @@ public class EditorActivity extends VActivity {
 		}
 	}
 	private void importUi() {
-		ui.newFileChooserDialog(Environment.getExternalStorageDirectory(), new FileChooserDialog.FileChooserListener() {
+		Global.newFileChooserDialog(this, Environment.getExternalStorageDirectory(), new FileChooserDialog.FileChooserListener() {
 				@Override
 				public void onChoose(final File f) {
 					VProgressDialog p=new VProgressDialog(EditorActivity.this);

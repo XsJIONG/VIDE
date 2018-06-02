@@ -187,6 +187,18 @@ public class Global {
 		if (Scratch == null) Scratch = Typeface.createFromAsset(MyApplication.getContext().getAssets(), "fonts/Scratch.ttf");
 		return Scratch;
 	}
+	public static FileChooserDialog newFileChooserDialog(Context cx, File f, FileChooserDialog.FileChooserListener l) {
+		FileChooserDialog dialog=new FileChooserDialog(cx, f, l);
+		dialog.setChooseDirText(get(L.ChooseDir));
+		dialog.setLastText(get(L.Last));
+		return dialog;
+	}
+	public static FileChooserDialog newFileChooserDialog(Context cx, File f, FileChooserDialog.FileChooserListener l, boolean chooseDir) {
+		FileChooserDialog dialog=new FileChooserDialog(cx, f, l, chooseDir);
+		dialog.setChooseDirText(get(L.ChooseDir));
+		dialog.setLastText(get(L.Last));
+		return dialog;
+	}
 	public static void load(Context cx) {
 		if (Q != null) return;
 		try {

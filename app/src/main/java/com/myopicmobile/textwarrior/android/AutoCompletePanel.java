@@ -1,31 +1,16 @@
 package com.myopicmobile.textwarrior.android;
 
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
-import android.widget.ListPopupWindow;
-import android.widget.TextView;
-import com.jxs.vide.CNode;
-import com.jxs.vide.Global;
-import com.jxs.vide.L;
-import com.myopicmobile.textwarrior.common.Flag;
-import com.myopicmobile.textwarrior.common.Language;
-import com.myopicmobile.textwarrior.common.LanguageNonProg;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collections;
+import android.content.*;
+import android.content.res.*;
+import android.graphics.drawable.*;
+import android.util.*;
+import android.view.*;
+import android.widget.*;
+import android.widget.AdapterView.*;
+import com.jxs.vide.*;
+import com.myopicmobile.textwarrior.common.*;
+import java.lang.reflect.*;
+import java.util.*;
 
 public class AutoCompletePanel {
 	private FreeScrollingTextField _textField;

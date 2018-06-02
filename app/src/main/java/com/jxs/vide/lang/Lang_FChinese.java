@@ -207,6 +207,8 @@ public class Lang_FChinese extends Lang {
 		qwe(L.OutputJsc, "Jsc");
 		qwe(L.Outputing, "導出中...");
 		qwe(L.OutputSC, "導出成功！");
+		qwe(L.ChoosePkg, "選擇當前包");
+		qwe(L.ChooseDir, "選擇當前文件夾");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

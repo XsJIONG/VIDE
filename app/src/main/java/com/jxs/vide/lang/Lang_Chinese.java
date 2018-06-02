@@ -207,6 +207,8 @@ public class Lang_Chinese extends Lang {
 		qwe(L.OutputJsc, "Jsc");
 		qwe(L.Outputing, "导出中...");
 		qwe(L.OutputSC, "导出成功！");
+		qwe(L.ChoosePkg, "选择当前包");
+		qwe(L.ChooseDir, "选择当前文件夹");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

@@ -113,17 +113,17 @@ public class ProjectViewHelper {
 			final Project f=this.f.get(index);
 			final FrameLayout ff=new FrameLayout(layout.getContext());
 			ff.setBackgroundColor(ColorPalette.getRandom());
-			getIcon(f, new BitmapListener() {
+			getIcon(cx.getResources().getDisplayMetrics().widthPixels / layout.getColumnCount(), f, new BitmapListener() {
 					@Override
 					public void onGet(final Bitmap b) {
 						((Activity) layout.getContext()).runOnUiThread(new Runnable() {
-							@Override
-							public void run() {
-								ff.setBackground(new BitmapDrawable(b));
-							}
-						});
+								@Override
+								public void run() {
+									ff.setBackground(new BitmapDrawable(b));
+								}
+							});
 					}
-			});
+				});
 			TextView name=new TextView(layout.getContext());
 			name.setBackgroundColor(0x40000000);
 			name.setTextSize(20);
@@ -167,14 +167,13 @@ public class ProjectViewHelper {
 		public boolean contains(File pro) {
 			return f.contains(pro);
 		}
-		public void getIcon(final Project pro, final BitmapListener l) {
+		public static void getIcon(final int w, final Project pro, final BitmapListener l) {
 			Bitmap b;
 			if ((b = BS.get(pro.getDir())) != null) l.onGet(b); else
 				new Thread(new Runnable() {
 						@Override
 						public void run() {
 							try {
-								int w=cx.getResources().getDisplayMetrics().widthPixels / layout.getColumnCount();
 								BitmapFactory.Options op=new BitmapFactory.Options();
 								op.inJustDecodeBounds = true;
 								FileInputStream in=new FileInputStream(pro.getIcon());
@@ -199,10 +198,12 @@ public class ProjectViewHelper {
 						}
 					}).start();
 		}
-		
+	}
+	public static void getIcon(Project pro, int w, BitmapListener l) {
+		PAdapter.getIcon(w, pro, l);
 	}
 	public void getIcon(Project pro, BitmapListener l) {
-		adapter.getIcon(pro, l);
+		adapter.getIcon(cx.getResources().getDisplayMetrics().widthPixels / adapter.layout.getColumnCount(), pro, l);
 	}
 	public void notifyProjectRename() {
 		adapter.removeAll();

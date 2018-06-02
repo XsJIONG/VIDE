@@ -99,11 +99,12 @@ public class ProjectActivity extends VActivity {
 		Root.setOrientation(LinearLayout.VERTICAL);
 		Root.setGravity(Gravity.CENTER_HORIZONTAL);
 		_Icon = new ImageView(this);
-		try {
-			_Icon.setImageBitmap(BitmapFactory.decodeStream(new FileInputStream(pro.getIcon())));
-		} catch (IOException e) {
-			ui.alert(get(L.Wrong), get(L.CouldNotLoadIcon));
-		}
+		ProjectViewHelper.getIcon(pro, UI.dp2px(200), new ProjectViewHelper.BitmapListener() {
+			@Override
+			public void onGet(Bitmap b) {
+				_Icon.setImageBitmap(b);
+			}
+		});
 		_Icon.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -509,7 +510,7 @@ public class ProjectActivity extends VActivity {
 		d.show();
 	}
 	private void importJar() {
-		ui.newFileChooserDialog(Environment.getExternalStorageDirectory(), new FileChooserDialog.FileChooserListener() {
+		Global.newFileChooserDialog(this, Environment.getExternalStorageDirectory(), new FileChooserDialog.FileChooserListener() {
 			@Override
 			public void onChoose(File f) {
 				if (f.isDirectory()) {

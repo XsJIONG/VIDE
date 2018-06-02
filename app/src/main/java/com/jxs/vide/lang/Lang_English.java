@@ -207,6 +207,8 @@ public class Lang_English extends Lang {
 		qwe(L.OutputJsc, "Jsc");
 		qwe(L.Outputing, "Outputing...");
 		qwe(L.OutputSC, "Output Successfuly!");
+		qwe(L.ChoosePkg, "Choose Current Package");
+		qwe(L.ChooseDir, "Choose Current Folder");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

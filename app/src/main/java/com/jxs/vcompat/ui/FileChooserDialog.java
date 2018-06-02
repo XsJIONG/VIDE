@@ -21,6 +21,18 @@ public class FileChooserDialog extends VAlertDialog {
 		}, chooseDir);
 		super.setView(frag.getView());
 	}
+	public void setLastText(CharSequence cs) {
+		frag.setLastText(cs);
+	}
+	public void setChooseDirText(CharSequence cs) {
+		frag.setChooseDirText(cs);
+	}
+	public CharSequence getLastText() {
+		return frag.getLastText();
+	}
+	public CharSequence getChooseDirText() {
+		return frag.getChooseDirText();
+	}
 	public FileChooserFragment getFragment() {
 		return frag;
 	}
@@ -30,7 +42,6 @@ public class FileChooserDialog extends VAlertDialog {
 	public File getNow() {
 		return frag.getNow();
 	}
-
 	@Override
 	public VAlertDialog setView(View v) {
 		throw new RuntimeException("Stub!");
