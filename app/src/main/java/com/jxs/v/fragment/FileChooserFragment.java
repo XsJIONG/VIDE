@@ -71,44 +71,13 @@ public class FileChooserFragment extends VFragment implements OnItemClickListene
 	public FileChooserFragment(Context cx, File f, FileChooserListener listener, boolean chooseDir) {
 		this(cx, f, listener, chooseDir, ALL_FILTER);
 	}
-	public FileChooserFragment(Context cx, File f, FileChooserListener listener, boolean chooseDir, FileFilter filter) {
+	public FileChooserFragment(Context cx, File f, FileChooserListener lis, boolean chooseDir, FileFilter filter) {
 		super(cx);
 		checkBitmap();
 		this.dir = f;
 		this.chooseDir = chooseDir;
 		this.filter = filter;
-		this.listener = listener;
-	}
-	FileFilter filter;
-	public File getNow() {
-		return dir;
-	}
-	public void setNow(File f) {
-		dir = f;
-		update();
-	}
-	private void update() {
-		if (list == null) return;
-		path.setText(dir.getPath());
-		ds.clear();
-		File[] fs=dir.listFiles();
-		if (fs == null) fs = new File[] {};
-		int dq=0;
-		for (File one : fs) if (one.isDirectory()) dq++;
-		String[] tmpp=new String[dq];
-		String[] tmp=new String[fs.length - dq];
-		int p1=0,p2=0;
-		for (int i=0;i < fs.length;i++) if (fs[i].isDirectory()) tmpp[p1++] = fs[i].getName(); else tmp[p2++] = fs[i].getName();
-		Arrays.sort(tmpp);
-		Arrays.sort(tmp);
-		for (int i=0;i < tmpp.length;i++) fs[i] = new File(dir, tmpp[i]);
-		for (int i=0;i < tmp.length;i++) fs[dq + i] = new File(dir, tmp[i]);
-		for (File one : fs) ds.add(one);
-		adapter.notifyDataSetChanged();
-	}
-	FileAdapter adapter;
-	@Override
-	public View getView() {
+		this.listener = lis;
 		list = new VListView(getContext());
 		layout = new LinearLayout(getContext());
 		layout.setOrientation(LinearLayout.VERTICAL);
@@ -151,6 +120,53 @@ public class FileChooserFragment extends VFragment implements OnItemClickListene
 		list.setAdapter(adapter);
 		update();
 		list.setOnItemClickListener(this);
+		list.post(new Runnable() {
+			@Override
+			public void run() {
+				path.setText(dir.getPath());
+			}
+		});
+	}
+	FileFilter filter;
+	public File getNow() {
+		return dir;
+	}
+	public void setNow(File f) {
+		dir = f;
+		update();
+	}
+	private void update() {
+		if (list == null) return;
+		new Thread(new Runnable() {
+				@Override
+				public void run() {
+					ds.clear();
+					File[] fs=dir.listFiles();
+					if (fs == null) fs = new File[] {};
+					int dq=0;
+					for (File one : fs) if (one.isDirectory()) dq++;
+					String[] tmpp=new String[dq];
+					String[] tmp=new String[fs.length - dq];
+					int p1=0,p2=0;
+					for (int i=0;i < fs.length;i++) if (fs[i].isDirectory()) tmpp[p1++] = fs[i].getName(); else tmp[p2++] = fs[i].getName();
+					Arrays.sort(tmpp);
+					Arrays.sort(tmp);
+					for (int i=0;i < tmpp.length;i++) fs[i] = new File(dir, tmpp[i]);
+					for (int i=0;i < tmp.length;i++) fs[dq + i] = new File(dir, tmp[i]);
+					for (File one : fs) ds.add(one);
+					list.post(new Runnable() {
+							@Override
+							public void run() {
+								path.setText(dir.getPath());
+								adapter.notifyDataSetChanged();
+							}
+						});
+				}
+			}).start();
+	}
+	FileAdapter adapter;
+	@Override
+	public View getView() {
 		return layout;
 	}
 	@Override

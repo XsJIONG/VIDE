@@ -2,6 +2,7 @@ package com.jxs.vcompat.ui;
 
 import android.app.*;
 import android.content.*;
+import android.content.res.*;
 import android.graphics.*;
 import android.graphics.drawable.*;
 import android.util.*;
@@ -77,7 +78,7 @@ public class VAlertDialog implements UI.OnThemeChangeListener {
 				@Override
 				public void run() {
 					VListView list=new VListView(cx);
-					ArrayAdapter<CharSequence> ada=new ArrayAdapter<CharSequence>(cx, android.R.layout.simple_list_item_1, cs);
+					MyAdapter ada=new MyAdapter(cx, cs);
 					list.setAdapter(ada);
 					list.setDivider(null);
 					list.setOnItemClickListener(new OnItemClickListener() {
@@ -91,6 +92,32 @@ public class VAlertDialog implements UI.OnThemeChangeListener {
 				}
 			});
 		return this;
+	}
+	private static class MyAdapter extends ArrayAdapter<CharSequence> {
+		private static int Pad=-1;
+		private static Drawable Back;
+		public MyAdapter(Context cx, CharSequence[] data) {
+			super(cx, android.R.layout.simple_list_item_1, data);
+			if (Pad == -1) {
+				Pad = UI.dp2px(15);
+				TypedValue value=new TypedValue();
+				cx.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, value, true);
+				TypedArray arr=cx.getTheme().obtainStyledAttributes(value.resourceId, new int[] {android.R.attr.selectableItemBackground});
+				Back = arr.getDrawable(0);
+				arr.recycle();
+			}
+		}
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			LinearLayout layout=new LinearLayout(getContext());
+			TextView v=new TextView(getContext());
+			v.setText(getItem(position));
+			v.setTextColor(Color.BLACK);
+			layout.setPadding(Pad, Pad, Pad, Pad);
+			layout.addView(v);
+			layout.setBackground(Back);
+			return layout;
+		}
 	}
 	public VAlertDialog setEditHint(final CharSequence hint) {
 		UI.autoOnUi(cx, new Runnable() {

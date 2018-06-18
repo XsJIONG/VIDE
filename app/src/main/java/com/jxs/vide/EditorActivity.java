@@ -88,7 +88,7 @@ public class EditorActivity extends VActivity {
 				p = fs[i].getPath();
 				path.append(p);
 				path.append(File.pathSeparator);
-				p = p.substring(0, p.lastIndexOf('.'))+"_CTree.txt";
+				p = p.substring(0, p.lastIndexOf('.')) + "_CTree.txt";
 				cf = new File(p);
 				if (cf.exists()) {
 					c = CTree.fromString(new String(IOUtil.read(new File(p))));
@@ -563,7 +563,7 @@ public class EditorActivity extends VActivity {
 						return;
 					}
 					dialog.dismiss();
-					BuildApkPath = f;
+					BuildApkPath = q;
 					vdialog = ui.newProgressDialog().setTitle(get(L.Outputing)).setMessage(get(L.Wait)).setCancelable(false);
 					vdialog.show();
 					jsc = true;
@@ -605,19 +605,20 @@ public class EditorActivity extends VActivity {
 		@Override
 		public void run() {
 			try {
-				if (VF.exists()) IOUtil.delete(VF);
-				VF.mkdirs();
-				long st=System.currentTimeMillis();
-				sendMessage(0, get(L.Editor_Encrypting));
-				if (!jsc) sendMessage(2, 0);
-				File ftmp=new File(VF, "Main.jsc");
-				if (ftmp.exists()) ftmp.delete();
-				pro.compile(new FileOutputStream(ftmp));
 				if (jsc) {
+					pro.compile(new FileOutputStream(BuildApkPath), true);
 					sendMessage(1, null);
 					ui.print(get(L.OutputSC));
 					return;
 				}
+				if (VF.exists()) IOUtil.delete(VF);
+				VF.mkdirs();
+				long st=System.currentTimeMillis();
+				sendMessage(0, get(L.Editor_Encrypting));
+				sendMessage(2, 0);
+				File ftmp=new File(VF, "Main.jsc");
+				if (ftmp.exists()) ftmp.delete();
+				pro.compile(new FileOutputStream(ftmp), true);
 				sendMessage(0, get(L.Editor_PickingOutApk));
 				sendMessage(2, 16);
 				File apk=new File(VF, "app_unsign.apk");
@@ -644,21 +645,31 @@ public class EditorActivity extends VActivity {
 				sendMessage(2, 69);
 				sendMessage(0, get(L.Editor_CompressingApk));
 				sendMessage(2, 80);
-				ArrayList<File> all=IOUtil.getSonFiles(pro.getAssets());
+				File ApkDir=pro.getApkDir();
+				ArrayList<File> all=IOUtil.getSonFiles(ApkDir);
 				String[] needed=pro.getNeededDex();
 				int extra=needed.length;
-				String[] InZipNames=new String[all.size() + extra + 3];
+				File[] libs=pro.getLibs();
+				int libl=libs.length;
+				String[] InZipNames=new String[all.size() + extra + libl + 3];
 				InputStream[] Paths=new InputStream[InZipNames.length];
 				InZipNames[0] = "AndroidManifest.xml"; Paths[0] = new FileInputStream(tmpXml);
 				InZipNames[1] = "assets/Main.jsc"; Paths[1] = new FileInputStream(ftmp);
 				InZipNames[2] = "res/drawable-hdpi-v4/icon.png"; Paths[2] = new FileInputStream(pro.getIcon());
 				for (int i=0;i < all.size();i++) {
 					Paths[i + 3] = new FileInputStream(all.get(i));
-					InZipNames[i + 3] = "assets" + IOUtil.getRelativePath(pro.getAssets(), all.get(i));
+					InZipNames[i + 3] = cut(IOUtil.getRelativePath(ApkDir, all.get(i)));
 				}
-				for (int i=0;i < needed.length;i++) {
+				int qwe=1;
+				for (int i=0;i < extra;i++) {
 					Paths[all.size() + 3 + i] = getAssets().open(needed[i]);
-					InZipNames[all.size() + 3 + i] = "classes" + (i == 0 ?"": String.valueOf(i + 1)) + ".dex";
+					InZipNames[all.size() + 3 + i] = "classes" + (qwe == 1 ?"": String.valueOf(qwe)) + ".dex";
+					qwe++;
+				}
+				for (int i=0;i < libl;i++) {
+					Paths[all.size() + extra + i + 3] = new FileInputStream(libs[i]);
+					InZipNames[all.size() + extra + i + 3] = "classes" + (qwe == 0 ?"": String.valueOf(qwe)) + ".dex";
+					qwe++;
 				}
 				ZipManager.addEntrys(apk, InZipNames, Paths);
 				ZipSigner signer=new ZipSigner();
@@ -688,6 +699,9 @@ public class EditorActivity extends VActivity {
 			}
 		}
 	};
+	private String cut(String s) {
+		if (s.charAt(0) == '/') return s.substring(1, s.length()); else return s;
+	}
 	/*private void buildDex(File dex) throws IOException {
 	 if (dex.exists()) dex.delete();
 	 IOUtil.copy(getAssets().open(pro.isCompat() ?"dexs/Compat": "dexs/Normal"), new FileOutputStream(dex));
@@ -850,7 +864,9 @@ public class EditorActivity extends VActivity {
 							@Override
 							public void run() {
 								try {
-									IOUtil.copy(f, new File(pro.getAssets(), f.getName()));
+									File ass=new File(pro.getApkDir(), "assets/");
+									if (!ass.exists()) ass.mkdirs();
+									IOUtil.copy(f, new File(ass, f.getName()));
 									VProgressDialog.getFromUi("ImportAssets").dismiss();
 									ui.print(get(L.Done));
 								} catch (IOException e) {

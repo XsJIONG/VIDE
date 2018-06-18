@@ -15,7 +15,7 @@ import static com.jxs.vide.L.get;
 public class Project implements Serializable {
 	public static HashMap<String,Project> Internet=new HashMap<>();
 	public static final String FILE_MANIFEST="Manifest.json";
-	private File dir;
+	private File dir,LibDir;
 	private Manifest _Manifest;
 	public static Project getInstance(File path, boolean autoLoad) throws IOException,JSONException {
 		if (Internet.get(path) != null) return Internet.get(path);
@@ -48,6 +48,14 @@ public class Project implements Serializable {
 		if (_Manifest.isUseDx()) a.add("dexs/Dx");
 		a.add("dexs/Rhino");
 		return a.toArray(new String[0]);
+	}
+	public File[] getLibs() {
+		return LibDir.listFiles(new FileFilter() {
+				@Override
+				public boolean accept(File f) {
+					return f.getPath().endsWith(".dex");
+				}
+			});
 	}
 	private Project(String name) throws IOException,JSONException {
 		this(new File(PATH, name));
@@ -110,15 +118,18 @@ public class Project implements Serializable {
 		return _Manifest.getAllJs();
 	}
 	public File getLibDir() {
-		File f=new File(dir, "libs");
-		if (f.isFile()) f.delete();
-		if (!f.exists()) f.mkdirs();
-		return f;
+		if (LibDir.isFile()) LibDir.delete();
+		if (!LibDir.exists()) LibDir.mkdirs();
+		return LibDir;
 	}
+	private File Assets,ApkDir;
 	private Project(File f, boolean autoLoad) throws IOException,JSONException {
 		Internet.put(f.getName(), this);
 		this.dir = f;
 		if (!getNomediaFile().exists()) IOUtil.createNewFile(getNomediaFile());
+		Assets = new File(dir, "assets");
+		ApkDir = new File(dir, "apk");
+		LibDir = new File(dir, "libs");
 		if ((!f.exists()) || !isProject(f)) {
 			IOUtil.delete(f);
 			boolean s=f.mkdirs();
@@ -126,18 +137,23 @@ public class Project implements Serializable {
 				MessageActivity.showMessage(MyApplication.getContext(), "ERRRRRRRRRRRRRRRRRRRRRRRR!", "Oops...");
 			_Manifest = new Manifest();
 			_Manifest.setOutputFile(getManifestFile());
-			new File(f, "assets").mkdirs();
-			new File(f, "libs").mkdirs();
+			Assets.mkdirs();
+			ApkDir.mkdirs();
 			saveManifest();
 		} else {
 			_Manifest = new Manifest();
 			_Manifest.setOutputFile(getManifestFile());
-			if (!getAssets().exists()) getAssets().mkdirs();
+			if (!getApkDir().exists()) ApkDir.mkdirs();
 			if (autoLoad) _Manifest.parse(getManifestFile());
 		}
+		if (Assets.exists()) IOUtil.delete(Assets);
 	}
+	@Deprecated
 	public File getAssets() {
-		return new File(dir, "assets");
+		return Assets;
+	}
+	public File getApkDir() {
+		return ApkDir;
 	}
 	public void loadManifest() throws IOException,JSONException {
 		_Manifest.parse(getManifestFile());
@@ -217,21 +233,24 @@ public class Project implements Serializable {
 	public void compile(OutputStream output) throws Exception {
 		compile(output, false);
 	}
+	private static void listFiles(ArrayList<File> arr, File f) {
+		if (f.isFile()) {
+			arr.add(f);
+			return;
+		}
+		for (File one : f.listFiles()) if (one.isFile()) arr.add(one); else listFiles(arr, one);
+	}
 	public void compile(OutputStream output, boolean asset) throws Exception {
 		writeString(output, _Manifest.toJSON().toString());
 		ArrayList<Jsc> s=_Manifest.getAllJs();
 		for (int i=0;i < s.size();i++)
 			writeString(output, new String(EncryptUtil.encrypt(EncryptUtil.encrypt(IOUtil.read(getFile(s.get(i))), EncryptUtil.Type.GZip), EncryptUtil.Type.Base64)));
 		if (asset) {
-			File[] Lib=getLibDir().listFiles(new FileFilter() {
-					@Override
-					public boolean accept(File f) {
-						return f.getPath().endsWith(".dex");
-					}
-				});
-			File[] Ass=getAssets().listFiles();
-			if (Lib.length + Ass.length != 0) {
-				output.write(intToByteArray(Lib.length + Ass.length));
+			File[] Lib=getLibs();
+			ArrayList<File> Ass=new ArrayList<>();
+			listFiles(Ass, this.ApkDir);
+			if (Lib.length + Ass.size() != 0) {
+				output.write(intToByteArray(Lib.length + Ass.size()));
 				File one;
 				long ada,ind;
 				int readed;
@@ -251,12 +270,13 @@ public class Project implements Serializable {
 					}
 					in.close();
 				}
-				for (int i=0;i < Ass.length;i++) {
-					one = Ass[i];
-					writeString(output, IOUtil.getRelativePath(this.dir, one));
-					output.write(longToByteArray(ada = Ass[i].length()));
+				for (int i=0;i < Ass.size();i++) {
+					one = Ass.get(i);
+					writeString(output, IOUtil.getRelativePath(this.ApkDir, one));
+					output.write(longToByteArray(ada = Ass.get(i).length()));
 					ind = 0;
-					in = new FileInputStream(Ass[i]);
+					IOUtil.createNewFile(Ass.get(i));
+					in = new FileInputStream(Ass.get(i));
 					while (ind < ada) {
 						readed = ada - ind > 1024 ?1024: (int) (ada - ind);
 						in.read(buf, 0, readed);

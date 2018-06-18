@@ -63,20 +63,8 @@ public class JsProgram extends Program {
 	}
 	public JsProgram(JsApp exe, String programName) {
 		cx = org.mozilla.javascript.Context.enter();
-		//For VIDE
 		cx.setOptimizationLevel(-1);
 		scope = new ImporterTopLevel(cx);
-		/*_Require = new Require(cx, scope, new ModuleScriptProvider() {
-		 @Override
-		 public ModuleScript getModuleScript(Context cx, String moduleId, URI moduleUri, URI baseUri, Scriptable paths) throws Exception {
-		 FileOutputStream out=new FileOutputStream("/sdcard/Out.txt");
-		 out.write(("moduleUri:" + (moduleUri == null ?"null": moduleUri.toString()) + "|baseUri:" + (baseUri == null ?"null": baseUri.toString())).getBytes());
-		 out.close();
-		 return null;
-		 }
-		 }, null, null, false);*/
-		//_Require.install(scope);
-		//Mark
 		if (exe != null) setJsApp(exe);
 		this.programName = programName == null ?"": programName;
 		scope.defineProperty("console", Console.getInstance(), ScriptableObject.CONST);

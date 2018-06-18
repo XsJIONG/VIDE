@@ -10,6 +10,7 @@ import android.view.*;
 import android.widget.*;
 import android.widget.AdapterView.*;
 import com.jxs.v.widget.*;
+import java.util.*;
 
 public class VAlertDialog implements UI.OnThemeChangeListener {
 	public static final String THEME_FULL_COLOR="VAlertDialog_FULLCOLOR";
@@ -41,7 +42,7 @@ public class VAlertDialog implements UI.OnThemeChangeListener {
 						Message.setPadding(UI.dp2px(24), UI.dp2px(18), UI.dp2px(24), 0);
 						Message.setText(s);
 						Message.setTextColor(Color.BLACK);
-						SC=new VScrollView(cx);
+						SC = new VScrollView(cx);
 						SC.setFillViewport(true);
 						SC.addView(Message, -1, -2);
 						setView(SC);
@@ -78,14 +79,9 @@ public class VAlertDialog implements UI.OnThemeChangeListener {
 				@Override
 				public void run() {
 					VListView list=new VListView(cx);
-					ArrayAdapter<CharSequence> ada=new ArrayAdapter<CharSequence>(cx, android.R.layout.simple_list_item_1, cs);
+					MyAdapter ada=new MyAdapter(cx, cs);
 					list.setAdapter(ada);
 					list.setDivider(null);
-					TypedValue value=new TypedValue();
-					cx.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, value, true);
-					TypedArray arr=cx.getTheme().obtainStyledAttributes(value.resourceId, new int[] {android.R.attr.selectableItemBackground});
-					list.setBackground(arr.getDrawable(0));
-					arr.recycle();
 					list.setOnItemClickListener(new OnItemClickListener() {
 							@Override
 							public void onItemClick(AdapterView<?> pa, View v, int pos, long id) {
@@ -97,6 +93,32 @@ public class VAlertDialog implements UI.OnThemeChangeListener {
 				}
 			});
 		return this;
+	}
+	private static class MyAdapter extends ArrayAdapter<CharSequence> {
+		private static int Pad=-1;
+		private static Drawable Back;
+		public MyAdapter(Context cx, CharSequence[] data) {
+			super(cx, android.R.layout.simple_list_item_1, data);
+			if (Pad == -1) {
+				Pad = UI.dp2px(15);
+				TypedValue value=new TypedValue();
+				cx.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, value, true);
+				TypedArray arr=cx.getTheme().obtainStyledAttributes(value.resourceId, new int[] {android.R.attr.selectableItemBackground});
+				Back = arr.getDrawable(0);
+				arr.recycle();
+			}
+		}
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			LinearLayout layout=new LinearLayout(getContext());
+			TextView v=new TextView(getContext());
+			v.setText(getItem(position));
+			v.setTextColor(Color.BLACK);
+			layout.setPadding(Pad, Pad, Pad, Pad);
+			layout.addView(v);
+			layout.setBackground(Back);
+			return layout;
+		}
 	}
 	public VAlertDialog setEditHint(final CharSequence hint) {
 		UI.autoOnUi(cx, new Runnable() {

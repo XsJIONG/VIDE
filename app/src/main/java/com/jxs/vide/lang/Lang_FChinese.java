@@ -1,6 +1,6 @@
 package com.jxs.vide.lang;
 
-import com.jxs.vide.L;
+import com.jxs.vide.*;
 
 public class Lang_FChinese extends Lang {
 	@Override
@@ -209,6 +209,15 @@ public class Lang_FChinese extends Lang {
 		qwe(L.OutputSC, "導出成功！");
 		qwe(L.ChoosePkg, "選擇當前包");
 		qwe(L.ChooseDir, "選擇當前文件夾");
+		qwe(L.Search, "搜索");
+		qwe(L.Like, "點贊");
+		qwe(L.AlreadyLiked, "妳已經點過贊了！");
+		qwe(L.Liked, "點贊成功");
+		qwe(L.Dislike, "取消點贊");
+		qwe(L.Disliked, "取消點贊成功");
+		qwe(L.Notice, "公告");
+		qwe(L.Copy, "復制");
+		qwe(L.Copied, "已復制！");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

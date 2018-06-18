@@ -141,25 +141,70 @@ public class VAppActivity extends VActivity {
 					final android.support.v7.widget.PopupMenu menu=new android.support.v7.widget.PopupMenu(VAppActivity.this, view, Gravity.CENTER);
 					Menu q=menu.getMenu();
 					q.add(0, 0, 0, get(L.VAppRun));
-					q.add(0, 1, 1, get(L.VAppDetail));
-					if (en.OpenSource) q.add(0, 2, 2, get(L.VAppClone));
-					BmobUser user;
-					if ((user = BmobUser.getCurrentUser()) != null && user.getObjectId().equals(en.Author)) q.add(0, 3, 3, get(L.VAppDelete));
+					boolean liked=false;
+					BmobUser user=BmobUser.getCurrentUser();
+					if (user != null && en.Likes.contains(user.getObjectId())) liked = true;
+					q.add(0, 1, 1, get(liked ?L.Dislike: L.Like));
+					q.add(0, 2, 2, get(L.VAppDetail));
+					if (en.OpenSource) q.add(0, 3, 3, get(L.VAppClone));
+					if (user != null && user.getObjectId().equals(en.Author)) q.add(0, 4, 4, get(L.VAppDelete));
 					menu.setOnMenuItemClickListener(new android.support.v7.widget.PopupMenu.OnMenuItemClickListener() {
 							@Override
 							public boolean onMenuItemClick(MenuItem item) {
 								switch (item.getOrder()) {
 									case 0:runJsc(en);break;
 									case 1:{
-											ui.newAlertDialog().setTitle(get(L.VAppDetail)).setMessage(en.Description).setCancelable(true).setPositiveButton(get(L.OK), null).show();
+											VUser user=BmobUser.getCurrentUser(VUser.class);
+											if (user == null) {
+												ui.toast(get(L.LoginFirst));
+												startActivity(new Intent(VAppActivity.this, LoginActivity.class));
+												break;
+											}
+											if (en.Likes.contains(user.getObjectId())) {
+												en.Likes.remove(user.getObjectId());
+												ui.newProgressDialog().setTitle(get(L.Wait)).setMessage(get(L.Dislike)).setCancelable(false).putToUi("Likes").show();
+												en.update(new UpdateListener() {
+														@Override
+														public void done(BmobException e) {
+															if (e != null) {
+																Global.onBmobErr(ui, e);
+																VProgressDialog.getFromUi("Likes").dismiss();
+																return;
+															}
+															VProgressDialog.getFromUi("Likes").dismiss();
+															refresh();
+															ui.print(get(L.Disliked));
+														}
+													});
+												break;
+											}
+											en.Likes.add(user.getObjectId());
+											ui.newProgressDialog().setTitle(get(L.Wait)).setMessage(get(L.Like)).setCancelable(false).putToUi("Likes").show();
+											en.update(new UpdateListener() {
+													@Override
+													public void done(BmobException e) {
+														if (e != null) {
+															Global.onBmobErr(ui, e);
+															VProgressDialog.getFromUi("Likes").dismiss();
+															return;
+														}
+														VProgressDialog.getFromUi("Likes").dismiss();
+														refresh();
+														ui.print(get(L.Liked));
+													}
+												});
 											break;
 										}
 									case 2:{
+											ui.newAlertDialog().setTitle(get(L.VAppDetail)).setMessage(en.Description).setCancelable(true).setPositiveButton(get(L.OK), null).show();
+											break;
+										}
+									case 3:{
 											if (!TempJscDir.exists()) TempJscDir.mkdirs();
 											downloadJsc(en, new File(TempJscDir, "Tmp"), false);
 											break;
 										}
-									case 3:{
+									case 4:{
 											final VProgressDialog pro=ui.newProgressDialog();
 											pro.setTitle(get(L.Wait)).setMessage(get(L.Deleting)).setCancelable(false).show();
 											new Thread(new Runnable() {
@@ -269,7 +314,8 @@ public class VAppActivity extends VActivity {
 							return;
 						}
 						try {
-							JsApp app=new JsApp(new FileInputStream(f));
+							FileInputStream ins=new FileInputStream(f);
+							JsApp app=new JsApp(ins, false);
 							String name=app.getManifest().getAppName();
 							File q=new File(Project.PATH, name);
 							int qwe=0;
@@ -287,6 +333,23 @@ public class VAppActivity extends VActivity {
 							}
 							pro.saveManifest();
 							MainActivity.cx.notifyProjectRename();
+							final File libs=pro.getDir();
+							if (!libs.exists()) libs.mkdirs();
+							JsApp.write(ins, new JsApp.DataWriter() {
+									private File f;
+									@Override
+									public void write(String name, byte[] data) {
+										try {
+											f = new File(libs, name);
+											IOUtil.createNewFile(f);
+											IOUtil.write(f, data);
+											data = null;
+										} catch (Throwable t) {
+											Global.log("VApp Clone", Log.getStackTraceString(t));
+										}
+									}
+								});
+							ins.close();
 							H.dismiss();
 							cx.ui.print(String.format(get(L.Cloned), pro.getAppName()));
 						} catch (final Throwable er) {
@@ -336,7 +399,26 @@ public class VAppActivity extends VActivity {
 			Title.setGravity(Gravity.LEFT);
 			Title.setSingleLine(true);
 			Title.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-			root.addView(Title, new LinearLayout.LayoutParams(-1, -2));
+			LinearLayout LikeLayout=new LinearLayout(getContext());
+			TextView asd=new TextView(getContext());
+			asd.setText(String.valueOf(entity.Likes.size()));
+			asd.setGravity(Gravity.CENTER);
+			asd.setTextColor(UI.getAccentColor());
+			ImageView iv=new ImageView(getContext());
+			iv.setImageResource(R.drawable.icon_love);
+			LikeLayout.setOrientation(LinearLayout.HORIZONTAL);
+			LinearLayout.LayoutParams tpara=new LinearLayout.LayoutParams(-2, -1);
+			tpara.rightMargin = UI.dp2px(10);
+			LikeLayout.addView(asd, tpara);
+			LikeLayout.addView(iv, new LinearLayout.LayoutParams(UI.dp2px(16), UI.dp2px(16)));
+			LinearLayout TopLayout=new LinearLayout(getContext());
+			TopLayout.setOrientation(LinearLayout.HORIZONTAL);
+			TopLayout.setGravity(Gravity.CENTER);
+			LinearLayout.LayoutParams TitlePara=new LinearLayout.LayoutParams(0, -2);
+			TitlePara.weight = 1;
+			TopLayout.addView(Title, TitlePara);
+			TopLayout.addView(LikeLayout);
+			root.addView(TopLayout, new LinearLayout.LayoutParams(-1, -2));
 			TextView SubTitle=new TextView(getContext());
 			SubTitle.setMaxEms(15);
 			SubTitle.setSingleLine(true);
@@ -370,6 +452,8 @@ public class VAppActivity extends VActivity {
 			holder.User = User;
 			holder.openSource = entity.OpenSource;
 			holder.onThemeChange();
+			holder.Like = asd;
+			holder.LikeView = iv;
 			Content.setTag(holder);
 			if (Global.UserNames.containsKey(entity.Author)) User.setText(Global.UserNames.get(entity.Author)); else if (All.containsKey(entity.Author)) All.get(entity.Author).add(User); else {
 				final ArrayList<TextView> S=new ArrayList<>();
@@ -390,7 +474,7 @@ public class VAppActivity extends VActivity {
 							Global.UserNames.put(u.getObjectId(), u.getUsername());
 							String s=u.getUsername();
 							ArrayList<TextView> needed=All.remove(u.getObjectId());
-							for (int i=0;i<needed.size();i++) needed.get(i).setText(s);
+							for (int i=0;i < needed.size();i++) needed.get(i).setText(s);
 						}
 					});
 			}
@@ -413,7 +497,8 @@ public class VAppActivity extends VActivity {
 		}
 		private static class ViewHolder {
 			public CardView Card;
-			public TextView Title,Des,User;
+			public TextView Title,Des,User,Like;
+			public ImageView LikeView;
 			public boolean openSource;
 			public void onThemeChange() {
 				int ui=UI.getThemeColor();
@@ -422,6 +507,8 @@ public class VAppActivity extends VActivity {
 				if (Title != null) Title.setTextColor(w);
 				if (Des != null) Des.setTextColor(w);
 				if (User != null) User.setTextColor(w);
+				if (Like != null) Like.setTextColor(w);
+				if (LikeView != null) UI.tintDrawable(LikeView.getDrawable(), w);
 				if (openSource) Title.setText(getTitle(Title.getText().toString()));
 			}
 		}

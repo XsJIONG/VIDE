@@ -3,6 +3,7 @@ package com.jxs.vcompat.fragment;
 import android.content.*;
 import android.graphics.*;
 import android.graphics.drawable.*;
+import android.support.v4.widget.*;
 import android.view.*;
 import android.view.View.*;
 import android.widget.*;
@@ -18,6 +19,7 @@ public class FileChooserFragment extends VFragment implements OnItemClickListene
 	private static Bitmap FolderBitmap,FileBitmap;
 	public static BitmapDrawable FolderDrawable,FileDrawable;
 	public static int IconSize,RightMargin;
+	private SwipeRefreshLayout Refresh;
 	public static void checkBitmap() {
 		if (FolderBitmap != null) return;
 		byte[] data=android.util.Base64.decode("iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABHNCSVQICAgIfAhkiAAAAo1JREFU\neJzt2rFy2zAURNEr1dE/4c/5N1KvuE8KJ4ooAoxF2wMKe8/MK2w3pBdaY94YJEmSJEmSJEmSJEmS\n5grw68WmfMPvIdZE/0CfnelbfhOBCv3DtAU6esVPvy3wRQr9Q7QFOnrlT78t8EmF/uHZAh2N8Om3\nBTYq9A/NWZ/SyO5LTDt4QWd9pmZ6n1R28HLOx6ZUE/ykaQcv5nxspkaGm5UdvJTz3JRKjptNO3gh\n57mZqkluUHbwMs62KYs0N5h28CLOtpkqeUqSJEmSpFAH4Aqcej+IurgegUvvp1A3lyNw7v0U6uZs\nA2SzAcLZAOFsgHA2QDgbINz5APwAfvZ+EnVxOgJveAASXYG3458vvAfkuQD8PQDeA/Kc4d8BsAHy\n2ADhbIBwNkA4GyCcDRDuDO//EgZuAxOduFsEuQ3McuU989ufAPAekOSW9f0B8B6Q45a1DZDJBghn\nA4SzAcLZAOFsgHC3rA9333QbmONEZRHkNjDDbQsI8wMA3gMSzDJ+PADeA8Y3y9gGyGMDhLMBwtkA\n4WyAcDZAuFnGh4cfug0c320LCMsGcBs4ttkWEJYHALwHjGyRbe0AeA8Y1yJbGyCLDRDOBghnA4Sz\nAcLZAOEW2T5uAsFt4MhmW0CoN4DbwDEttoBQPwDgPWBE1UxbB8B7wHiqmdoAOWyAcDZAOBsgnA0Q\nzgYIV820tgkEt4EjWmwBod0AbgPHUt0CQvsAgPeAkTSzXDsA3gPG0czSBshgA4SzAcLZAOFsgHA2\nQLhmlq1NILgNHEl1CwjrDeA2cAzNLSCsHwDwHjCC1Qz/dwC8B7y+1QxtgPHZAOFsgHA2QDgbIJwN\nEG41w7VNILgNHEFzCyhJkiRJkrL8Bo92etvl8h4FAAAAAElFTkSuQmCC\n", android.util.Base64.DEFAULT);
@@ -71,44 +73,21 @@ public class FileChooserFragment extends VFragment implements OnItemClickListene
 	public FileChooserFragment(Context cx, File f, FileChooserListener listener, boolean chooseDir) {
 		this(cx, f, listener, chooseDir, ALL_FILTER);
 	}
-	public FileChooserFragment(Context cx, File f, FileChooserListener listener, boolean chooseDir, FileFilter filter) {
+	public FileChooserFragment(Context cx, File f, FileChooserListener lis, boolean chooseDir, FileFilter filter) {
 		super(cx);
 		checkBitmap();
 		this.dir = f;
 		this.chooseDir = chooseDir;
 		this.filter = filter;
-		this.listener = listener;
-	}
-	FileFilter filter;
-	public File getNow() {
-		return dir;
-	}
-	public void setNow(File f) {
-		dir = f;
-		update();
-	}
-	private void update() {
-		if (list == null) return;
-		path.setText(dir.getPath());
-		ds.clear();
-		File[] fs=dir.listFiles();
-		if (fs == null) fs = new File[] {};
-		int dq=0;
-		for (File one : fs) if (one.isDirectory()) dq++;
-		String[] tmpp=new String[dq];
-		String[] tmp=new String[fs.length - dq];
-		int p1=0,p2=0;
-		for (int i=0;i < fs.length;i++) if (fs[i].isDirectory()) tmpp[p1++] = fs[i].getName(); else tmp[p2++] = fs[i].getName();
-		Arrays.sort(tmpp);
-		Arrays.sort(tmp);
-		for (int i=0;i < tmpp.length;i++) fs[i] = new File(dir, tmpp[i]);
-		for (int i=0;i < tmp.length;i++) fs[dq + i] = new File(dir, tmp[i]);
-		for (File one : fs) ds.add(one);
-		adapter.notifyDataSetChanged();
-	}
-	FileAdapter adapter;
-	@Override
-	public View getView() {
+		this.listener = lis;
+		this.Refresh = new SwipeRefreshLayout(cx);
+		Refresh.setColorSchemeColors(new int[] {UI.getThemeColor()});
+		Refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+				@Override
+				public void onRefresh() {
+					setNow(getNow());
+				}
+			});
 		list = new VListView(getContext());
 		layout = new LinearLayout(getContext());
 		layout.setOrientation(LinearLayout.VERTICAL);
@@ -118,7 +97,8 @@ public class FileChooserFragment extends VFragment implements OnItemClickListene
 		LinearLayout.LayoutParams p=getDivideParams();
 		p.height = 0;
 		p.width = LinearLayout.LayoutParams.MATCH_PARENT;
-		layout.addView(list, p);
+		Refresh.addView(list, -1, -1);
+		layout.addView(Refresh, p);
 		buttonlayout = new LinearLayout(getContext());
 		buttonlayout.setOrientation(LinearLayout.HORIZONTAL);
 		layout.addView(buttonlayout);
@@ -151,6 +131,56 @@ public class FileChooserFragment extends VFragment implements OnItemClickListene
 		list.setAdapter(adapter);
 		update();
 		list.setOnItemClickListener(this);
+		Refresh.post(new Runnable() {
+			@Override
+			public void run() {
+				Refresh.setRefreshing(false);
+				path.setText(dir.getPath());
+			}
+		});
+	}
+	FileFilter filter;
+	public File getNow() {
+		return dir;
+	}
+	public void setNow(File f) {
+		dir = f;
+		update();
+	}
+	private void update() {
+		if (list == null) return;
+		Refresh.setRefreshing(true);
+		new Thread(new Runnable() {
+				@Override
+				public void run() {
+					ds.clear();
+					File[] fs=dir.listFiles();
+					if (fs == null) fs = new File[] {};
+					int dq=0;
+					for (File one : fs) if (one.isDirectory()) dq++;
+					String[] tmpp=new String[dq];
+					String[] tmp=new String[fs.length - dq];
+					int p1=0,p2=0;
+					for (int i=0;i < fs.length;i++) if (fs[i].isDirectory()) tmpp[p1++] = fs[i].getName(); else tmp[p2++] = fs[i].getName();
+					Arrays.sort(tmpp);
+					Arrays.sort(tmp);
+					for (int i=0;i < tmpp.length;i++) fs[i] = new File(dir, tmpp[i]);
+					for (int i=0;i < tmp.length;i++) fs[dq + i] = new File(dir, tmp[i]);
+					for (File one : fs) ds.add(one);
+					list.post(new Runnable() {
+							@Override
+							public void run() {
+								path.setText(dir.getPath());
+								adapter.notifyDataSetChanged();
+								Refresh.setRefreshing(false);
+							}
+						});
+				}
+			}).start();
+	}
+	FileAdapter adapter;
+	@Override
+	public View getView() {
 		return layout;
 	}
 	@Override

@@ -13,11 +13,13 @@ import android.support.v4.widget.*;
 import android.support.v7.app.*;
 import android.support.v7.graphics.drawable.*;
 import android.support.v7.widget.*;
+import android.text.*;
 import android.util.*;
 import android.view.*;
 import android.view.View.*;
 import android.view.animation.*;
 import android.widget.*;
+import android.widget.AdapterView.*;
 import cn.bmob.v3.*;
 import cn.bmob.v3.exception.*;
 import cn.bmob.v3.listener.*;
@@ -30,6 +32,7 @@ import java.util.*;
 
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.view.View.OnClickListener;
 
 import static com.jxs.vide.L.get;
 
@@ -344,6 +347,12 @@ public class MainActivity extends VActivity {
 		ItemLayout.setOrientation(LinearLayout.VERTICAL);
 		//Items - Start
 		ItemLayout.addView(newItemView(R.drawable.icon_book, get(L.Title_Learn), new StartActivityListener(LearnListActivity.class)));
+		ItemLayout.addView(newItemView(R.drawable.icon_news, get(L.Notice), new OnClickListener() {
+								   @Override
+								   public void onClick(View v) {
+									   noticeUi();
+								   }
+							   }));
 		ItemLayout.addView(newItemView(R.drawable.icon_app, get(L.Title_VApp), new StartActivityListener(VAppActivity.class)));
 		ItemLayout.addView(newItemView(R.drawable.icon_settings, get(L.Title_Setting), new StartActivityListener(SettingActivity.class)));
 		ItemLayout.addView(newItemView(R.drawable.v_about, get(L.Title_About), new StartActivityListener(AboutActivity.class)));
@@ -359,6 +368,169 @@ public class MainActivity extends VActivity {
 		ItemScroller.addView(ItemLayout, new VScrollView.LayoutParams(-1, -1));
 		layout.addView(ItemScroller, new LinearLayout.LayoutParams(-1, -1));
 		return layout;
+	}
+	private VListView NoticeList;
+	private NoticeAdapter NoticeAdapter;
+	private SwipeRefreshLayout NoticeRefresh;
+	private RelativeLayout NoticeLayout;
+	private CryView NoticeCry;
+	private void noticeUi() {
+		if (NoticeList != null) return;
+		NoticeLayout = new RelativeLayout(this);
+		NoticeCry = new CryView(this);
+		NoticeCry.setText(get(L.HereIsEmpty));
+		NoticeCry.setVisibility(View.GONE);
+		NoticeLayout.addView(NoticeCry, -1, -1);
+		NoticeList = new VListView(this);
+		NoticeAdapter = new NoticeAdapter(this);
+		NoticeList.setAdapter(NoticeAdapter);
+		NoticeList.setOnItemClickListener(new OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> parent, View v, int pos, long id) {
+					final NoticeEntity en=NoticeAdapter.get(pos);
+					ui.newAlertDialog().setTitle(en.Title).setMessage(en.Message).setCancelable(true).setNeutralButton(UI.getColorString(en.Author, Color.GRAY), false, null).setPositiveButton(get(L.OK), null).setNegativeButton(get(L.Copy), new VAlertDialog.OnClickListener() {
+							@Override
+							public void onClick(VAlertDialog dialog, int pos) {
+								((android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE)).setText(en.Message);
+								ui.print(get(L.Copied));
+							}
+						}).show();
+				}
+			});
+		NoticeRefresh = new SwipeRefreshLayout(this);
+		NoticeRefresh.setColorSchemeColors(new int[]{UI.getThemeColor()});
+		NoticeRefresh.addView(NoticeList);
+		NoticeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+				@Override
+				public void onRefresh() {
+					loadNoticeData();
+				}
+			});
+		NoticeLayout.addView(NoticeRefresh, -1, -1);
+		NoticeList.setVisibility(View.GONE);
+		ui.newAlertDialog().setView(NoticeLayout).setCancelable(true).setOnCancelListener(new VAlertDialog.OnCancelListener() {
+				@Override
+				public void onCancel(VAlertDialog dialog) {
+					NoticeList = null;
+					NoticeAdapter = null;
+					NoticeRefresh = null;
+					NoticeLayout = null;
+					NoticeCry = null;
+				}
+			}).show();
+		loadNoticeData();
+	}
+	private void loadNoticeData() {
+		if (NoticeList == null) return;
+		NoticeRefresh.setRefreshing(true);
+		BmobQuery<NoticeEntity> q=new BmobQuery<>();
+		q.order("-updatedAt");
+		q.findObjects(new FindListener<NoticeEntity>() {
+				@Override
+				public void done(List<NoticeEntity> data, BmobException e) {
+					if (NoticeList == null) return;
+					if (e != null) {
+						NoticeRefresh.setRefreshing(false);
+						Global.onBmobErr(ui, e);
+						return;
+					}
+					NoticeAdapter.clear();
+					NoticeAdapter.addAll(data);
+					if (data.size() == 0) {
+						NoticeCry.setVisibility(View.VISIBLE);
+						NoticeList.setVisibility(View.GONE);
+					} else {
+						NoticeCry.setVisibility(View.GONE);
+						NoticeList.setVisibility(View.VISIBLE);
+					}
+					NoticeRefresh.setRefreshing(false);
+				}
+			});
+	}
+	private static class NoticeAdapter extends BaseAdapter {
+		private Context cx;
+		private ArrayList<NoticeEntity> All=new ArrayList<>();
+		public NoticeAdapter(Context cx) {
+			this.cx = cx;
+		}
+		@Override
+		public Object getItem(int pos) {
+			return All.get(pos);
+		}
+		@Override
+		public int getCount() {
+			return All.size();
+		}
+		public void add(NoticeEntity en) {
+			All.add(en);
+			notifyDataSetChanged();
+		}
+		public void remove(NoticeEntity en) {
+			All.remove(en);
+			notifyDataSetChanged();
+		}
+		public void remove(int index) {
+			All.remove(index);
+			notifyDataSetChanged();
+		}
+		public NoticeEntity get(int index) {
+			return All.get(index);
+		}
+		public void addAll(Collection<NoticeEntity> ens) {
+			All.addAll(ens);
+			notifyDataSetChanged();
+		}
+		public void clear() {
+			All.clear();
+			notifyDataSetChanged();
+		}
+		@Override
+		public long getItemId(int pos) {
+			return pos;
+		}
+		@Override
+		public View getView(int pos, View v, ViewGroup vg) {
+			int t=UI.dp2px(10);
+			LinearLayout root=new LinearLayout(cx);
+			root.setPadding(t, t, t, t);
+			root.setOrientation(LinearLayout.VERTICAL);
+			TextView Title=new TextView(cx);
+			Title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+			Title.setTextSize(30);
+			TextView Content=new TextView(cx);
+			Content.setEllipsize(TextUtils.TruncateAt.END);
+			Content.setMaxLines(3);
+			NoticeEntity en=All.get(pos);
+			Title.setText(en.Title);
+			Content.setText(en.Message);
+			root.addView(Title);
+			LinearLayout.LayoutParams para=new LinearLayout.LayoutParams(-1, -1);
+			para.topMargin = t;
+			root.addView(Content, para);
+			CardView Card=new CardView(cx);
+			Card.setRadius(10);
+			Card.addView(root);
+			ViewHolder holder=new ViewHolder();
+			holder.Card = Card;
+			holder.Title = Title;
+			holder.Content = Content;
+			holder.onThemeChange();
+			LinearLayout R=new LinearLayout(cx);
+			R.setTag(holder);
+			para = new LinearLayout.LayoutParams(-1, -1);
+			para.topMargin = para.bottomMargin = para.leftMargin = para.rightMargin = t;
+			R.addView(Card, para);
+			return R;
+		}
+		private static class ViewHolder {
+			public CardView Card;
+			public TextView Title,Content;
+			public void onThemeChange() {
+				Card.setBackgroundColor(UI.getThemeColor());
+				Title.setTextColor(UI.getAccentColor());
+				Content.setTextColor(UI.getAccentColor());
+			}
+		}
 	}
 	private void fadeFromUserToLogin() {
 		AlphaAnimation ani=new AlphaAnimation(1, 0);
@@ -434,7 +606,7 @@ public class MainActivity extends VActivity {
 			((TextView) one.getChildAt(1)).setTextColor(w);
 		}
 		FAB.setImageDrawable(DrawableHelper.getDrawable(R.drawable.v_add, UI.getAccentColor()));
-		FABCreateSimple.setImageDrawable(DrawableHelper.getDrawable(R.drawable.icon_app, UI.getAccentColor()));
+		FABCreateSimple.setImageDrawable(DrawableHelper.getDrawable(R.drawable.icon_activity, UI.getAccentColor()));
 		FABCreateConsole.setImageDrawable(DrawableHelper.getDrawable(R.drawable.icon_console, UI.getAccentColor()));
 		try {
 			ColorStateList cs=ColorStateList.valueOf(UI.getThemeColor());
@@ -448,6 +620,11 @@ public class MainActivity extends VActivity {
 		if (UserIcon.getTag() == -1) UserIcon.setImageDrawable(ui.tintDrawable(R.drawable.icon_user, w));
 		((TextView) ((ViewGroup) UserLayout.getChildAt(0)).getChildAt(1)).setTextColor(w);
 		VH.onThemeChange();
+		if (NoticeList != null) for (int i=0;i < NoticeList.getChildCount();i++) ((NoticeAdapter.ViewHolder) NoticeList.getChildAt(i).getTag()).onThemeChange();
+		if (NoticeList != null) {
+			NoticeList.setGlowColor(UI.getThemeColor());
+			NoticeRefresh.setColorSchemeColors(new int[]{UI.getThemeColor()});
+		}
 	}
 	int viewHeight;
 	public static int getSignature(Context cx) {

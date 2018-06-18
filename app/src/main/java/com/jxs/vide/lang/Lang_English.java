@@ -209,6 +209,15 @@ public class Lang_English extends Lang {
 		qwe(L.OutputSC, "Output Successfuly!");
 		qwe(L.ChoosePkg, "Choose Current Package");
 		qwe(L.ChooseDir, "Choose Current Folder");
+		qwe(L.Search, "Search");
+		qwe(L.Like, "Like");
+		qwe(L.AlreadyLiked, "You has already liked this app!");
+		qwe(L.Liked, "Liked successfully");
+		qwe(L.Dislike, "Dislike");
+		qwe(L.Disliked, "Disliked");
+		qwe(L.Notice, "Notice");
+		qwe(L.Copy, "Copy");
+		qwe(L.Copied, "Copied!");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

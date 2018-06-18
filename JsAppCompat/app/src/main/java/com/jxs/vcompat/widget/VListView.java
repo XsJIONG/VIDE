@@ -1,12 +1,13 @@
 package com.jxs.vcompat.widget;
 
-import android.content.Context;
-import android.support.v7.widget.ListViewCompat;
-import android.util.AttributeSet;
-import android.widget.AbsListView;
-import android.widget.EdgeEffect;
-import com.jxs.vcompat.ui.UI;
-import java.lang.reflect.Field;
+import android.content.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.support.v7.widget.*;
+import android.util.*;
+import android.widget.*;
+import com.jxs.vcompat.ui.*;
+import java.lang.reflect.*;
 
 public class VListView extends ListViewCompat implements UI.OnThemeChangeListener {
 	public VListView(Context cx) {
@@ -18,6 +19,7 @@ public class VListView extends ListViewCompat implements UI.OnThemeChangeListene
 	public VListView(Context cx, AttributeSet attr, int defStyle) {
 		super(cx, attr, defStyle);
 		rSetGlowColor(UI.getThemeColor());
+		setSelector(new ColorDrawable(Color.TRANSPARENT));
 	}
 	@Override
 	public void onThemeChange(String key) {

@@ -49,7 +49,7 @@ public class JsApp {
 		input.read(len);
 		return new String(len);
 	}
-	public JsApp(InputStream in) throws IOException, JSONException {
+	private void init(InputStream in) throws IOException, JSONException {
 		manifest = new Manifest();
 		manifest.parse(new JSONObject(new String(readString(in))));
 		ArrayList<Jsc> all=manifest.getAllJs();
@@ -58,6 +58,41 @@ public class JsApp {
 		isCompat = manifest.isCompat();
 		for (int i=0;i < all.size();i++) all.get(i).setCode(new String(EncryptUtil.decrypt(EncryptUtil.decrypt(readString(in).getBytes(), EncryptUtil.Type.Base64), EncryptUtil.Type.GZip)));
 		all = null;
+	}
+	public interface DataWriter {
+		void write(String name, byte[] data)
+	}
+	public static void write(InputStream in, DataWriter wr) throws IOException {
+		byte[] tmpFS=new byte[4];
+		byte[] buf=new byte[1024];
+		if (in.read(tmpFS) == -1) return;
+		int FS=byteArrayToInt(tmpFS);
+		tmpFS = new byte[8];
+		long ada,counter;
+		int readed;
+		ByteArrayOutputStream os=new ByteArrayOutputStream();
+		String st;
+		for (int i=0;i < FS;i++) {
+			st = readString(in);
+			in.read(tmpFS);
+			ada = byteArrayToLong(tmpFS);
+			counter = 0;
+			while (counter < ada) {
+				readed = ada - counter > 1024 ?1024: (int) (ada - counter);
+				in.read(buf, 0, readed);
+				os.write(buf, 0, readed);
+				counter += readed;
+			}
+			wr.write(st, os.toByteArray());
+			os.reset();
+		}
+	}
+	public JsApp(InputStream in) throws IOException, JSONException {
+		this(in, true);
+	}
+	public JsApp(InputStream in, boolean loadVApp) throws IOException, JSONException {
+		init(in);
+		if (!loadVApp) return;
 		//For VApp
 		byte[] tmpFS=new byte[4];
 		byte[] buf=new byte[1024];
@@ -65,14 +100,14 @@ public class JsApp {
 		int FS=byteArrayToInt(tmpFS);
 		App = new File(GlobalContext.getExternalCacheDir(), hashCode() + ".apk");
 		App.deleteOnExit();
-		ZipInputStream zin=new ZipInputStream(GlobalContext.getAssets().open(/*isCompat ?"Compat.apk": "Normal.apk"*/"Normal.apk"));
+		ZipInputStream zin=new ZipInputStream(GlobalContext.getAssets().open("Normal.apk"));
 		ZipOutputStream zout=new ZipOutputStream(new FileOutputStream(App));
 		ZipEntry entry;
 		int read;
 		String name;
 		while ((entry = zin.getNextEntry()) != null) {
-			name=entry.getName();
-			if (name.startsWith("res")||name.equals("resources.arsc")||name.startsWith("org")) continue;
+			name = entry.getName();
+			if (name.startsWith("res") || name.equals("resources.arsc") || name.startsWith("org")) continue;
 			zout.putNextEntry(entry);
 			while ((read = zin.read(buf)) != -1) zout.write(buf, 0, read);
 		}
@@ -102,8 +137,8 @@ public class JsApp {
 			Method en=AssetManager.class.getDeclaredMethod("ensureStringBlocks");
 			en.setAccessible(true);
 			en.invoke(m);
-			RS=new Resources(m,GlobalContext.getResources().getDisplayMetrics(),GlobalContext.getResources().getConfiguration());
-			AllRs.put(ID=nextID(), RS);
+			RS = new Resources(m, GlobalContext.getResources().getDisplayMetrics(), GlobalContext.getResources().getConfiguration());
+			AllRs.put(ID = nextID(), RS);
 		} catch (Throwable t) {}
 	}
 	private static int Counter=0;
@@ -171,7 +206,7 @@ public class JsApp {
 		return null;
 	}
 	public void destroy() {
-		App.delete();
+		if (App != null) App.delete();
 		AllRs.remove(this.ID);
 	}
 }

@@ -49,7 +49,7 @@ public class JsApp {
 		input.read(len);
 		return new String(len);
 	}
-	public JsApp(InputStream in) throws IOException, JSONException {
+	private void init(InputStream in) throws IOException, JSONException {
 		manifest = new Manifest();
 		manifest.parse(new JSONObject(new String(readString(in))));
 		ArrayList<Jsc> all=manifest.getAllJs();
@@ -58,6 +58,41 @@ public class JsApp {
 		isCompat = manifest.isCompat();
 		for (int i=0;i < all.size();i++) all.get(i).setCode(new String(EncryptUtil.decrypt(EncryptUtil.decrypt(readString(in).getBytes(), EncryptUtil.Type.Base64), EncryptUtil.Type.GZip)));
 		all = null;
+	}
+	public interface DataWriter {
+		void write(String name, byte[] data)
+	}
+	public static void write(InputStream in, DataWriter wr) throws IOException {
+		byte[] tmpFS=new byte[4];
+		byte[] buf=new byte[1024];
+		if (in.read(tmpFS) == -1) return;
+		int FS=byteArrayToInt(tmpFS);
+		tmpFS = new byte[8];
+		long ada,counter;
+		int readed;
+		ByteArrayOutputStream os=new ByteArrayOutputStream();
+		String st;
+		for (int i=0;i < FS;i++) {
+			st = readString(in);
+			in.read(tmpFS);
+			ada = byteArrayToLong(tmpFS);
+			counter = 0;
+			while (counter < ada) {
+				readed = ada - counter > 1024 ?1024: (int) (ada - counter);
+				in.read(buf, 0, readed);
+				os.write(buf, 0, readed);
+				counter += readed;
+			}
+			wr.write(st, os.toByteArray());
+			os.reset();
+		}
+	}
+	public JsApp(InputStream in) throws IOException, JSONException {
+		this(in, true);
+	}
+	public JsApp(InputStream in, boolean loadVApp) throws IOException, JSONException {
+		init(in);
+		if (!loadVApp) return;
 		//For VApp
 		byte[] tmpFS=new byte[4];
 		byte[] buf=new byte[1024];

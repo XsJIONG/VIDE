@@ -27,6 +27,15 @@ import android.content.Context;
 
 public class JsVActivity extends VActivity {
 	private JsProgram program;
+	private Resources RS;
+	@Override
+	public Resources getResources() {
+		return RS==null?super.getResources():RS;
+	}
+	@Override
+	public AssetManager getAssets() {
+		return RS==null?super.getAssets():RS.getAssets();
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

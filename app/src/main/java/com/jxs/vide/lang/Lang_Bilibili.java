@@ -1,6 +1,6 @@
 package com.jxs.vide.lang;
 
-import com.jxs.vide.L;
+import com.jxs.vide.*;
 
 public class Lang_Bilibili extends Lang {
 	@Override
@@ -209,6 +209,15 @@ public class Lang_Bilibili extends Lang {
 		qwe(L.OutputSC, "导出成功！");
 		qwe(L.ChoosePkg, "选择当前包");
 		qwe(L.ChooseDir, "选择当前文件夹");
+		qwe(L.Search, "搜索");
+		qwe(L.Like, "点赞");
+		qwe(L.AlreadyLiked, "你已经点过赞了！");
+		qwe(L.Liked, "点赞成功");
+		qwe(L.Dislike, "取消点赞");
+		qwe(L.Disliked, "取消点赞成功");
+		qwe(L.Notice, "公告");
+		qwe(L.Copy, "复制");
+		qwe(L.Copied,"已复制！");
 	}
 	private void qwe(int l, String s) {
 		set(l, s);

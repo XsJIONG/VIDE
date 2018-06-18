@@ -215,16 +215,16 @@ public class SettingFragment extends VFragment implements UI.OnThemeChangeListen
 		private LinearLayout _DesLayout;
 		private OnClickListener listener=null;
 		private void init() {
-			setOrientation(HORIZONTAL);
-			int p=UI.dp2px(15);
-			setPadding(p, p, p, p);
-			setGravity(Gravity.CENTER);
-			setClickable(true);
 			TypedValue value=new TypedValue();
 			getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, value, true);
 			TypedArray arr=getContext().getTheme().obtainStyledAttributes(value.resourceId, new int[] {android.R.attr.selectableItemBackground});
 			setBackground(arr.getDrawable(0));
 			arr.recycle();
+			setOrientation(HORIZONTAL);
+			int p=UI.dp2px(15);
+			setPadding(p, p, p, p);
+			setGravity(Gravity.CENTER);
+			setClickable(true);
 			_DesLayout = new LinearLayout(getContext());
 			_DesLayout.setOrientation(LinearLayout.VERTICAL);
 			LinearLayout.LayoutParams para=new LinearLayout.LayoutParams(0, -2);

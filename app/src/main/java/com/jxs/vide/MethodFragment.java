@@ -1,8 +1,9 @@
 package com.jxs.vide;
 
+import android.app.*;
 import android.content.*;
 import android.graphics.*;
-import android.support.v4.widget.*;
+import android.text.*;
 import android.view.*;
 import android.view.View.*;
 import android.widget.*;
@@ -13,7 +14,7 @@ import com.jxs.vcompat.widget.*;
 import java.util.*;
 
 import android.view.View.OnClickListener;
-import android.app.*;
+import android.support.v4.widget.*;
 
 public class MethodFragment extends VFragment implements OnItemClickListener {
 	private LinearLayout ButtonLayout;
@@ -22,9 +23,24 @@ public class MethodFragment extends VFragment implements OnItemClickListener {
 	private MethodAdapter Adapter;
 	private LinearLayout Root;
 	private ChooseListener Listener;
+	private VEditText Search;
+	private SwipeRefreshLayout Refresh;
 	public MethodFragment(Context cx) {
 		super(cx);
+		Search = new VEditText(cx);
+		Search.setHint(L.get(L.Search));
+		Search.addTextChangedListener(new TextWatcher() {
+				@Override
+				public void beforeTextChanged(CharSequence cs, int st, int en, int ch) {}
+				@Override
+				public void onTextChanged(CharSequence cs, int st, int en, int ch) {
+					Adapter.setFilter(Search.getText().toString().trim());
+				}
+				@Override
+				public void afterTextChanged(Editable ed) {}
+			});
 		Root = new LinearLayout(cx);
+		Root.addView(Search, -1, -2);
 		Root.setOrientation(LinearLayout.VERTICAL);
 		ButtonLayout = new LinearLayout(cx);
 		ButtonLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -37,6 +53,8 @@ public class MethodFragment extends VFragment implements OnItemClickListener {
 					Adapter.backToPre();
 				}
 			});
+		Refresh=new SwipeRefreshLayout(cx);
+		Refresh.setColorSchemeColors(new int[] {UI.getThemeColor()});
 		List = new VListView(cx);
 		Adapter = new MethodAdapter(cx, Global.Q, Pre);
 		List.setAdapter(Adapter);
@@ -57,26 +75,42 @@ public class MethodFragment extends VFragment implements OnItemClickListener {
 		ChoosePkg.setVisibility(isChoosePkg() ?View.VISIBLE: View.GONE);
 		para = new LinearLayout.LayoutParams(-1, 0);
 		para.weight = 1;
-		Root.addView(List, para);
+		Refresh.addView(List, -1, -1);
+		Root.addView(Refresh, para);
 		para = new LinearLayout.LayoutParams(-1, -2);
 		Root.addView(ButtonLayout, para);
+		Refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				setCurrent(getCurrent());
+			}
+		});
 		setCurrent(Global.Q);
+		Refresh.post(new Runnable() {
+			@Override
+			public void run() {
+				Refresh.setRefreshing(false);
+			}
+		});
 	}
 	public void backToPre() {
 		Adapter.backToPre();
 	}
 	public void setCurrent(CNode node) {
+		Refresh.setRefreshing(true);
 		Adapter.directSetCurrent(node);
 		new Thread(new Runnable() {
 				@Override
 				public void run() {
 					Adapter.reloadData();
-					((Activity) Root.getContext()).runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							Adapter.notifyDataSetChanged();
-						}
-					});
+					Root.post(new Runnable() {
+							@Override
+							public void run() {
+								Adapter.notifyDataSetChanged();
+								Pre.setVisibility(Adapter.getCurrent() == Adapter.Root ?View.GONE: View.VISIBLE);
+								Refresh.setRefreshing(false);
+							}
+						});
 				}
 			}).start();
 	}
@@ -130,6 +164,7 @@ public class MethodFragment extends VFragment implements OnItemClickListener {
 		private static int Padding=-1;
 		private CNode Current,Root;
 		private ArrayList<CNode> Temp=new ArrayList<>();
+		private ArrayList<CNode> ForShow=new ArrayList<>();
 		private Context cx;
 		private Button pre;
 		public MethodAdapter(Context cx, CNode root, Button pre) {
@@ -138,6 +173,18 @@ public class MethodFragment extends VFragment implements OnItemClickListener {
 			Root = root;
 			if (Padding == -1) Padding = UI.dp2px(15);
 			FileChooserFragment.checkBitmap();
+		}
+		private String Filter=null;
+		public void setFilter(String f) {
+			this.Filter = f;
+			ForShow.clear();
+			if (f == null) {
+				ForShow.addAll(Temp);
+				return;
+			}
+			f = f.toUpperCase();
+			for (int i=0;i < Temp.size();i++) if (Temp.get(i).getData().toUpperCase().contains(f)) ForShow.add(Temp.get(i));
+			notifyDataSetChanged();
 		}
 		public CNode getCurrent() {
 			return Current;
@@ -152,10 +199,11 @@ public class MethodFragment extends VFragment implements OnItemClickListener {
 			refreshShowList();
 		}
 		public void directSetCurrent(CNode c) {
-			this.Current=c;
+			this.Current = c;
 		}
 		public void reloadData() {
 			Temp.clear();
+			ForShow.clear();
 			for (CNode one : Current.getSon().values()) if ((isChoosePkg && !one.isLeaf()) || !isChoosePkg) Temp.add(one);
 			Collections.sort(Temp, new Comparator<CNode>() {
 					@Override
@@ -163,6 +211,8 @@ public class MethodFragment extends VFragment implements OnItemClickListener {
 						return a.getData().compareTo(b.getData());
 					}
 				});
+			ForShow.addAll(Temp);
+			setFilter(Filter);
 		}
 		public void refreshShowList() {
 			reloadData();
@@ -178,11 +228,11 @@ public class MethodFragment extends VFragment implements OnItemClickListener {
 		}
 		@Override
 		public int getCount() {
-			return Temp.size();
+			return ForShow.size();
 		}
 		@Override
 		public CNode getItem(int q) {
-			return Temp.get(q);
+			return ForShow.get(q);
 		}
 		@Override
 		public long getItemId(int pos) {

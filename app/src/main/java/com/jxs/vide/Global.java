@@ -189,13 +189,12 @@ public class Global {
 	}
 	public static FileChooserDialog newFileChooserDialog(Context cx, File f, FileChooserDialog.FileChooserListener l) {
 		FileChooserDialog dialog=new FileChooserDialog(cx, f, l);
-		dialog.setChooseDirText(get(L.ChooseDir));
 		dialog.setLastText(get(L.Last));
 		return dialog;
 	}
 	public static FileChooserDialog newFileChooserDialog(Context cx, File f, FileChooserDialog.FileChooserListener l, boolean chooseDir) {
 		FileChooserDialog dialog=new FileChooserDialog(cx, f, l, chooseDir);
-		dialog.setChooseDirText(get(L.ChooseDir));
+		if (chooseDir) dialog.setChooseDirText(get(L.ChooseDir));
 		dialog.setLastText(get(L.Last));
 		return dialog;
 	}
