@@ -145,8 +145,7 @@ public class IOUtil {
 		return arr;
 	}
 	private static void rGetSonFiles(File f, ArrayList<File> arr) {
-		arr.add(f);
-		if (f.isDirectory()) for (File one : f.listFiles()) rGetSonFiles(one, arr);
+		if (f.isFile()) arr.add(f); else for (File one : f.listFiles()) rGetSonFiles(one, arr);
 	}
 	public static String getRelativePath(File dir, File son) {
 		String s=son.getPath();
